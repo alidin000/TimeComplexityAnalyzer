@@ -9,7 +9,6 @@ db.sqlite3
 /static/
 
 # React #
-/node_modules
 /build
 .DS_Store
 .env
@@ -19,7 +18,8 @@ yarn-error.log*
 
 # Webpack & Babel #
 /dist
-/node_modules
-/.cache
+.node
+node_modules/
+.cache/
 .DS_Store
 *.env
