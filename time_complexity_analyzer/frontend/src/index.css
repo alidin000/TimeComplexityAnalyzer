@@ -1,24 +1,24 @@
 /* styles.css */
-
-body {
+body, html {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensure body takes at least the full height of the viewport */
+  height: 100%; /* Ensure body and html take up the full height of the viewport */
 }
 
 .App {
-  flex: 1; /* Allow the App component to grow to fill the remaining space */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the App component takes up at least the full height of the viewport */
 }
 
 footer {
   margin-top: auto; /* Push the footer to the bottom */
 }
+
 
 .calculator {
   max-width: 600px;
@@ -98,12 +98,13 @@ footer {
 }
 
 /* NavBar.css */
-nav {
+
+header {
   background-color: #333;
   color: #fff;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* Align items evenly along the main axis */
+  align-items: center; /* Align items vertically in the center */
   padding: 10px 20px;
 }
 
@@ -117,7 +118,7 @@ ul {
 }
 
 li {
-  margin-right: 20px;
+  margin-left: 20px; /* Adjust margin to add space between nav items */
 }
 
 a {
