@@ -1,0 +1,200 @@
+/* styles.css */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure body takes at least the full height of the viewport */
+}
+
+.App {
+  flex: 1; /* Allow the App component to grow to fill the remaining space */
+}
+
+footer {
+  margin-top: auto; /* Push the footer to the bottom */
+}
+
+.calculator {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.header {
+  text-align: center;
+}
+
+.input-fields {
+  margin-bottom: 20px;
+}
+
+.input-fields label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-fields input[type="number"],
+.input-fields input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-fields button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.execution-time {
+  margin-bottom: 20px;
+}
+
+.output-area {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  margin-bottom: 20px;
+}
+
+.tabs ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.tabs li {
+  margin-right: 10px;
+}
+
+.tabs button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tabs .active button {
+  font-weight: bold;
+}
+
+/* NavBar.css */
+nav {
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-size: 1.5rem;
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+}
+
+li {
+  margin-right: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+a:hover,
+a.active {
+  color: #ff9800;
+}
+
+span {
+  color: #ff9800;
+}
+
+/* Footer.css */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 1.2rem;
+}
+
+/* CalculatorPage.css */
+.calculator-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* CodeEditor.css */
+.code-editor {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+/* learningPage.css */
+.learning-page {
+  padding: 20px;
+}
+
+.topics-heading {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.topics-section {
+  margin-bottom: 40px;
+}
+
+.topics-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.topics-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.topics-section li {
+  margin-bottom: 8px;
+}
+
+.topics-section a {
+  text-decoration: none;
+  color: #333;
+}
+
+.topics-section a:hover {
+  color: #ff9800;
+}
