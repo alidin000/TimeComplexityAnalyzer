@@ -57,7 +57,7 @@ this.lineInfoTotal.put(10, this.lineInfoTotal.getOrDefault(10, 0L) + System.nano
         public static void main(String[] args)
         {
             InstrumentedPrototype p = new InstrumentedPrototype();
-            p.bubbleSort(new int[] { 3,4,5,6 });
+            p.bubbleSort(new int[] { 3,4,5,6, 0 });
             try(PrintWriter pw = new PrintWriter(new File("output.txt"))) {
                 pw.write(p.lineInfoTotal.toString());
             } catch (IOException ex) {}

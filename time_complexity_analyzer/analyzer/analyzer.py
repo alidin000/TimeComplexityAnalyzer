@@ -36,7 +36,7 @@ def instrument_java_code(call, user_code):
         public static void main(String[] args)
         {
             InstrumentedPrototype p = new InstrumentedPrototype();
-            p.bubbleSort(new int[] { 3,4,5,6 });
+            """ + call + """
             try(PrintWriter pw = new PrintWriter(new File("output.txt"))) {
                 pw.write(p.lineInfoTotal.toString());
             } catch (IOException ex) {}
@@ -56,7 +56,7 @@ def instrument_java_code(call, user_code):
 
 
 # Call the instrument_java_code function with your desired Java code
-call = ""
+call = "p.bubbleSort(new int[] { 3,4,5,6, 0 });"
 user_code = """
         for (int i = 0; i < array.length; i++) {
             for (int j = i+1; j < array.length; j++) {
