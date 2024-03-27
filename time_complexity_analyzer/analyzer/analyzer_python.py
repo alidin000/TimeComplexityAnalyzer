@@ -1,5 +1,5 @@
+import os
 import time
-
 
 class InstrumentedPythonCode:
     def __init__(self, call, user_code):
@@ -16,30 +16,31 @@ class Prototype:
         self.line_info_total = {}
 """
 
-        python_epilog = (
-            """
+        python_epilog = """
     def run(self):
-        """
-            + self.call
-            + """
+        """ + "p = Prototype()" + """
+        """ + self.call + """
         for line_num, total_time in self.line_info_total.items():
             print(f"Line {line_num}: {total_time} seconds")
 """
-        )
 
         instrumented_code = python_prolog
         lines = self.user_code.strip().split("\n")
         for i, line in enumerate(lines, start=1):
             instrumented_code += f"        self.line_info_total[{i}] = 0\n"
             instrumented_code += f"        start_time_{i} = time.time()\n"
-            instrumented_code += f"        {line}\n"
+            if ":" in line:
+                instrumented_code += f"        {line}\n"
+                instrumented_code += f"            "
+            else:
+                instrumented_code += f"        {line}\n"
             instrumented_code += (
                 f"        self.line_info_total[{i}] += time.time() - start_time_{i}\n"
             )
 
         instrumented_code += python_epilog
-
-        with open("instrumented_code.py", "w") as f:
+        python_file = os.path.join(os.path.dirname(__file__), "python_prototype.py")
+        with open(python_file, "w") as f:
             f.write(instrumented_code)
 
         # Execute the generated code

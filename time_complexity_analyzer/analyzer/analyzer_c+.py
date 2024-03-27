@@ -1,69 +1,58 @@
-def instrument_cpp_code(call, user_code):
-    cpp_prolog = """
+import time
+import os
+
+class InstrumentedCppCode:
+    def __init__(self, call, user_code):
+        self.line_info_total = {}
+        self.call = call
+        self.user_code = user_code
+
+    def run(self):
+        cpp_prolog = """
 #include <iostream>
-#include <fstream>
-#include <unordered_map>
 #include <vector>
-#include <chrono>
+#include <ctime>
 
 using namespace std;
-using namespace std::chrono;
 
-class Prototype {
-public:
 """
 
-    cpp_epilog = """
-    unordered_map<int, long long> lineInfoLastStart;
-    unordered_map<int, long long> lineInfoTotal;
-
-    void run() {
-        """ + call + """
-        ofstream outputFile("output.txt");
-        for (const auto& pair : lineInfoTotal) {
-            outputFile << pair.first << ": " << pair.second << endl;
-        }
-        outputFile.close();
-    }
-};
+        cpp_epilog = f"""
+int main() {{
+    {self.call}
+}}
 """
 
-    return (cpp_prolog +
-            '\n'.join(
-                f"lineInfoLastStart[{i+1}] = duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();" +
-                x +
-                f"lineInfoTotal[{i+1}] += duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count() - lineInfoLastStart[{i+1}];" for i, x in enumerate(user_code.splitlines())) +
-            cpp_epilog)
+        instrumented_code = cpp_prolog
+        lines = self.user_code.strip().split("\n")
+        for i, line in enumerate(lines, start=1):
+            instrumented_code += f"    clock_t start_time_{i} = clock();\n"
+            instrumented_code += f"    {line}\n"
+            instrumented_code += f"    cout << \"Line {i}: \" << (clock() - start_time_{i}) / (double)CLOCKS_PER_SEC << \" seconds\" << endl;\n"
 
+        instrumented_code += cpp_epilog
+
+        filepath = os.path.join(os.path.dirname(__file__), "instrumented_code.cpp")
+        with open(filepath, "w") as f:
+            f.write(instrumented_code)
+
+        # Compile the generated code
+        os.system("g++ -o instrumented_code instrumented_code.cpp")
+        os.system("./instrumented_code")
 
 # Usage example
-cpp_code = instrument_cpp_code("p.bubbleSort({3, 4, 5, 6});", """
-void bubbleSort(vector<int>& array) {
-    for (int i = 0; i < array.size(); i++) {
-        for (int j = i + 1; j < array.size(); j++) {
+instrumented_code_cpp = InstrumentedCppCode(
+    "bubble_sort({3, 4, 5, 6});",
+    """
+void bubble_sort(vector<int>& array) {
+    for (size_t i = 0; i < array.size(); ++i) {
+        for (size_t j = i + 1; j < array.size(); ++j) {
             if (array[i] > array[j]) {
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
+                swap(array[i], array[j]);
             }
         }
     }
 }
 """)
 
-with open("prototype.cpp", "w") as cpp_file:
-    cpp_file.write(cpp_code)
-
-# Python script to use the generated C++ code
-python_script = """
-import subprocess
-
-# Compile the C++ code
-subprocess.run(["g++", "prototype.cpp", "-o", "prototype"])
-
-# Execute the compiled program
-subprocess.run(["./prototype"])
-"""
-
-with open("use_prototype.py", "w") as py_file:
-    py_file.write(python_script)
+instrumented_code_cpp.run()
