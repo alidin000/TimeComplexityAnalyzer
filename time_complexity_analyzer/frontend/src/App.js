@@ -30,7 +30,7 @@ class App extends React.Component {
         <div className="App">
           <Header />
           <Routes>
-            <Route path="/calculator" element={<div className="calculator"><CalculatorPage handleCalculation={this.handleCalculation} executionTime={this.state.executionTime} result={this.state.result} /></div>} />
+            <Route path="/calculator" element={<div className="calculator-page"><CalculatorPage handleCalculation={this.handleCalculation} executionTime={this.state.executionTime} result={this.state.result} /></div>} />
             <Route path="/learning" element={<div className="learning"><LearningPage /></div>} />
           </Routes>
           <Footer />

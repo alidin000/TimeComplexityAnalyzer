@@ -19,14 +19,6 @@ footer {
   margin-top: auto; /* Push the footer to the bottom */
 }
 
-.calculator {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
 .header {
   text-align: center;
 }
@@ -65,10 +57,11 @@ footer {
 }
 
 .output-area {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  padding: 20px; /* Increase padding for the output area */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 5px;
+  margin-bottom: 40px; /* Increase bottom margin to create more space */
+  min-height: 200px; /* Set a minimum height for the output area */
 }
 
 .tabs {
@@ -135,31 +128,87 @@ span {
 }
 
 /* Footer.css */
-footer {
+.footer {
   background-color: #333;
   color: #fff;
-  padding: 10px 20px;
-  text-align: center;
+  padding: 20px;
 }
 
-.footer-logo {
-  font-size: 1.2rem;
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+.footer-copyright a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.footer-links a:first-child {
+  margin-left: 0;
+}
 /* CalculatorPage.css */
 .calculator-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 80vh; /* Take up full viewport height */
   padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.top-section {
+  display: flex;
+  border-bottom: 1px solid #ccc; /* Add border between top and bottom sections */
+}
+
+.left-section {
+  flex: 1;
+}
+
+.right-section {
+  flex: 1;
+}
+
+.bottom-section {
+  flex: 1;
+  padding-top: 10px; /* Add some space above the text section */
+}
+
+.text-section {
+  padding: 10px;
+  background-color: #f2f2f2;
 }
 
 /* CodeEditor.css */
 .code-editor {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px; /* Increase max-width to make the code editor area bigger */
+  min-height: 300px; /* Set a minimum height for the code editor area */
   margin-bottom: 20px;
+}
+
+/* Increase font size for better readability in the code editor */
+.code-editor textarea {
+  font-size: 16px;
+}
+
+/* Increase output area size */
+.output {
+  padding: 20px; /* Increase padding for the output area */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 5px;
+  margin-bottom: 40px; /* Increase bottom margin to create more space */
+  min-height: 200px; /* Set a minimum height for the output area */
 }
 
 /* learningPage.css */
