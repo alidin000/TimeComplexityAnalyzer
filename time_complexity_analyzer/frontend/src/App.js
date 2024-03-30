@@ -1,16 +1,20 @@
+// App.jsx
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CalculatorPage from './components/CalculatorPage';
 import LearningPage from './components/LearningPage';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       executionTime: 0,
-      result: ''
+      result: '',
+      isLoggedIn: false,
     };
   }
 
@@ -28,10 +32,23 @@ class App extends React.Component {
     return (
       <Router>
         <div className="App">
-          <Header />
+          <Header isLoggedIn={this.state.isLoggedIn} />
           <Routes>
-            <Route path="/calculator" element={<div className="calculator-page"><CalculatorPage handleCalculation={this.handleCalculation} executionTime={this.state.executionTime} result={this.state.result} /></div>} />
+            <Route
+              path="/calculator"
+              element={
+                <div className="calculator-page">
+                  <CalculatorPage
+                    handleCalculation={this.handleCalculation}
+                    executionTime={this.state.executionTime}
+                    result={this.state.result}
+                  />
+                </div>
+              }
+            />
             <Route path="/learning" element={<div className="learning"><LearningPage /></div>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
           <Footer />
         </div>

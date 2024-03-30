@@ -52,16 +52,14 @@ footer {
   cursor: pointer;
 }
 
-.execution-time {
-  margin-bottom: 20px;
-}
-
-.output-area {
-  padding: 20px; /* Increase padding for the output area */
-  border: 1px solid #ccc; /* Light gray border */
+.execution-time,
+.output-area,
+.output {
+  padding: 20px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 40px; /* Increase bottom margin to create more space */
-  min-height: 200px; /* Set a minimum height for the output area */
+  margin-bottom: 40px;
+  min-height: 200px;
 }
 
 .tabs {
@@ -95,8 +93,8 @@ header {
   background-color: #333;
   color: #fff;
   display: flex;
-  justify-content: space-between; /* Align items evenly along the main axis */
-  align-items: center; /* Align items vertically in the center */
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 20px;
 }
 
@@ -110,7 +108,7 @@ ul {
 }
 
 li {
-  margin-left: 20px; /* Adjust margin to add space between nav items */
+  margin-left: 20px;
 }
 
 a {
@@ -142,25 +140,21 @@ span {
   margin: 0 auto;
 }
 
-.footer-copyright a {
-  color: #fff;
-  text-decoration: none;
-}
-
+.footer-copyright a,
 .footer-links a {
   color: #fff;
   text-decoration: none;
-  margin-left: 20px;
 }
 
 .footer-links a:first-child {
   margin-left: 0;
 }
+
 /* CalculatorPage.css */
 .calculator-page {
   display: flex;
   flex-direction: column;
-  height: 80vh; /* Take up full viewport height */
+  height: 80vh;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -168,20 +162,17 @@ span {
 
 .top-section {
   display: flex;
-  border-bottom: 1px solid #ccc; /* Add border between top and bottom sections */
+  border-bottom: 1px solid #ccc;
 }
 
-.left-section {
-  flex: 1;
-}
-
-.right-section {
+.left-section,
+.right-section,
+.bottom-section {
   flex: 1;
 }
 
 .bottom-section {
-  flex: 1;
-  padding-top: 10px; /* Add some space above the text section */
+  padding-top: 10px;
 }
 
 .text-section {
@@ -190,25 +181,19 @@ span {
 }
 
 /* CodeEditor.css */
+.code-editor-area {
+  position: relative;
+}
+
 .code-editor {
   width: 100%;
-  max-width: 1000px; /* Increase max-width to make the code editor area bigger */
-  min-height: 300px; /* Set a minimum height for the code editor area */
+  max-width: 1000px;
+  min-height: 300px;
   margin-bottom: 20px;
 }
 
-/* Increase font size for better readability in the code editor */
 .code-editor textarea {
   font-size: 16px;
-}
-
-/* Increase output area size */
-.output {
-  padding: 20px; /* Increase padding for the output area */
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 5px;
-  margin-bottom: 40px; /* Increase bottom margin to create more space */
-  min-height: 200px; /* Set a minimum height for the output area */
 }
 
 /* learningPage.css */
@@ -223,11 +208,11 @@ span {
 
 .right-panel {
   flex: 2;
-  margin-left: 20px; /* Add some space between left and right panels */
+  margin-left: 20px;
 }
 
 .algorithm-topics-list {
-  background-color: #f0f0f0; /* Light gray background */
+  background-color: #f0f0f0;
   padding: 10px;
   border-radius: 5px;
 }
@@ -235,7 +220,7 @@ span {
 .algorithm-topics-list a {
   display: block;
   margin-bottom: 5px;
-  color: #333; /* Dark gray text */
+  color: #333;
   text-decoration: none;
 }
 
@@ -245,27 +230,27 @@ span {
 
 .tab-switcher {
   display: flex;
-  margin-bottom: 20px; /* Add some space below the tab switcher */
+  margin-bottom: 20px;
 }
 
 .tab-button {
-  flex: 1; /* Equal width for both buttons */
+  flex: 1;
   background-color: transparent;
   border: none;
   cursor: pointer;
   outline: none;
   font-size: 16px;
   padding: 5px 10px;
-  color: #333; /* Dark gray text */
+  color: #333;
 }
 
 .tab-button.active {
   font-weight: bold;
-  background-color: #f0f0f0; /* Light gray background for active tab */
+  background-color: #f0f0f0;
 }
 
 .tab-button:not(:last-child) {
-  margin-right: 10px; /* Add some space between the buttons */
+  margin-right: 10px;
 }
 
 .switchers {
@@ -281,23 +266,121 @@ span {
   outline: none;
   font-size: 14px;
   padding: 5px 10px;
-  color: #333; /* Dark gray text */
+  color: #333;
 }
 
 .switcher-button.active {
   font-weight: bold;
 }
 
-.output {
-  padding: 10px;
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 5px;
-  margin-bottom: 20px; /* Add some space below the output area */
-}
-
-
-/* Align subtopics horizontally */
 .subtopics-heading {
   display: inline-block;
   margin-right: 20px;
+}
+
+.user-icon {
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.user-icon i {
+  color: #fff;
+}
+
+.analyse-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.analyse-button:hover {
+  background-color: #0056b3;
+}
+
+/* Sign Up and Login Page Styles */
+.wrapper {
+  display: flex;
+  height: 80vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  padding: 1.5rem;
+  max-width: 400px; /* Added max-width for the form */
+  width: 100%; /* Added width for responsiveness */
+  margin: 0 auto; /* Center the form horizontally */
+}
+
+.form .heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.or {
+  margin: 1rem 0;
+}
+
+.form label {
+  display: block;
+  margin: 1.25rem 0 1rem 0;
+}
+
+.form input {
+  height: 40px;
+  width: 100%;
+  padding: 15px;
+  background-color: #f1f9ff;
+  border: 2px solid #bce0fd;
+  border-radius: 8px;
+}
+
+.form button {
+  height: 40px;
+  width: 100%;
+  background-color: #258de6;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  display: block;
+  margin: 0 auto;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  border-radius: 8px;
+}
+
+@media (min-width: 542px) {
+  .wrapper {
+    padding: 1.5rem;
+    max-width: 1100px;
+    justify-content: space-around;
+  }
+  .form {
+    flex-basis: auto;
+  }
+  .form input {
+    width: 250px;
+  }
+}
+
+.signUp .illustration {
+  order: 2;
+  justify-self: flex-end;
+  margin-left: 2rem;
+}
+
+button:hover {
+  filter: brightness(95%);
+}
+
+button:active {
+  transform: scale(0.98);
 }

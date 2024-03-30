@@ -48,6 +48,11 @@ export default function CodeEditorArea() {
     }
   };
   
+  const handleAnalyseClick = () => {
+    // Add your logic for analyzing the code here
+    // This function will be called when the "Analyse" button is clicked
+    console.log("Code analysis triggered");
+  };
 
   return (
     <div>
@@ -69,6 +74,8 @@ export default function CodeEditorArea() {
           fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
         }}
       />
+      {/* Add the "Analyse" button */}
+      <button className="analyse-button" onClick={handleAnalyseClick}>Analyse</button>
     </div>
   );
 }

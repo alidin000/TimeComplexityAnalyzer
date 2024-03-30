@@ -1,3 +1,4 @@
+// CalculatorPage.jsx
 import React from "react";
 import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
@@ -6,7 +7,7 @@ function CalculatorPage() {
   return (
     <div className="calculator-page">
       <div className="top-section">
-        <div className="left-section">
+        <div className="left-section code-editor-area"> {/* Add code-editor-area class */}
           <CodeEditorArea />
         </div>
         <div className="right-section">
