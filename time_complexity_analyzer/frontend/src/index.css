@@ -19,7 +19,6 @@ footer {
   margin-top: auto; /* Push the footer to the bottom */
 }
 
-
 .calculator {
   max-width: 600px;
   margin: 0 auto;
@@ -165,37 +164,91 @@ footer {
 
 /* learningPage.css */
 .learning-page {
+  display: flex;
   padding: 20px;
 }
 
-.topics-heading {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+.left-panel {
+  flex: 1;
 }
 
-.topics-section {
-  margin-bottom: 40px;
+.right-panel {
+  flex: 2;
+  margin-left: 20px; /* Add some space between left and right panels */
 }
 
-.topics-section h3 {
-  font-size: 1.2rem;
+.algorithm-topics-list {
+  background-color: #f0f0f0; /* Light gray background */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.algorithm-topics-list a {
+  display: block;
+  margin-bottom: 5px;
+  color: #333; /* Dark gray text */
+  text-decoration: none;
+}
+
+.algorithm-topics-list a:hover {
+  text-decoration: underline;
+}
+
+.tab-switcher {
+  display: flex;
+  margin-bottom: 20px; /* Add some space below the tab switcher */
+}
+
+.tab-button {
+  flex: 1; /* Equal width for both buttons */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  color: #333; /* Dark gray text */
+}
+
+.tab-button.active {
+  font-weight: bold;
+  background-color: #f0f0f0; /* Light gray background for active tab */
+}
+
+.tab-button:not(:last-child) {
+  margin-right: 10px; /* Add some space between the buttons */
+}
+
+.switchers {
+  display: flex;
+  justify-content: center;
   margin-bottom: 10px;
 }
 
-.topics-section ul {
-  list-style-type: none;
-  padding-left: 0;
+.switcher-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-size: 14px;
+  padding: 5px 10px;
+  color: #333; /* Dark gray text */
 }
 
-.topics-section li {
-  margin-bottom: 8px;
+.switcher-button.active {
+  font-weight: bold;
 }
 
-.topics-section a {
-  text-decoration: none;
-  color: #333;
+.output {
+  padding: 10px;
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 5px;
+  margin-bottom: 20px; /* Add some space below the output area */
 }
 
-.topics-section a:hover {
-  color: #ff9800;
+
+/* Align subtopics horizontally */
+.subtopics-heading {
+  display: inline-block;
+  margin-right: 20px;
 }

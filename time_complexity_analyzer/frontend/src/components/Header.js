@@ -1,3 +1,5 @@
+// Header.jsx
+
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
@@ -7,38 +9,26 @@ const Header = () => {
 
   return (
     <header>
-      <div className="logo">
-        LOGO
-      </div>
+      <div className="logo">LOGO</div>
       <nav>
         <ul>
           {currentPath === '/learning' ? (
             <>
               <li>
-                <NavLink to="/calculator" activeclassname="active" exact="true">
+                <NavLink to="/calculator" activeClassName="active" exact>
                   CALCULATOR
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/algorithms" activeclassname="active">
-                  ALGORITHMS
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/quizzes" activeclassname="active">
-                  QUIZZES
                 </NavLink>
               </li>
             </>
           ) : (
             <li>
-              <NavLink to="/learning" activeclassname="active" exact="true">
+              <NavLink to="/learning" activeClassName="active" exact>
                 LEARNING
               </NavLink>
             </li>
           )}
           <li>
-            <NavLink to="/about-us" activeclassname="active">
+            <NavLink to="/about-us" activeClassName="active">
               ABOUT U<span>S</span>
             </NavLink>
           </li>
