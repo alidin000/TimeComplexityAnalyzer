@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALOWED_ORIGINS = [
-    "http://localhost:3000/"
+    "http://localhost:3000"
 ]
 
 ROOT_URLCONF = 'time_complexity_analyzer.urls'
