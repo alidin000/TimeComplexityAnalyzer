@@ -1,13 +1,11 @@
-/* styles.css */
+
 body, html {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%; /* Ensure body and html take up the full height of the viewport */
 }
+
 
 .App {
   display: flex;
@@ -111,19 +109,20 @@ li {
   margin-left: 20px;
 }
 
-a {
+.link-style {
   text-decoration: none;
   color: #fff;
 }
 
-a:hover,
-a.active {
+.link-style:hover,
+.link-style.active {
   color: #ff9800;
 }
 
-span {
+.link-style span {
   color: #ff9800;
 }
+
 
 /* Footer.css */
 .footer {
@@ -312,7 +311,7 @@ span {
 }
 
 .form {
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
   max-width: 400px; /* Added max-width for the form */
   width: 100%; /* Added width for responsiveness */
   margin: 0 auto; /* Center the form horizontally */
@@ -344,18 +343,18 @@ span {
 
 .form button {
   height: 40px;
-  width: 100%;
+  width: 150px; /* Set a fixed width */
   background-color: #258de6;
   color: white;
   text-transform: uppercase;
   letter-spacing: 1px;
   border: none;
-  display: block;
-  margin: 0 auto;
+  margin: 0 auto; /* Center the button horizontally */
   font-weight: bold;
   margin-top: 1.5rem;
   border-radius: 8px;
 }
+
 
 @media (min-width: 542px) {
   .wrapper {

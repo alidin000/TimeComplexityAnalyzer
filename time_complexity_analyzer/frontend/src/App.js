@@ -7,6 +7,8 @@ import CalculatorPage from './components/CalculatorPage';
 import LearningPage from './components/LearningPage';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import 'primeflex/primeflex.css';
+
 
 class App extends React.Component {
   constructor(props) {

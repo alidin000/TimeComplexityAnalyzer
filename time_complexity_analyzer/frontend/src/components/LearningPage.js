@@ -13,7 +13,9 @@ const LearningPage = () => {
     <div className="learning-page">
       <div className="left-panel">
         <h2 className="subtopics-heading">Algorithm Topics</h2>
+        <div className="card">
         <AlgorithmTopicsList />
+        </div>
       </div>
       <div className="right-panel">
         <div className="tab-switcher">

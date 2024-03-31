@@ -1,5 +1,6 @@
 // Output.jsx
 import React, { useState, useEffect } from "react";
+import Paper from '@mui/material/Paper';
 
 function Output() {
   const [output, setOutput] = useState("// Output will be displayed here");
@@ -22,8 +23,10 @@ function Output() {
   };
 
   return (
-    <div className="output">
+    <div className="card surface-700 ">
+    <Paper elevation={3} variant="outlined" className="w-30rem h-20rem">
       <pre>{output}</pre>
+    </Paper>
     </div>
   );
 }

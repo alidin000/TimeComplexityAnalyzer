@@ -13,11 +13,11 @@ export default function Login() {
 				<form>
 					<div>
 						<label htmlFor="name">Name</label>
-						<input type="text" id="name" placeholder="Enter your name" />
+						<input type="text" id="name" placeholder="Enter your name" className='h-1rem w-20rem'/>
 					</div>
 					<div>
 						<label htmlFor="e-mail">E-Mail</label>
-						<input type="email" id="e-mail" placeholder="Enter your email" />
+						<input type="email" id="e-mail" placeholder="Enter your email" className='h-1rem w-20rem'/>
 					</div>
 					<button type="submit" onClick={preventRefresh}>
 						Submit
