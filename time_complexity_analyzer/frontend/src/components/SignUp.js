@@ -3,27 +3,22 @@ import { Link } from 'react-router-dom';
 import AxiosInstance from './Axios';
 
 export default function Signup() {
-  // State variables to hold user input
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Send a POST request to your backend API
       const response = await AxiosInstance.post('/users/', {
-        username: name, // Assuming 'username' is used for name field in the backend
+        username: name, 
         email: email,
         password: password
       });
 
-      // Handle success response
       console.log('User signed up successfully:', response.data);
-      // You can redirect user to another page or do other actions upon successful signup
 
     } catch (error) {
       // Handle error
@@ -41,15 +36,16 @@ export default function Signup() {
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="name">Name</label>
-            <input type="text" id="name" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} />
+            <input className='input-field' type="text" id="name" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
             <label htmlFor="email">E-Mail</label>
-            <input type="email" id="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input className='input-field' type="email" id="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>
             <label htmlFor="password">Password</label>
             <input
+              className='input-field'
               type="password"
               id="password"
               placeholder="Enter your password"
@@ -58,7 +54,7 @@ export default function Signup() {
             />
           </div>
           <div className="flex justify-center">
-            <button type="submit" className="w-8rem ml-1">Submit</button>
+            <button type="submit" className="submit-btn">Submit</button>
           </div>
           <div className="flex justify-center">
             <span>or</span>
