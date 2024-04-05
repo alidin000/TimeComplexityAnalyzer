@@ -1,7 +1,8 @@
+// Header.jsx
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-const Header = ({ isLoggedIn }) => {
+const Header = ({ isLoggedIn, handleLogout }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -32,9 +33,9 @@ const Header = ({ isLoggedIn }) => {
           </li>
           {isLoggedIn ? (
             <li>
-              <NavLink to="/logout" activeClassName="active" className="link-style">
+              <button onClick={handleLogout} className="link-style">
                 Logout
-              </NavLink>
+              </button>
             </li>
           ) : (
             <>
@@ -51,12 +52,13 @@ const Header = ({ isLoggedIn }) => {
             </>
           )}
         </ul>
-      </nav>
-      {isLoggedIn && (
+        {isLoggedIn && (
         <div className="user-icon">
-          <i className="fab fa-react"></i>
+          {/* Use Font Awesome user icon */}
+          <i className="fas fa-user"></i>
         </div>
       )}
+      </nav>
     </header>
   );
 };

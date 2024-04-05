@@ -9,16 +9,27 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import 'primeflex/primeflex.css';
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       executionTime: 0,
       result: '',
-      isLoggedIn: false,
+      isLoggedIn: false, // Initial login state
     };
   }
+
+  // Function to handle user login
+  handleLogin = () => {
+    // Perform login logic (e.g., update state after successful login)
+    this.setState({ isLoggedIn: true });
+  };
+
+  // Function to handle user logout
+  handleLogout = () => {
+    // Perform logout logic (e.g., update state after logout)
+    this.setState({ isLoggedIn: false });
+  };
 
   handleCalculation = ({ nValue, machineType, language, algorithm }) => {
     // Perform calculation here and update execution time and result state
@@ -31,10 +42,12 @@ class App extends React.Component {
   };
 
   render() {
+    const { isLoggedIn } = this.state;
+
     return (
       <Router>
         <div className="App">
-          <Header isLoggedIn={this.state.isLoggedIn} />
+          <Header isLoggedIn={isLoggedIn} handleLogout={this.handleLogout} />
           <Routes>
             <Route
               path="/calculator"
@@ -49,7 +62,10 @@ class App extends React.Component {
               }
             />
             <Route path="/learning" element={<div className="learning"><LearningPage /></div>} />
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login handleLogin={this.handleLogin} />} // Pass handleLogin function to Login component
+            />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
           <Footer />

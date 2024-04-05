@@ -4,6 +4,8 @@ from rest_framework import viewsets, permissions
 from api.models import Code
 from api.serializers import *
 from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate, login
 # Create your views here.
 def home(request):
     return HttpResponse("This is the home page of the time complexity analyzer app.")
@@ -80,3 +82,16 @@ class UserViewSet(viewsets.ViewSet):
         user = self.queryset.get(id=pk)
         user.delete()
         return Response({"message": "User deleted successfully."},status=204)
+    
+    def login(self, request):
+        username = request.data.get('username', None)
+        password = request.data.get('password', None)
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data)
+        else:
+            return Response("Invalid username or password", status=status.HTTP_401_UNAUTHORIZED)
