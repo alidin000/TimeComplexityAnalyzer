@@ -1,5 +1,4 @@
 import os
-import time
 
 class InstrumentedPythonCode:
     def __init__(self, call, user_code):
@@ -18,7 +17,7 @@ class Prototype:
 
         python_epilog = """
     def run(self):
-        """ + "p = Prototype()" + """
+        p = Prototype()
         """ + self.call + """
         for line_num, total_time in self.line_info_total.items():
             print(f"Line {line_num}: {total_time} seconds")
