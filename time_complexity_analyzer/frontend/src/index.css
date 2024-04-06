@@ -143,6 +143,7 @@ li {
 .footer-links a {
   color: #fff;
   text-decoration: none;
+  margin-right: 10px; /* Add margin-right to create space between links */
 }
 
 .footer-links a:first-child {
