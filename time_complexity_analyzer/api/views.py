@@ -15,9 +15,10 @@ def home(request):
 def analyse_code(request):
     code_data = request.data
     code_serializer = CodeSerializer(data=code_data)
-
+    print("we are here")
     if code_serializer.is_valid():
         code_serializer.save()  # Save the code to the database
+        print(code_serializer.data, " and saving the code to the database")
         code = code_serializer.data['code']
         language = code_data.get('language')
 

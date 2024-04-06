@@ -3,19 +3,37 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Login = ({ handleLogin }) => {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate(); // Hook for accessing navigation functions
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Simulated login logic
-        console.log('User logged in successfully');
 
-        // Redirect to calculator page after successful login
-        handleLogin(); // Call handleLogin function passed from App component
-        navigate('/calculator');
+        try {
+            const response = await fetch('/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                handleLogin(user); // Call handleLogin function passed from App component
+                navigate('/calculator');
+            } else {
+                console.error('Login failed');
+                // Handle login failure (e.g., display error message to user)
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Handle other errors (e.g., network error)
+        }
     };
 
     return (
@@ -24,14 +42,14 @@ const Login = ({ handleLogin }) => {
                 <div className="heading">LOGIN</div>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="email">E-Mail</label>
+                        <label htmlFor="username">Username</label>
                         <input 
-                            type="email" 
-                            id="email" 
-                            placeholder="Enter your email" 
+                            type="text" 
+                            id="username" 
+                            placeholder="Enter your username" 
                             className='input-field' 
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)} 
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)} 
                             required 
                         />
                     </div>

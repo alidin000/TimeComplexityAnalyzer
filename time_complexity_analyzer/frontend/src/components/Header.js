@@ -14,20 +14,20 @@ const Header = ({ isLoggedIn, handleLogout }) => {
           {currentPath === '/learning' ? (
             <>
               <li>
-                <NavLink to="/calculator" activeClassName="active" exact className="link-style">
+                <NavLink to="/" activeclassname="active" exact="true" className="link-style">
                   CALCULATOR
                 </NavLink>
               </li>
             </>
           ) : (
             <li>
-              <NavLink to="/learning" activeClassName="active" exact className="link-style">
+              <NavLink to="/learning" activeclassname="active" exact="true" className="link-style">
                 LEARNING
               </NavLink>
             </li>
           )}
           <li>
-            <NavLink to="/about-us" activeClassName="active" className="link-style">
+            <NavLink to="/about-us" activeclassname="active" className="link-style">
               ABOUT US
             </NavLink>
           </li>
@@ -40,12 +40,12 @@ const Header = ({ isLoggedIn, handleLogout }) => {
           ) : (
             <>
               <li>
-                <NavLink to="/login" activeClassName="active" className="link-style">
+                <NavLink to="/login" activeclassname="active" className="link-style">
                   Login
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/signup" activeClassName="active" className="link-style">
+                <NavLink to="/signup" activeclassname="active" className="link-style">
                   Sign Up
                 </NavLink>
               </li>

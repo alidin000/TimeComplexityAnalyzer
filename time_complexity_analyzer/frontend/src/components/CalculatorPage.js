@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
 
-function CalculatorPage() {
+function CalculatorPage({ isAuthenticated, currentUser }) {
   const [code, setCode] = useState(`def circle_area(radius):\n\t\"\"\"This function calculates the area of a circle.\"\"\"\n\tpi = 3.14159\n\treturn pi * radius * radius`);
   const [language, setLanguage] = useState('python');
+  const [outputText, setOutputText] = useState("// Output will be displayed here");
+  const user = isAuthenticated ? currentUser : "Unknown";
 
   const handleLanguageChange = (selectedLanguage) => {
     setLanguage(selectedLanguage);
@@ -34,6 +36,7 @@ function CalculatorPage() {
       body: JSON.stringify({
         code: code,
         language: language,
+        user: user,
       }),
     })
     .then(response => {
@@ -44,7 +47,8 @@ function CalculatorPage() {
     })
     .then(data => {
       console.log('Analysis output:', data.output);
-      // Handle the analysis output as needed
+      // Update the output text state with the analysis output
+      setOutputText(data.output);
     })
     .catch(error => {
       console.error('Error:', error);
@@ -71,7 +75,7 @@ function CalculatorPage() {
           </div>
         </div>
         <div className="flex card ml-8 w-full">
-          <Output />
+          <Output outputText={outputText} />
         </div>
       </div>
       <div className="bottom-section">
