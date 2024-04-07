@@ -5,7 +5,7 @@ from django.db import models
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
     email = models.EmailField()
     # Add any additional user-related fields if needed
 

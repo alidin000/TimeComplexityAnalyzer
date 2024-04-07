@@ -59,6 +59,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 ROOT_URLCONF = 'time_complexity_analyzer.urls'
 
 TEMPLATES = [

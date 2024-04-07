@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.contrib.auth.hashers import make_password
 
 class CodeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Both username and password are required.")
 
         return data
+    
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
