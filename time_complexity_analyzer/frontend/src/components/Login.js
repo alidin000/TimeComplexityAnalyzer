@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AxiosInstance from './Axios';
 
-const Login = () => {
+const Login = ({ handleLogin }) => { // receive handleLogin function from props
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -17,9 +17,9 @@ const Login = () => {
                 password,
             });
 
-            if (response.status === 200) {
-                console.log('Login successful');
-                navigate('/'); // Redirect to home page after successful login
+            if (response.status === 200) { // assuming server responds with a success flag
+                handleLogin(); // Call handleLogin function passed from App component
+                navigate('/');
             } else {
                 console.error('Login failed');
                 setError('Invalid credentials');

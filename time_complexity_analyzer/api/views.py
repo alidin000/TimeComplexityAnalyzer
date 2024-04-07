@@ -113,6 +113,6 @@ class UserViewSet(viewsets.ViewSet):
         if user is not None:
             login(request, user)
             serializer = self.serializer_class(user)
-            return Response(serializer.data)
+            return Response(f'successfully logged in :{serializer.data}')
         else:
             return Response("Invalid username or password", status=status.HTTP_401_UNAUTHORIZED)
