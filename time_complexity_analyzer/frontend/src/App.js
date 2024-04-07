@@ -11,13 +11,16 @@ import 'primeflex/primeflex.css';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
 
-    const handleLogin = () => {
+    const handleLogin = (user) => {
         setIsLoggedIn(true);
+        setUsername(user); // Set the username when logging in
     };
 
     const handleLogout = () => {
         setIsLoggedIn(false);
+        setUsername(''); // Clear the username when logging out
     };
 
     return (
@@ -27,7 +30,7 @@ function App() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<CalculatorPage />}
+                        element={<CalculatorPage isAuthenticated={isLoggedIn} currentUser={username} />}
                     />
                     <Route path="/learning" element={<LearningPage />} />
                     <Route

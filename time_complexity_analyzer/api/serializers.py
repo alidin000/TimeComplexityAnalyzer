@@ -4,7 +4,7 @@ from .models import *
 class CodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Code
-        fields = ('user', 'code', 'language', 'time_complexity', 'space_complexity')
+        fields = ('username', 'code', 'language', 'time_complexity', 'space_complexity')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,10 +18,5 @@ class UserSerializer(serializers.ModelSerializer):
 
         if not username or not password:
             raise serializers.ValidationError("Both username and password are required.")
-
-        user = User.objects.filter(username=username).first()
-
-        if user is None or not user.check_password(password):
-            raise serializers.ValidationError("Incorrect username or password.")
 
         return data

@@ -16,7 +16,7 @@ class Code(models.Model):
         ('Java', 'Java'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=100)
     code = models.TextField()
     language = models.CharField(max_length=100, choices=LANGUAGES)
     time_complexity = models.CharField(max_length=100)

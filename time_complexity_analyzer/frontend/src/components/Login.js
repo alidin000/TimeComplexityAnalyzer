@@ -1,12 +1,13 @@
+// Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AxiosInstance from './Axios';
 
-const Login = ({ handleLogin }) => { // receive handleLogin function from props
+const Login = ({ handleLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Hook for accessing navigation functions
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,8 +18,8 @@ const Login = ({ handleLogin }) => { // receive handleLogin function from props
                 password,
             });
 
-            if (response.status === 200) { // assuming server responds with a success flag
-                handleLogin(); // Call handleLogin function passed from App component
+            if (response.status === 200) {
+                handleLogin(username); // Pass username to handleLogin function
                 navigate('/');
             } else {
                 console.error('Login failed');
@@ -64,7 +65,6 @@ const Login = ({ handleLogin }) => { // receive handleLogin function from props
                     </button>
                 </form>
                 {error && <p className="error">{error}</p>}
-                {/* Link to sign up */}
                 <p>
                     Don't have an account? <Link to="/signup">Sign Up</Link>
                 </p>
