@@ -1,38 +1,32 @@
-// Login.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import AxiosInstance from './Axios';
 
-const Login = ({ handleLogin }) => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate(); // Hook for accessing navigation functions
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await fetch('/login/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
+            const response = await AxiosInstance.post('/login/', {
+                username,
+                password,
             });
 
-            if (response.ok) {
-                const user = await response.json();
-                handleLogin(user); // Call handleLogin function passed from App component
-                navigate('/calculator');
+            if (response.status === 200) {
+                console.log('Login successful');
+                navigate('/'); // Redirect to home page after successful login
             } else {
                 console.error('Login failed');
-                // Handle login failure (e.g., display error message to user)
+                setError('Invalid credentials');
             }
         } catch (error) {
             console.error('Error:', error);
-            // Handle other errors (e.g., network error)
+            setError('Failed to login. Please try again.');
         }
     };
 
@@ -69,9 +63,10 @@ const Login = ({ handleLogin }) => {
                         Submit
                     </button>
                 </form>
+                {error && <p className="error">{error}</p>}
                 {/* Link to sign up */}
                 <p>
-                    Don't have an account ? <Link to="/signup"> Sign Up </Link>
+                    Don't have an account? <Link to="/signup">Sign Up</Link>
                 </p>
             </div>
         </div>
