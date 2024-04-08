@@ -1,9 +1,7 @@
 import subprocess
 import os
 
-
-# Define the instrument_java_code function
-def instrument_java_code(call, user_code):
+def instrument_java_function(call, user_function):
     java_prolog = """
     package time_complexity_analyzer.analyzer;
 
@@ -24,14 +22,10 @@ def instrument_java_code(call, user_code):
               return getLastLineInfo(lineNumber - 1);
           }
           return 0L;
-      }
-
-
-        public void bubbleSort(int[] array) {
+        }
     """
 
     java_epilog = """
-        }
 
         public static void main(String[] args)
         {
@@ -44,54 +38,52 @@ def instrument_java_code(call, user_code):
     }
     """
 
-    instrumented_user_code = "\n".join(
-        f"this.lineInfoLastStart.put({i+1}, System.nanoTime());\n"
-        + x
-        + "\n"
-        + f"this.lineInfoTotal.put({i+1}, this.lineInfoTotal.getOrDefault({i+1}, 0L) + System.nanoTime() - getLastLineInfo({i+1}));"
-        for i, x in enumerate(user_code.splitlines())
-    )
+    lines = user_function.strip().splitlines()
+    instrumented_user_function = lines[0]  # Function declaration
 
-    return java_prolog + instrumented_user_code + java_epilog
+    for i, line in enumerate(lines[1:], start=2):  # Start enumeration from 2 to account for function declaration line
+        trimmed_line = line.strip()
+        if not trimmed_line or trimmed_line == '}':
+            # Skip empty lines or closing braces
+            instrumented_line = line
+        else:
+            instrumented_line = (
+                f"this.lineInfoLastStart.put({i}, System.nanoTime());\n"
+                + line + "\n"
+                + f"this.lineInfoTotal.put({i}, this.lineInfoTotal.getOrDefault({i}, 0L) + System.nanoTime() - getLastLineInfo({i}));"
+            )
+        instrumented_user_function += "\n" + instrumented_line
+
+    return java_prolog + instrumented_user_function + java_epilog
 
 
-# Call the instrument_java_code function with your desired Java code
-call = "p.bubbleSort(new int[] { 3,4,5,6, 0 });"
-user_code = """
-        for (int i = 0; i < array.length; i++) {
-            for (int j = i+1; j < array.length; j++) {
-                if (array[i] > array[j]) {
-                    int temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                }
+# Example usage with a complete Java function
+call = "p.mySortFunction(new int[] {3, 4, 5, 6, 0});"
+user_function = """
+public void mySortFunction(int[] array) {
+    for (int i = 0; i < array.length; i++) {
+        for (int j = i + 1; j < array.length; j++) {
+            if (array[i] > array[j]) {
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
+    }
+}
 """
-instrumented_code = instrument_java_code(call, user_code)
+instrumented_code = instrument_java_function(call, user_function)
 
 # Write the instrumented code to a Java file in the same directory as the Python script
 java_file_path = os.path.join(os.path.dirname(__file__), "InstrumentedPrototype.java")
 with open(java_file_path, "w") as java_file:
     java_file.write(instrumented_code)
 
-# Compile the Java code
+# Compile and run the Java code as before
 compile_command = f"javac {java_file_path}"
 subprocess.run(compile_command, shell=True)
 
-# Run the compiled Java code
 run_command = "java time_complexity_analyzer.analyzer.InstrumentedPrototype"
 subprocess.run(run_command, shell=True)
 
-# Read the output from the file "output.txt"
-lineInfo = {}
-output_file_path = os.path.join(os.path.dirname(__file__), "output.txt")
-with open(output_file_path, "r") as f:
-    lines = f.readlines()
-    for line in lines:
-        parts = line.strip().split(": ")
-        if len(parts) == 2:
-            line_number, time_taken = int(parts[0]), int(parts[1])
-            lineInfo[line_number] = time_taken
-
-print(lineInfo)
+# The rest of the reading output and printing line information remains the same

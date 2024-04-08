@@ -1,58 +1,120 @@
-import time
+import platform
+import subprocess
 import os
 
-class InstrumentedCppCode:
-    def __init__(self, call, user_code):
-        self.line_info_total = {}
-        self.call = call
-        self.user_code = user_code
-
-    def run(self):
-        cpp_prolog = """
+def instrument_cpp_function(call, user_function):
+    cpp_prolog = """
 #include <iostream>
+#include <fstream>
+#include <chrono>
+#include <map>
 #include <vector>
-#include <ctime>
 
-using namespace std;
+class InstrumentedPrototype {
+public:
+    std::map<int, std::chrono::high_resolution_clock::time_point> lineInfoLastStart;
+    std::map<int, long long> lineInfoTotal;
 
-"""
+    InstrumentedPrototype() {
+        // Constructor
+    }
 
-        cpp_epilog = f"""
+    std::chrono::high_resolution_clock::time_point getLastLineInfo(int lineNumber) {
+        auto it = lineInfoLastStart.find(lineNumber);
+        if (it != lineInfoLastStart.end()) {
+            return it->second;
+        } else if (lineNumber > 1) {
+            return getLastLineInfo(lineNumber - 1);
+        }
+        return std::chrono::high_resolution_clock::now();
+    }
+    """
+
+    cpp_epilog = f"""
+    void execute() {{
+        std::vector<int> array = {{3, 4, 5, 6, 0}};
+        {call}
+    }}
+
+    void saveResults() {{
+        std::ofstream outFile("output.txt");
+        for (auto& pair : lineInfoTotal) {{
+            outFile << "Line " << pair.first << ": " << pair.second << "ns\\n";
+        }}
+        outFile.close();
+    }}
+}};
+
 int main() {{
-    {self.call}
+    InstrumentedPrototype p;
+    p.execute();
+    p.saveResults();
+    return 0;
 }}
 """
 
-        instrumented_code = cpp_prolog
-        lines = self.user_code.strip().split("\n")
-        for i, line in enumerate(lines, start=1):
-            instrumented_code += f"    clock_t start_time_{i} = clock();\n"
-            instrumented_code += f"    {line}\n"
-            instrumented_code += f"    cout << \"Line {i}: \" << (clock() - start_time_{i}) / (double)CLOCKS_PER_SEC << \" seconds\" << endl;\n"
+    instrumented_lines = [cpp_prolog]
+    lines = user_function.strip().split('\n')
+    closing_brace_index = len(lines) - lines[::-1].index('}') - 1
 
-        instrumented_code += cpp_epilog
+    # Add function signature
+    instrumented_lines.append(lines[0])
 
-        filepath = os.path.join(os.path.dirname(__file__), "instrumented_code.cpp")
-        with open(filepath, "w") as f:
-            f.write(instrumented_code)
+    for i, line in enumerate(lines[1:closing_brace_index], start=1):
+        if line.strip() and line.strip() != "}":  # Instrument non-empty lines excluding the closing brace
+            instrumented_line = f"""
+            lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();
+            {line}
+            lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - getLastLineInfo({i})).count();"""
+            instrumented_lines.append(instrumented_line)
+        else:
+            instrumented_lines.append(line)  # Add line as is for empty lines or other non-code lines
 
-        # Compile the generated code
-        os.system("g++ -o instrumented_code instrumented_code.cpp")
-        os.system("./instrumented_code")
+    # Add the closing brace for the function
+    instrumented_lines.append('    ' + lines[closing_brace_index])
 
-# Usage example
-instrumented_code_cpp = InstrumentedCppCode(
-    "bubble_sort({3, 4, 5, 6});",
-    """
-void bubble_sort(vector<int>& array) {
+    instrumented_lines.append(cpp_epilog)
+
+    instrumented_function = "\n".join(instrumented_lines)
+
+    return instrumented_function
+
+# Example usage
+call = "mySortFunction(array);"
+user_function = """
+void mySortFunction(std::vector<int>& array) {
     for (size_t i = 0; i < array.size(); ++i) {
         for (size_t j = i + 1; j < array.size(); ++j) {
             if (array[i] > array[j]) {
-                swap(array[i], array[j]);
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
     }
 }
-""")
+"""
+instrumented_code = instrument_cpp_function(call, user_function)
 
-instrumented_code_cpp.run()
+# Determine the file paths
+script_dir = os.path.dirname(os.path.realpath(__file__))
+cpp_file_name = "InstrumentedPrototype"
+cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
+executable_path = os.path.join(script_dir, cpp_file_name)
+
+# Save the instrumented code
+with open(cpp_file_path, "w") as cpp_file:
+    cpp_file.write(instrumented_code)
+
+# Compile the C++ code
+compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
+subprocess.run(compile_command, shell=True)
+
+# Adjust execution command based on the operating system
+if platform.system() == "Windows":
+    run_command = f"{executable_path}.exe"
+else:
+    run_command = f"./{executable_path}"
+
+# Execute the compiled program
+subprocess.run(run_command, shell=True)
