@@ -22,20 +22,21 @@ def instrument_java_function(call, user_function):
               return getLastLineInfo(lineNumber - 1);
           }
           return 0L;
-        }
+      }
     """
 
-    java_epilog = """
-
+    java_epilog = f"""
         public static void main(String[] args)
-        {
+        {{
             InstrumentedPrototype p = new InstrumentedPrototype();
-            """ + call + """
-            try(PrintWriter pw = new PrintWriter(new File("output.txt"))) {
-                pw.write(p.lineInfoTotal.toString());
-            } catch (IOException ex) {}
-        }
-    }
+            {call}
+            long startTime = System.nanoTime();
+            try(PrintWriter pw = new PrintWriter(new File("time_complexity_analyzer/analyzer/output_java.txt"))) {{
+                pw.println("Function execution time: " + (System.nanoTime() - startTime) + " ns");
+                pw.println(p.lineInfoTotal.toString());
+            }} catch (IOException ex) {{}}
+        }}
+    }}
     """
 
     lines = user_function.strip().splitlines()
@@ -54,11 +55,28 @@ def instrument_java_function(call, user_function):
             )
         instrumented_user_function += "\n" + instrumented_line
 
-    return java_prolog + instrumented_user_function + java_epilog
+    full_java_code = java_prolog + instrumented_user_function + java_epilog
+    return full_java_code
 
+def write_and_compile_java(java_code):
+    # Ensure the package directory structure exists
+    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer")
+    os.makedirs(java_file_dir, exist_ok=True)
+    
+    java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
+    with open(java_file_path, "w") as java_file:
+        java_file.write(java_code)
+    
+    # Navigate to the root directory and compile the Java program
+    subprocess.run(["javac", java_file_path], check=True)
 
-# Example usage with a complete Java function
-call = "p.mySortFunction(new int[] {3, 4, 5, 6, 0});"
+def run_java_program():
+    # Run the Java program from the root directory
+    command = ["java", "-cp", os.getcwd(), "time_complexity_analyzer.analyzer.InstrumentedPrototype"]
+    subprocess.run(command, check=True)
+
+# Example usage
+call = "p.mySortFunction(new int[]{3, 4, 5, 6, 0});"
 user_function = """
 public void mySortFunction(int[] array) {
     for (int i = 0; i < array.length; i++) {
@@ -72,18 +90,6 @@ public void mySortFunction(int[] array) {
     }
 }
 """
-instrumented_code = instrument_java_function(call, user_function)
-
-# Write the instrumented code to a Java file in the same directory as the Python script
-java_file_path = os.path.join(os.path.dirname(__file__), "InstrumentedPrototype.java")
-with open(java_file_path, "w") as java_file:
-    java_file.write(instrumented_code)
-
-# Compile and run the Java code as before
-compile_command = f"javac {java_file_path}"
-subprocess.run(compile_command, shell=True)
-
-run_command = "java time_complexity_analyzer.analyzer.InstrumentedPrototype"
-subprocess.run(run_command, shell=True)
-
-# The rest of the reading output and printing line information remains the same
+java_code = instrument_java_function(call, user_function)
+write_and_compile_java(java_code)
+run_java_program()
