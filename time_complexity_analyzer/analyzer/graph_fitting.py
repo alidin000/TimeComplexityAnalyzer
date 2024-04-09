@@ -30,19 +30,37 @@ models = {
     'exponential': {'func': exponential, 'initial_guess': [1, 0.01]}
 }
 
+time_complexity_notation = {
+    'constant': 'O(1)',
+    'linear': 'O(n)',
+    'quadratic': 'O(n^2)',
+    'logarithmic': 'O(log n)',
+    'exponential': 'O(2^n)'  # or 'O(e^n)', depending on the base of the exponential growth
+}
+
 def parse_output_file(file_path):
     line_exec_times = {}
+    function_exec_times = []  # To store total execution time for each size
+
     with open(file_path, 'r') as file:
+        current_size = None
         for line in file:
             if line.startswith('size = '):
-                size = int(line.strip().split('=')[1].strip())
+                current_size = int(line.strip().split('=')[1].strip())
+            elif line.startswith('Function execution time: '):
+                # Extract total function execution time for the current size
+                exec_time = int(line.strip().split(': ')[1].split(' ')[0])
+                function_exec_times.append((current_size, exec_time))
             elif line.startswith('{'):
                 exec_times = eval(line.strip().replace('=', ':'))
                 for line_num, time in exec_times.items():
                     if line_num not in line_exec_times:
                         line_exec_times[line_num] = []
-                    line_exec_times[line_num].append((size, time))
-    return line_exec_times
+                    line_exec_times[line_num].append((current_size, time))
+
+    # Return both individual line times and total function times
+    return line_exec_times, function_exec_times
+
 
 # Function to select the best fitting model based on the lowest residual sum of squares (RSS)
 def select_best_fitting_model(x_data, y_data):
@@ -56,15 +74,30 @@ def select_best_fitting_model(x_data, y_data):
 
 # Parse the output file and analyze time complexity with all models
 def parse_and_analyze(file_path):
-    line_exec_times = parse_output_file(file_path)  # Assuming parse_output_file is defined as before
-    best_fits = {}
+    # Parse the file to get both line-specific and overall function execution times
+    line_exec_times, function_exec_times = parse_output_file(file_path)
+    
+    # Initialize a dictionary to hold the best fits for both lines and the overall function
+    best_fits = {'lines': {}, 'function': None}
+
+    # Analyze each line for the best fitting model
     for line_num, times in line_exec_times.items():
         sizes, exec_times = zip(*times)  # Unpack sizes and execution times
         x_data = np.array(sizes)
         y_data = np.array(exec_times)
         best_fit = select_best_fitting_model(x_data, y_data)
-        best_fits[line_num] = best_fit
+        best_fits['lines'][line_num] = best_fit
+
+    # Analyze the overall function for the best fitting model
+    if function_exec_times:
+        sizes, total_times = zip(*function_exec_times)  # Unpack sizes and total execution times
+        x_data = np.array(sizes)
+        y_data = np.array(total_times)
+        overall_best_fit = select_best_fitting_model(x_data, y_data)
+        best_fits['function'] = overall_best_fit
+
     return best_fits
+
 
 # Main execution
 if __name__ == "__main__":
@@ -72,5 +105,19 @@ if __name__ == "__main__":
     best_fits = parse_and_analyze(file_path)
 
     # Print out the best fitting model for each line
-    for line_num, fit in best_fits.items():
-        print(f"Line {line_num} Best Fit: {fit['model']} with params {fit['params']} and RSS {fit['rss']}")
+    for line_num, fit in best_fits['lines'].items():
+        model_name = fit['model']
+        params = fit['params']
+        rss = fit['rss']
+        time_complexity = time_complexity_notation[model_name]  # Assuming time_complexity_notation is defined
+        print(f"Line {line_num} Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
+
+    # Now also print the best fitting model for the overall function
+    if best_fits['function']:
+        fit = best_fits['function']
+        model_name = fit['model']
+        params = fit['params']
+        rss = fit['rss']
+        time_complexity = time_complexity_notation[model_name]  # Assuming time_complexity_notation is defined
+        print(f"Overall Function Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
+
