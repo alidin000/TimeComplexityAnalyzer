@@ -1,8 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 
-# Define some example models for fitting
+# Define the models for fitting
 def constant(x, c):
     return c
 
@@ -18,41 +17,60 @@ def logarithmic(x, a, b):
 def exponential(x, a, b):
     return a * np.exp(b * x)
 
-# Choose the model to fit (you can define more complex models as needed)
-model_to_fit = exponential
-
-# Example runtime data (replace with your own data)
-x_data = np.array([1, 2, 3, 4, 5])  # Input sizes
-y_data = np.array([0.5, 2.5, 6, 12, 20])  # Corresponding runtimes
-
-# Define initial guess for the parameters based on the chosen model
-initial_guess = [1, 1]  # For exponential model: a, b
-
-# Define the error function to minimize (residuals)
+# Error function for least squares fitting
 def error_function(params, x, y, model):
     return model(x, *params) - y
 
-# Perform least squares fitting
-result = least_squares(error_function, initial_guess, args=(x_data, y_data, model_to_fit))
+# Models for fitting with their initial guesses
+models = {
+    'constant': {'func': constant, 'initial_guess': [1]},
+    'linear': {'func': linear, 'initial_guess': [1, 1]},
+    'quadratic': {'func': quadratic, 'initial_guess': [1, 1, 1]},
+    'logarithmic': {'func': logarithmic, 'initial_guess': [1, 1]},
+    'exponential': {'func': exponential, 'initial_guess': [1, 0.01]}
+}
 
-# Extract fitted parameters
-fitted_params = result.x
+def parse_output_file(file_path):
+    line_exec_times = {}
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.startswith('size = '):
+                size = int(line.strip().split('=')[1].strip())
+            elif line.startswith('{'):
+                exec_times = eval(line.strip().replace('=', ':'))
+                for line_num, time in exec_times.items():
+                    if line_num not in line_exec_times:
+                        line_exec_times[line_num] = []
+                    line_exec_times[line_num].append((size, time))
+    return line_exec_times
 
-# Generate fitted curve for plotting
-x_fit = np.linspace(min(x_data), max(x_data), 100)
-y_fit = model_to_fit(x_fit, *fitted_params)
+# Function to select the best fitting model based on the lowest residual sum of squares (RSS)
+def select_best_fitting_model(x_data, y_data):
+    best_fit = {'model': None, 'params': None, 'rss': np.inf}
+    for name, model in models.items():
+        result = least_squares(error_function, model['initial_guess'], args=(x_data, y_data, model['func']))
+        rss = np.sum(result.fun ** 2)  # Calculate the residual sum of squares
+        if rss < best_fit['rss']:
+            best_fit = {'model': name, 'params': result.x, 'rss': rss}
+    return best_fit
 
-# Plot original data and fitted curve
-plt.scatter(x_data, y_data, label='Original Data')
-plt.plot(x_fit, y_fit, 'r-', label='Fitted Curve')
-plt.xlabel('Input Size')
-plt.ylabel('Runtime')
-plt.title('Runtime vs. Input Size')
-plt.legend()
-plt.grid(True)
-plt.show()
+# Parse the output file and analyze time complexity with all models
+def parse_and_analyze(file_path):
+    line_exec_times = parse_output_file(file_path)  # Assuming parse_output_file is defined as before
+    best_fits = {}
+    for line_num, times in line_exec_times.items():
+        sizes, exec_times = zip(*times)  # Unpack sizes and execution times
+        x_data = np.array(sizes)
+        y_data = np.array(exec_times)
+        best_fit = select_best_fitting_model(x_data, y_data)
+        best_fits[line_num] = best_fit
+    return best_fits
 
-# Print fitted parameters
-print("Fitted Parameters:")
-for i, param in enumerate(fitted_params):
-    print(f"Parameter {i+1}: {param}")
+# Main execution
+if __name__ == "__main__":
+    file_path = 'C://Users//user//Desktop//THESIS//TimeComplexityAnalyzer//time_complexity_analyzer//analyzer//output_java.txt'  # Adjust the file path as necessary
+    best_fits = parse_and_analyze(file_path)
+
+    # Print out the best fitting model for each line
+    for line_num, fit in best_fits.items():
+        print(f"Line {line_num} Best Fit: {fit['model']} with params {fit['params']} and RSS {fit['rss']}")

@@ -1,3 +1,19 @@
+# check this logic for indentation
+# import os
+
+# def list_directory_contents(dir_path, indent_level=0):
+#     for item in os.listdir(dir_path):
+#         item_path = os.path.join(dir_path, item)
+#         print("  " * indent_level + "|-- " + item)
+#         if os.path.isdir(item_path):
+#             list_directory_contents(item_path, indent_level + 1)
+
+# project_directory = 'path/to/your/project'
+# print(project_directory)
+# list_directory_contents(project_directory)
+
+
+
 import os
 
 class InstrumentedPythonCode:

@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
@@ -8,27 +9,39 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 
+from time_complexity_analyzer.analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
+
 @api_view(['POST'])
 def analyse_code(request):
     code_data = request.data
     code_serializer = CodeSerializer(data=code_data)
-    # print("we are here",code_serializer, code_data)
     if code_serializer.is_valid():
         code_serializer.save()  # Save the code to the database
-        print(code_serializer.data, " and saving the code to the database")
-        code = code_serializer.data['code']
-        language = code_data.get('language')
+        user_code = code_serializer.data.get('code')
+        call = code_data.get('call')
+        language = code_data.get('language', 'java')  # Default to Java if not specified
 
-        # Perform code analysis here
-        # You can replace this with your actual code analysis logic
+        if language.lower() == 'java':
+            if not call:
+                return Response({"error": "Function call not specified for Java code analysis."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # For demonstration, let's just echo back the code with a message
-        output = f'Code received for {language} analysis: {code}'
+            try:
+                # Instrument the Java code with the provided call and user function
+                instrumented_java_code = instrument_java_function(call, user_code)
+                write_and_compile_java(instrumented_java_code)
+                run_java_program()
 
-        return Response({'output': output})
+                # Read the output from the instrumented Java program
+                output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
+                with open(output_file_path, "r") as file:
+                    analysis_result = file.read()
+
+                return Response({"analysis_result": analysis_result})
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": f"Language '{language}' not supported for analysis."}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        print(code_data)
-        print("we are here", code_serializer.errors)
         return Response(code_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CodeViewSet(viewsets.ViewSet):

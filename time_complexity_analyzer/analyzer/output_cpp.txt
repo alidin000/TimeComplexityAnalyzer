@@ -4,5 +4,3 @@ Line 3: 0ns
 Line 4: 0ns
 Line 5: 0ns
 Line 6: 0ns
-
-Function call duration: 0ns

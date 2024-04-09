@@ -60,7 +60,7 @@ void mySortFunction(std::vector<int>& array) {
     }
 
     void saveResults() {
-        std::ofstream outFile("output.txt");
+        std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt");
         for (auto& pair : lineInfoTotal) {
             outFile << "Line " << pair.first << ": " << pair.second << "ns\n";
         }

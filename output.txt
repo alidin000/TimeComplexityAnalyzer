@@ -1,6 +1,0 @@
-Line 1: 0ns
-Line 2: 0ns
-Line 3: 0ns
-Line 4: 0ns
-Line 5: 0ns
-Line 6: 0ns
