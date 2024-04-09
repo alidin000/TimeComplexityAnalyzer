@@ -1,10 +1,11 @@
 
-package time_complexity_analyzer.analyzer;
+package analyzer;
 
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random; // Import Random for generating random input values
 
 public class InstrumentedPrototype {
     public HashMap<Integer, Long> lineInfoLastStart = new HashMap<>();
@@ -48,14 +49,30 @@ public class InstrumentedPrototype {
         }
     }
 
+    // Method to generate input array of given size with random values
+    public static int[] generateInput(int size) {
+        Random rand = new Random();
+        int[] input = new int[size];
+        for (int i = 0; i < size; i++) {
+            input[i] = rand.nextInt(100); // Generate random integers in the range 0 to 99
+        }
+        return input;
+    }
+
     public static void main(String[] args) {
-        InstrumentedPrototype p = new InstrumentedPrototype();
-        p.mySortFunction(new int[] { 3, 4, 5, 6, 0 });
-        long startTime = System.nanoTime();
-        try (PrintWriter pw = new PrintWriter(new File("time_complexity_analyzer/analyzer/output_java.txt"))) {
-            pw.println("Function execution time: " + (System.nanoTime() - startTime) + " ns");
-            pw.println(p.lineInfoTotal.toString());
+        try (PrintWriter pw = new PrintWriter(new File("analyzer/output_java.txt"))) {
+            for (int size = 1; size <= 5; size++) {
+                InstrumentedPrototype p = new InstrumentedPrototype();
+                long startTime = System.nanoTime();
+                p.mySortFunction(generateInput(size));
+                long endTime = System.nanoTime();
+                long execTime = endTime - startTime;
+                pw.printf("size = %d\n", size);
+                pw.printf("Function execution time: %d ns\n", execTime);
+                pw.println(p.lineInfoTotal.toString());
+            }
         } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

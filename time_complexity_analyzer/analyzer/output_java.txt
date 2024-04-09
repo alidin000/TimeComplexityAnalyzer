@@ -1,9 +1,15 @@
 size = 1
-Function execution time: 1193700 ns
-{2: 676900, 3: 19700, 4: 2100, 5: 2000, 6: 2000, 7: 2000}
+Function execution time: 575200 ns
+{2=124200}
 size = 2
-Function execution time: 2397400 ns
-{2: 1353800, 3: 39400, 4: 4200, 5: 4000, 6: 4000, 7: 4000}
+Function execution time: 13800 ns
+{2=10900, 3=600}
 size = 3
-Function execution time: 3596100 ns
-{2: 2030700, 3: 59100, 4: 6300, 5: 6000, 6: 6000, 7: 6000}
+Function execution time: 15100 ns
+{2=18500, 3=2900, 4=600, 5=500, 6=400, 7=500}
+size = 4
+Function execution time: 42300 ns
+{2=80100, 3=22700, 4=2300, 5=2100, 6=2200, 7=2700}
+size = 5
+Function execution time: 52100 ns
+{2=140300, 3=29200, 4=2700, 5=2900, 6=2700, 7=8700}

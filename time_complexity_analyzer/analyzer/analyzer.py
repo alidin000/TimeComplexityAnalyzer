@@ -1,40 +1,56 @@
 import subprocess
 import os
 
-def instrument_java_function(call, user_function):
+def instrument_java_function(user_function, call_template, num_inputs):
     java_prolog = """
-    package time_complexity_analyzer.analyzer;
+    package analyzer;
 
     import java.io.PrintWriter;
     import java.io.File;
     import java.io.IOException;
     import java.util.HashMap;
+    import java.util.Random; // Import Random for generating random input values
 
-    public class InstrumentedPrototype
-    {
+    public class InstrumentedPrototype {
         public HashMap<Integer, Long> lineInfoLastStart = new HashMap<>();
         public HashMap<Integer, Long> lineInfoTotal = new HashMap<>();
 
         private long getLastLineInfo(int lineNumber) {
-          if (lineInfoLastStart.containsKey(lineNumber)) {
-              return lineInfoLastStart.get(lineNumber);
-          } else if (lineNumber > 1) {
-              return getLastLineInfo(lineNumber - 1);
-          }
-          return 0L;
-      }
+            if (lineInfoLastStart.containsKey(lineNumber)) {
+                return lineInfoLastStart.get(lineNumber);
+            } else if (lineNumber > 1) {
+                return getLastLineInfo(lineNumber - 1);
+            }
+            return 0L;
+        }
     """
 
     java_epilog = f"""
-        public static void main(String[] args)
-        {{
-            InstrumentedPrototype p = new InstrumentedPrototype();
-            {call}
-            long startTime = System.nanoTime();
-            try(PrintWriter pw = new PrintWriter(new File("time_complexity_analyzer/analyzer/output_java.txt"))) {{
-                pw.println("Function execution time: " + (System.nanoTime() - startTime) + " ns");
-                pw.println(p.lineInfoTotal.toString());
-            }} catch (IOException ex) {{}}
+        // Method to generate input array of given size with random values
+        public static int[] generateInput(int size) {{
+            Random rand = new Random();
+            int[] input = new int[size];
+            for (int i = 0; i < size; i++) {{
+                input[i] = rand.nextInt(100); // Generate random integers in the range 0 to 99
+            }}
+            return input;
+        }}
+
+        public static void main(String[] args) {{
+            try(PrintWriter pw = new PrintWriter(new File("analyzer/output_java.txt"))) {{
+                for (int size = 1; size <= {num_inputs}; size++) {{
+                    InstrumentedPrototype p = new InstrumentedPrototype();
+                    long startTime = System.nanoTime();
+                    {call_template.replace("$$size$$", "generateInput(size)")}
+                    long endTime = System.nanoTime();
+                    long execTime = endTime - startTime;
+                    pw.printf("size = %d\\n", size);
+                    pw.printf("Function execution time: %d ns\\n", execTime);
+                    pw.println(p.lineInfoTotal.toString());
+                }}
+            }} catch (IOException ex) {{
+                ex.printStackTrace();
+            }}
         }}
     }}
     """
@@ -42,10 +58,9 @@ def instrument_java_function(call, user_function):
     lines = user_function.strip().splitlines()
     instrumented_user_function = lines[0]  # Function declaration
 
-    for i, line in enumerate(lines[1:], start=2):  # Start enumeration from 2 to account for function declaration line
+    for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
         if not trimmed_line or trimmed_line == '}':
-            # Skip empty lines or closing braces
             instrumented_line = line
         else:
             instrumented_line = (
@@ -59,24 +74,20 @@ def instrument_java_function(call, user_function):
     return full_java_code
 
 def write_and_compile_java(java_code):
-    # Ensure the package directory structure exists
-    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer")
+    java_file_dir = os.path.join(os.getcwd(), "analyzer")
     os.makedirs(java_file_dir, exist_ok=True)
     
     java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
     with open(java_file_path, "w") as java_file:
         java_file.write(java_code)
     
-    # Navigate to the root directory and compile the Java program
     subprocess.run(["javac", java_file_path], check=True)
 
 def run_java_program():
-    # Run the Java program from the root directory
-    command = ["java", "-cp", os.getcwd(), "time_complexity_analyzer.analyzer.InstrumentedPrototype"]
+    command = ["java", "-cp", os.getcwd(), "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
 # Example usage
-call = "p.mySortFunction(new int[]{3, 4, 5, 6, 0});"
 user_function = """
 public void mySortFunction(int[] array) {
     for (int i = 0; i < array.length; i++) {
@@ -90,6 +101,9 @@ public void mySortFunction(int[] array) {
     }
 }
 """
-java_code = instrument_java_function(call, user_function)
+call_template = "p.mySortFunction($$size$$);"
+num_inputs = 5  # Number of different input sizes you want to test
+
+java_code = instrument_java_function(user_function, call_template, num_inputs)
 write_and_compile_java(java_code)
 run_java_program()
