@@ -10,11 +10,13 @@ from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 
 from time_complexity_analyzer.analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
+from time_complexity_analyzer.analyzer.graph_fitting import parse_and_analyze
 
 @api_view(['POST'])
 def analyse_code(request):
     code_data = request.data
     code_serializer = CodeSerializer(data=code_data)
+    
     if code_serializer.is_valid():
         code_serializer.save()  # Save the code to the database
         user_code = code_serializer.data.get('code')
@@ -26,17 +28,21 @@ def analyse_code(request):
                 return Response({"error": "Function call not specified for Java code analysis."}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
-                # Instrument the Java code with the provided call and user function
-                instrumented_java_code = instrument_java_function(call, user_code)
-                write_and_compile_java(instrumented_java_code)
+                # Instrument, compile, and run the Java code analysis
+                # This step would involve calling your Java analysis setup
+                call_template = "p.mySortFunction($$size$$);"  # Adjust based on actual function call
+                num_inputs = 5  # Or another number based on your requirements
+                java_code = instrument_java_function(user_code, call, num_inputs)
+                write_and_compile_java(java_code)
                 run_java_program()
 
-                # Read the output from the instrumented Java program
+                # Assuming the output file is generated at the specified path
                 output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
-                with open(output_file_path, "r") as file:
-                    analysis_result = file.read()
+                # Analyze the output file to determine best fitting models and complexities
+                best_fits = parse_and_analyze(output_file_path)
 
-                return Response({"analysis_result": analysis_result})
+                # Format and return the analysis results
+                return Response(best_fits)
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         else:
