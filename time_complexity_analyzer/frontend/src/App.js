@@ -15,12 +15,12 @@ function App() {
 
     const handleLogin = (user) => {
         setIsLoggedIn(true);
-        setUsername(user); // Set the username when logging in
+        setUsername(user); 
     };
 
     const handleLogout = () => {
         setIsLoggedIn(false);
-        setUsername(''); // Clear the username when logging out
+        setUsername('');
     };
 
     return (

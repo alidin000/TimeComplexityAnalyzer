@@ -57,20 +57,18 @@ int main() {{
     lines = user_function.strip().split('\n')
     closing_brace_index = len(lines) - lines[::-1].index('}') - 1
 
-    # Add function signature
     instrumented_lines.append(lines[0])
 
     for i, line in enumerate(lines[1:closing_brace_index], start=1):
-        if line.strip() and line.strip() != "}":  # Instrument non-empty lines excluding the closing brace
+        if line.strip() and line.strip() != "}":  
             instrumented_line = f"""
             lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();
             {line}
             lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - getLastLineInfo({i})).count();"""
             instrumented_lines.append(instrumented_line)
         else:
-            instrumented_lines.append(line)  # Add line as is for empty lines or other non-code lines
+            instrumented_lines.append(line)  
 
-    # Add the closing brace for the function
     instrumented_lines.append('    ' + lines[closing_brace_index])
 
     instrumented_lines.append(cpp_epilog)
@@ -79,7 +77,6 @@ int main() {{
 
     return instrumented_function
 
-# Example usage
 call = "mySortFunction(array);"
 user_function = """
 void mySortFunction(std::vector<int>& array) {
@@ -96,25 +93,20 @@ void mySortFunction(std::vector<int>& array) {
 """
 instrumented_code = instrument_cpp_function(call, user_function)
 
-# Determine the file paths
 script_dir = os.path.dirname(os.path.realpath(__file__))
 cpp_file_name = "InstrumentedPrototype"
 cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
 executable_path = os.path.join(script_dir, cpp_file_name)
 
-# Save the instrumented code
 with open(cpp_file_path, "w") as cpp_file:
     cpp_file.write(instrumented_code)
 
-# Compile the C++ code
 compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
 subprocess.run(compile_command, shell=True)
 
-# Adjust execution command based on the operating system
 if platform.system() == "Windows":
     run_command = f"{executable_path}.exe"
 else:
     run_command = f"./{executable_path}"
 
-# Execute the compiled program
 subprocess.run(run_command, shell=True)

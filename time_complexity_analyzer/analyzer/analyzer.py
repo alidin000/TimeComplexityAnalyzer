@@ -9,7 +9,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     import java.io.File;
     import java.io.IOException;
     import java.util.HashMap;
-    import java.util.Random; // Import Random for generating random input values
+    import java.util.Random;
 
     public class InstrumentedPrototype {
         public HashMap<Integer, Long> lineInfoLastStart = new HashMap<>();
@@ -26,12 +26,11 @@ def instrument_java_function(user_function, call_template, num_inputs):
     """
 
     java_epilog = f"""
-        // Method to generate input array of given size with random values
         public static int[] generateInput(int size) {{
             Random rand = new Random();
             int[] input = new int[size];
             for (int i = 0; i < size; i++) {{
-                input[i] = rand.nextInt(100); // Generate random integers in the range 0 to 99
+                input[i] = rand.nextInt(100); 
             }}
             return input;
         }}
@@ -56,7 +55,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     """
 
     lines = user_function.strip().splitlines()
-    instrumented_user_function = lines[0]  # Function declaration
+    instrumented_user_function = lines[0] 
 
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
@@ -87,7 +86,6 @@ def run_java_program():
     command = ["java", "-cp", os.getcwd(), "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
-# Example usage
 user_function = """
 public void mySortFunction(int[] array) {
     for (int i = 0; i < array.length; i++) {
@@ -102,7 +100,7 @@ public void mySortFunction(int[] array) {
 }
 """
 call_template = "p.mySortFunction($$size$$);"
-num_inputs = 5  # Number of different input sizes you want to test
+num_inputs = 50
 
 java_code = instrument_java_function(user_function, call_template, num_inputs)
 write_and_compile_java(java_code)

@@ -1,6 +1,6 @@
 import os
+import re
 from django.shortcuts import render
-from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from api.models import Code
 from api.serializers import *
@@ -9,8 +9,8 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 
-from time_complexity_analyzer.analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
-from time_complexity_analyzer.analyzer.graph_fitting import parse_and_analyze
+from analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
+from analyzer.graph_fitting import parse_and_analyze
 
 @api_view(['POST'])
 def analyse_code(request):
@@ -18,31 +18,28 @@ def analyse_code(request):
     code_serializer = CodeSerializer(data=code_data)
     
     if code_serializer.is_valid():
-        code_serializer.save()  # Save the code to the database
+        code_serializer.save()  
         user_code = code_serializer.data.get('code')
-        call = code_data.get('call')
-        language = code_data.get('language', 'java')  # Default to Java if not specified
+        language = code_data.get('language', 'java') 
 
         if language.lower() == 'java':
-            if not call:
-                return Response({"error": "Function call not specified for Java code analysis."}, status=status.HTTP_400_BAD_REQUEST)
+            match = re.search(r"\s+(\w+)\s*\(", user_code)
+            if not match:
+                return Response({"error": "No valid Java function found for analysis."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            function_name = match.group(1)
+            call_template = f"p.{function_name}($$size$$);"  
 
+            num_inputs = 5  
             try:
-                # Instrument, compile, and run the Java code analysis
-                # This step would involve calling your Java analysis setup
-                call_template = "p.mySortFunction($$size$$);"  # Adjust based on actual function call
-                num_inputs = 5  # Or another number based on your requirements
-                java_code = instrument_java_function(user_code, call, num_inputs)
+                java_code = instrument_java_function(user_code, call_template, num_inputs)
                 write_and_compile_java(java_code)
                 run_java_program()
 
-                # Assuming the output file is generated at the specified path
                 output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
-                # Analyze the output file to determine best fitting models and complexities
-                best_fits = parse_and_analyze(output_file_path)
+                best_fits = parse_and_analyze(output_file_path)  
 
-                # Format and return the analysis results
-                return Response(best_fits)
+                return Response(best_fits)  
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         else:

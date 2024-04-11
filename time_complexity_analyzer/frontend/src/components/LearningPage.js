@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 const LearningPage = () => {
-  const [selectedTab, setSelectedTab] = useState('Algorithms'); // Default selected tab
+  const [selectedTab, setSelectedTab] = useState('Algorithms'); 
 
   const handleTabChange = (tab) => {
     setSelectedTab(tab);
@@ -31,13 +31,11 @@ const LearningPage = () => {
 };
 
 const AlgorithmTopicsList = () => {
-  // Define your list of algorithm topics here
   const algorithmTopics = [
     "Bubble Sort",
     "Breadth First Search",
     "Depth First Search",
     "Binary Search",
-    // Add more algorithm topics as needed
   ];
 
   return (

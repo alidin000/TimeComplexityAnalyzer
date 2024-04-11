@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
-import AxiosInstance from './Axios'; // Import AxiosInstance
+import AxiosInstance from './Axios'; 
 
 function CalculatorPage({ isAuthenticated, currentUser }) {
   const [code, setCode] = useState(`def circle_area(radius):\n\t\"\"\"This function calculates the area of a circle.\"\"\"\n\tpi = 3.14159\n\treturn pi * radius * radius`);
@@ -27,8 +27,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   };
 
   const handleAnalyseClick = () => {
-    // Call the API endpoint to analyse the code and store it in the database
-    AxiosInstance.post('/api/analyse-code/', { // Use AxiosInstance for making API requests
+    AxiosInstance.post('/api/analyse-code/', { 
       username: user,
       code: code,
       language: language,
@@ -41,7 +40,6 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     })
     .catch(error => {
       console.error('Error:', error);
-      // Handle errors if any
     });
   };
 

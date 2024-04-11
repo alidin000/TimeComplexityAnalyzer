@@ -19,7 +19,7 @@ const Login = ({ handleLogin }) => {
             });
 
             if (response.status === 200) {
-                handleLogin(username); // Pass username to handleLogin function
+                handleLogin(username); 
                 navigate('/');
             } else {
                 console.error('Login failed');

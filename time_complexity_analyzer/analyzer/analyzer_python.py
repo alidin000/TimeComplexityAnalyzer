@@ -15,6 +15,7 @@
 
 
 import os
+import re
 
 class InstrumentedPythonCode:
     def __init__(self, call, user_code):
@@ -41,16 +42,16 @@ class Prototype:
 
         instrumented_code = python_prolog
         lines = self.user_code.strip().split("\n")
-        for i, line in enumerate(lines, start=1):
-            instrumented_code += f"        self.line_info_total[{i}] = 0\n"
-            instrumented_code += f"        start_time_{i} = time.time()\n"
-            if ":" in line:
-                instrumented_code += f"        {line}\n"
-                instrumented_code += f"            "
-            else:
-                instrumented_code += f"        {line}\n"
+        for i, line in enumerate(lines):
+            if line[-1] == ':':
+                instrumented_code += f"    {line}\n"
+                continue
+            indent ='    ' + re.match(r"\s*", lines[i+1 if line[-1]==':' else i]).group(0)
+            instrumented_code += f"{indent}self.line_info_total[{i}] = 0\n"
+            instrumented_code += f"{indent}start_time_{i} = time.time()\n"
+            instrumented_code += f"    {line}\n"
             instrumented_code += (
-                f"        self.line_info_total[{i}] += time.time() - start_time_{i}\n"
+                f"{indent}self.line_info_total[{i}] += time.time() - start_time_{i}\n"
             )
 
         instrumented_code += python_epilog
