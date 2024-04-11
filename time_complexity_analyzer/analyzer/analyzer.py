@@ -73,7 +73,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     return full_java_code
 
 def write_and_compile_java(java_code):
-    java_file_dir = os.path.join(os.getcwd(), "analyzer")
+    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer/analyzer")
     os.makedirs(java_file_dir, exist_ok=True)
     
     java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
