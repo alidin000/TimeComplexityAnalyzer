@@ -25,17 +25,19 @@ class Prototype:
     def run(self, number_of_inputs):
         output_file = os.path.join(os.path.dirname(__file__), "output_python.txt")
         with open(output_file, "w") as pw:
-            for size in range(1, number_of_inputs):
+            for size in range(1, number_of_inputs + 1): 
                 input_array = self.generate_input(size)
                 start_time = time.time()
                 self.bubble_sort(input_array)
                 end_time = time.time()
                 exec_time = (end_time - start_time) * 1e9
-
-                pw.write(f"size = {size}\\n")
-                pw.write(f"Function execution time: {exec_time} ns\\n")
-                for line_num, count in self.line_info_total.items():
-                    pw.write(f"Line {line_num}: {count} swaps\\n")
+                
+                pw.write(f"size = {size}\n")
+                pw.write(f"Function execution time: {exec_time:.0f} ns\n")
+                line_output = {}
+                for line_num, count in sorted(self.line_info_total.items()):
+                    line_output[line_num] = int(count * 1e9)  
+                pw.write(f"{line_output}\n")
 """
 
         instrumented_code = python_prolog

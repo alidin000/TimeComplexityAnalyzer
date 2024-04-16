@@ -36,7 +36,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
         }}
 
         public static void main(String[] args) {{
-            try(PrintWriter pw = new PrintWriter(new File("analyzer/output_java.txt"))) {{
+            try(PrintWriter pw = new PrintWriter(new File("time_complexity_analyzer/analyzer/output_java.txt"))) {{
                 for (int size = 1; size <= {num_inputs}; size++) {{
                     InstrumentedPrototype p = new InstrumentedPrototype();
                     long startTime = System.nanoTime();
@@ -73,17 +73,20 @@ def instrument_java_function(user_function, call_template, num_inputs):
     return full_java_code
 
 def write_and_compile_java(java_code):
-    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer/analyzer")
+    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer")
     os.makedirs(java_file_dir, exist_ok=True)
-    
     java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
+
+    os.path.join(os.path.dirname(__file__), "output_java.txt")
+
     with open(java_file_path, "w") as java_file:
         java_file.write(java_code)
     
     subprocess.run(["javac", java_file_path], check=True)
 
 def run_java_program():
-    command = ["java", "-cp", os.getcwd(), "analyzer.InstrumentedPrototype"]
+    classpath = os.path.join(os.getcwd(), "time_complexity_analyzer")
+    command = ["java", "-cp", classpath, "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
 user_function = """
