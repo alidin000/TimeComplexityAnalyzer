@@ -13,9 +13,10 @@ class InstrumentedPythonCode:
 import time
 import os
 import random
+from collections import defaultdict
 class Prototype:
     def __init__(self):
-        self.line_info_total = {}
+        self.line_info_total = defaultdict(int)
 """
 
         python_epilog = """
@@ -51,7 +52,6 @@ class Prototype:
                 instrumented_code += f"    {line}\n"
                 continue
             indent ='    ' + re.match(r"\s*", lines[i+1 if line[-1]==':' else i]).group(0)
-            instrumented_code += f"{indent}self.line_info_total[{i}] = 0\n"
             instrumented_code += f"{indent}start_time_{i} = time.time()\n"
             instrumented_code += f"    {line}\n"
             instrumented_code += (
