@@ -1,7 +1,9 @@
+import re
 import subprocess
 import os
 
 def instrument_java_function(user_function, call_template, num_inputs):
+    function_name = re.search(r"public\s+\w+\s+(\w+)\(", user_function).group(1)
     java_prolog = """
     package analyzer;
 
@@ -59,6 +61,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     last_line_index = len(lines) - 1
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
+        line = re.sub(r"\b{}\b".format(function_name), f"this.{function_name}", line)
         if not trimmed_line or trimmed_line == '}' or i == last_line_index:
             instrumented_line = line
         elif "return" in trimmed_line:
@@ -91,17 +94,51 @@ def run_java_program():
     command = ["java", "-cp", classpath, "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
+"""TODO: try to fix the issue with two or more functions"""
+
 user_function = """
-public int maxSubArray(int[] A) {
-  int maxSoFar=A[0], maxEndingHere=A[0];
-  for (int i=1;i<A.length;++i){
-    maxEndingHere= Math.max(maxEndingHere+A[i],A[i]);
-    maxSoFar=Math.max(maxSoFar, maxEndingHere);
-  }
-  return maxSoFar;
-}
+public void mergeSort(int[] arr) {
+        if (arr.length < 2) {
+            return; // Base case: array is already sorted if it has less than two elements.
+        }
+        int mid = arr.length / 2;
+        int[] left = new int[mid];
+        int[] right = new int[arr.length - mid];
+
+        // Copy data to temporary subarrays
+        for (int i = 0; i < mid; i++) {
+            left[i] = arr[i];
+        }
+        for (int i = mid; i < arr.length; i++) {
+            right[i - mid] = arr[i];
+        }
+
+        // Recursive calls to sort each half
+        mergeSort(left);
+        mergeSort(right);
+
+        // Merge the sorted halves
+        merge(arr, left, right);
+    }
+
+    private void merge(int[] arr, int[] left, int[] right) {
+        int i = 0, j = 0, k = 0;
+        while (i < left.length && j < right.length) {
+            if (left[i] <= right[j]) {
+                arr[k++] = left[i++];
+            } else {
+                arr[k++] = right[j++];
+            }
+        }
+        while (i < left.length) {
+            arr[k++] = left[i++];
+        }
+        while (j < right.length) {
+            arr[k++] = right[j++];
+        }
+    }
 """
-call_template = "p.maxSubArray($$size$$);"
+call_template = "p.mergeSort($$size$$);"
 num_inputs = 50
 
 java_code = instrument_java_function(user_function, call_template, num_inputs)
