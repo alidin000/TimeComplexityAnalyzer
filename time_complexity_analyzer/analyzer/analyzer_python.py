@@ -7,7 +7,15 @@ class InstrumentedPythonCode:
         self.line_info_total = {}
         self.user_code = user_code
         self.number_of_inputs = number_of_inputs
+        self.function_name = self._extract_function_name()
 
+    def _extract_function_name(self):
+        match = re.search(r"def (\w+)\(", self.user_code)
+        if match:
+            return match.group(1)
+        else:
+            raise ValueError("No function definition found.")
+        
     def run(self):
         python_prolog = """
 import time
@@ -43,6 +51,7 @@ class Prototype:
 
         instrumented_code = python_prolog
         lines = self.user_code.strip().split("\n")
+        lines[0] = f"def {self.function_name}(self, " + lines[0].split("(", 1)[1]
         for i, line in enumerate(lines):
             stripped_line = line.strip()
             if line[-1] == ':':
@@ -68,7 +77,7 @@ class Prototype:
 
 
 instrumented_code = InstrumentedPythonCode("""
-def mergeSort(self,x):
+def mergeSort(x):
   if len(x) < 2:
       return x
   result = []
