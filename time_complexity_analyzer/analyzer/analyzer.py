@@ -56,10 +56,12 @@ def instrument_java_function(user_function, call_template, num_inputs):
 
     lines = user_function.strip().splitlines()
     instrumented_user_function = lines[0] 
-
+    last_line_index = len(lines) - 1
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
-        if not trimmed_line or trimmed_line == '}':
+        if not trimmed_line or trimmed_line == '}' or i == last_line_index:
+            instrumented_line = line
+        elif "return" in trimmed_line:
             instrumented_line = line
         else:
             instrumented_line = (
@@ -90,19 +92,16 @@ def run_java_program():
     subprocess.run(command, check=True)
 
 user_function = """
-public void mySortFunction(int[] array) {
-    for (int i = 0; i < array.length; i++) {
-        for (int j = i + 1; j < array.length; j++) {
-            if (array[i] > array[j]) {
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            }
-        }
-    }
+public int maxSubArray(int[] A) {
+  int maxSoFar=A[0], maxEndingHere=A[0];
+  for (int i=1;i<A.length;++i){
+    maxEndingHere= Math.max(maxEndingHere+A[i],A[i]);
+    maxSoFar=Math.max(maxSoFar, maxEndingHere);
+  }
+  return maxSoFar;
 }
 """
-call_template = "p.mySortFunction($$size$$);"
+call_template = "p.maxSubArray($$size$$);"
 num_inputs = 50
 
 java_code = instrument_java_function(user_function, call_template, num_inputs)
