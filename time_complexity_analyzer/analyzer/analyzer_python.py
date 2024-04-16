@@ -28,22 +28,26 @@ class Prototype:
             for size in range(1, number_of_inputs + 1): 
                 input_array = self.generate_input(size)
                 start_time = time.time()
-                self.bubble_sort(input_array)
+                self.mergeSort(input_array)
                 end_time = time.time()
                 exec_time = (end_time - start_time) * 1e9
                 
-                pw.write(f"size = {size}\n")
-                pw.write(f"Function execution time: {exec_time:.0f} ns\n")
+                pw.write(f"size = {size}\\n")
+                pw.write(f"Function execution time: {exec_time:.0f} ns\\n")
                 line_output = {}
                 for line_num, count in sorted(self.line_info_total.items()):
                     line_output[line_num] = int(count * 1e9)  
-                pw.write(f"{line_output}\n")
+                pw.write(f"{line_output}\\n")
 """
 
         instrumented_code = python_prolog
         lines = self.user_code.strip().split("\n")
         for i, line in enumerate(lines):
+            stripped_line = line.strip()
             if line[-1] == ':':
+                instrumented_code += f"    {line}\n"
+                continue
+            elif 'return' in stripped_line:
                 instrumented_code += f"    {line}\n"
                 continue
             indent ='    ' + re.match(r"\s*", lines[i+1 if line[-1]==':' else i]).group(0)
@@ -64,11 +68,25 @@ class Prototype:
 
 
 instrumented_code = InstrumentedPythonCode("""
-def bubble_sort(self,array):
-    for i in range(len(array)):
-        for j in range(i + 1, len(array)):
-            if array[i] > array[j]:
-                array[i], array[j] = array[j], array[i]
+def mergeSort(self,x):
+  if len(x) < 2:
+      return x
+  result = []
+  mid = int(len(x) / 2)
+  y = p.mergeSort(x[:mid])
+  z = p.mergeSort(x[mid:])
+  i = 0
+  j = 0
+  while i < len(y) and j < len(z):
+      if y[i] > z[j]:
+          result.append(z[j])
+          j += 1
+      else:
+          result.append(y[i])
+          i += 1
+  result += y[i:]
+  result += z[j:]
+  return result
 """,number_of_inputs=50
 )
 
