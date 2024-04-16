@@ -2,7 +2,7 @@ import platform
 import subprocess
 import os
 
-def instrument_cpp_function(call, user_function):
+def instrument_cpp_function(call, user_function, num_inputs=10):
     cpp_prolog = """
 #include <iostream>
 #include <fstream>
@@ -14,6 +14,7 @@ class InstrumentedPrototype {
 public:
     std::map<int, std::chrono::high_resolution_clock::time_point> lineInfoLastStart;
     std::map<int, long long> lineInfoTotal;
+    std::chrono::high_resolution_clock::time_point functionStartTime;
 
     InstrumentedPrototype() {
         // Constructor
@@ -31,24 +32,59 @@ public:
     """
 
     cpp_epilog = f"""
-    void execute() {{
-        std::vector<int> array = {{3, 4, 5, 6, 0}};
+    std::vector<int> generateRandomArray(int size) {{
+        std::vector<int> array(size);
+        srand(time(0)); 
+
+        for (int i = 0; i < size; ++i) {{
+            array[i] = rand() % 100;  //TODO: Needs to be changed later, according to user constraints
+        }}
+
+        return array;
+    }}
+        
+    void execute(std::vector<int>& _array) {{
+        std::vector<int> array = _array;
+        functionStartTime = std::chrono::high_resolution_clock::now();
         {call}
+        lineInfoTotal[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - functionStartTime).count(); // Total function execution time
     }}
 
-    void saveResults() {{
-        std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt");
-        for (auto& pair : lineInfoTotal) {{
-            outFile << "Line " << pair.first << ": " << pair.second << "ns\\n";
+    void saveResults(int size) {{
+        std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt", std::ios::app);
+        outFile << "size = " << size << "\\n";
+        outFile << "Function execution time: " << lineInfoTotal[0] << " ns\\n";
+        outFile << "{{";
+        bool isFirst = true;
+        for (auto it = ++lineInfoTotal.begin(); it != lineInfoTotal.end(); ++it) {{
+            if (!isFirst) outFile << ", ";
+            isFirst = false;
+            outFile << it->first << "=" << it->second;
         }}
+        outFile << "}}\\n";
         outFile.close();
     }}
 }};
 
 int main() {{
-    InstrumentedPrototype p;
-    p.execute();
-    p.saveResults();
+    std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt");
+    for(int i = 0; i < {num_inputs}; i++) {{
+        InstrumentedPrototype p;
+        std::vector<int> array = p.generateRandomArray(i + 1);
+        p.execute(array);
+
+        outFile << "size = " << i+1 << "\\n";
+        outFile << "Function execution time: " << p.lineInfoTotal[0] << " ns\\n";
+        outFile << "{{";
+        bool isFirst = true;
+        for (auto it = ++p.lineInfoTotal.begin(); it != p.lineInfoTotal.end(); ++it) {{
+            if (!isFirst) outFile << ", ";
+            isFirst = false;
+            outFile << it->first << "=" << it->second;
+        }}
+        outFile << "}}\\n";
+    }}
+    outFile.close();
     return 0;
 }}
 """
@@ -91,11 +127,13 @@ void mySortFunction(std::vector<int>& array) {
     }
 }
 """
-instrumented_code = instrument_cpp_function(call, user_function)
+num_inputs = 50
+instrumented_code = instrument_cpp_function(call, user_function, num_inputs)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 cpp_file_name = "InstrumentedPrototype"
 cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
+# cpp_outpuot_file_path = os.path.join(script_dir, f"output_cpp.txt")
 executable_path = os.path.join(script_dir, cpp_file_name)
 
 with open(cpp_file_path, "w") as cpp_file:

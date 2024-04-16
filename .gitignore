@@ -27,3 +27,6 @@ node_modules/
 # Excluding the files that are generated for time complexity analysis
 *Prototype*
 *output*
+
+# Visual Studio Code #
+.vscode/
