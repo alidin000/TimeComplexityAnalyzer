@@ -54,6 +54,8 @@ class Prototype:
         lines[0] = f"def {self.function_name}(self, " + lines[0].split("(", 1)[1]
         for i, line in enumerate(lines):
             stripped_line = line.strip()
+            if i != 0:
+                line = re.sub(r"\b{}\b".format(self.function_name), f"self.{self.function_name}", line)
             if line[-1] == ':':
                 instrumented_code += f"    {line}\n"
                 continue
@@ -82,8 +84,8 @@ def mergeSort(x):
       return x
   result = []
   mid = int(len(x) / 2)
-  y = p.mergeSort(x[:mid])
-  z = p.mergeSort(x[mid:])
+  y = mergeSort(x[:mid])
+  z = mergeSort(x[mid:])
   i = 0
   j = 0
   while i < len(y) and j < len(z):
