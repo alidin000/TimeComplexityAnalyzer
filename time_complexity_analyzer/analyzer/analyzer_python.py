@@ -1,5 +1,6 @@
 import os
 import re
+import subprocess
 
 class InstrumentedPythonCode:
     def __init__(self, user_code, number_of_inputs=50):
@@ -10,6 +11,7 @@ class InstrumentedPythonCode:
     def run(self):
         python_prolog = """
 import time
+import os
 import random
 class Prototype:
     def __init__(self):
@@ -21,7 +23,8 @@ class Prototype:
         return [random.randint(0, 1000) for _ in range(size)]
 
     def run(self, number_of_inputs):
-        with open("output_python.txt", "w") as pw:
+        output_file = os.path.join(os.path.dirname(__file__), "output_python.txt")
+        with open(output_file, "w") as pw:
             for size in range(1, number_of_inputs):
                 input_array = self.generate_input(size)
                 start_time = time.time()
@@ -52,11 +55,10 @@ class Prototype:
         instrumented_code += python_epilog
         instrumented_code += "p = Prototype()\n"
         instrumented_code += f"p.run({self.number_of_inputs})\n"
-        python_file = os.path.join(os.path.dirname(__file__), "python_prototype.py")
+        python_file = os.path.join(os.path.dirname(__file__), "python_Prototype.py")
         with open(python_file, "w") as f:
             f.write(instrumented_code)
-
-        exec(instrumented_code)
+        subprocess.run(['python', python_file], capture_output=True, text=True)
 
 
 instrumented_code = InstrumentedPythonCode("""
