@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import least_squares
+from scipy.special import factorial
 
 def constant(x, c):
     return c
@@ -16,6 +17,18 @@ def logarithmic(x, a, b):
 def exponential(x, a, b):
     return a * np.exp(b * x)
 
+def cubic(x, a, b, c, d):
+    return a * x**3 + b * x**2 + c * x + d
+
+def log_linear(x, a, b):
+    return a * x * np.log(x) + b
+
+def factorial_complexity(x, a):
+    return a * factorial(x)
+
+def polynomial(x, *coeffs):
+    return sum(c * x**i for i, c in enumerate(reversed(coeffs)))
+
 def error_function(params, x, y, model):
     return model(x, *params) - y
 
@@ -24,7 +37,11 @@ models = {
     'linear': {'func': linear, 'initial_guess': [1, 1]},
     'quadratic': {'func': quadratic, 'initial_guess': [1, 1, 1]},
     'logarithmic': {'func': logarithmic, 'initial_guess': [1, 1]},
-    'exponential': {'func': exponential, 'initial_guess': [1, 0.01]}
+    'exponential': {'func': exponential, 'initial_guess': [1, 0.01]},
+    'cubic': {'func': cubic, 'initial_guess': [1, 1, 1, 1]},
+    'log_linear': {'func': log_linear, 'initial_guess': [1, 1]},
+    'factorial': {'func': factorial_complexity, 'initial_guess': [1]},
+    'polynomial': {'func': polynomial, 'initial_guess': [1, 1, 1, 1]} 
 }
 
 time_complexity_notation = {
@@ -32,7 +49,11 @@ time_complexity_notation = {
     'linear': 'O(n)',
     'quadratic': 'O(n^2)',
     'logarithmic': 'O(log n)',
-    'exponential': 'O(2^n)'  
+    'exponential': 'O(2^n)',
+    'cubic': 'O(n^3)',
+    'log_linear': 'O(n log n)',
+    'factorial': 'O(n!)',
+    'polynomial': 'O(n^k)'
 }
 
 def parse_output_file(file_path):
