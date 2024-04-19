@@ -18,13 +18,14 @@ from analyzer.graph_fitting import parse_and_analyze
 def analyse_code(request):
     code_data = request.data
     code_serializer = CodeSerializer(data=code_data)
-    
+
+    print("Incoming data: ", code_serializer.initial_data)
+
     if code_serializer.is_valid():
         code_serializer.save()
-        user_code = code_serializer.data.get('code')
-        language = code_data.get('language', 'java').lower()
+        user_code = code_serializer.validated_data.get('code')  
+        language = code_serializer.validated_data.get('language', 'java').lower() 
 
-        # Define a mapping for language handling
         language_map = {
             'java': handle_java_code,
             'cpp': handle_cpp_code,

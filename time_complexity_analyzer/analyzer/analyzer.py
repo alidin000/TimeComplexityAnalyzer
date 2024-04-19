@@ -94,48 +94,48 @@ def run_java_program():
     command = ["java", "-cp", classpath, "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
-"""TODO: try to fix the issue with two or more functions"""
+# """TODO: try to fix the issue with two or more functions"""
 
-user_function = """
-public void mergeSort(int[] arr) {
-        if (arr.length < 2) {
-            return; // Base case: array is already sorted if it has less than two elements.
-        }
-        int mid = arr.length / 2;
-        int[] left = new int[mid];
-        int[] right = new int[arr.length - mid];
+# user_function = """
+# public void mergeSort(int[] arr) {
+#         if (arr.length < 2) {
+#             return; // Base case: array is already sorted if it has less than two elements.
+#         }
+#         int mid = arr.length / 2;
+#         int[] left = new int[mid];
+#         int[] right = new int[arr.length - mid];
 
-        // Copy data to temporary subarrays
-        for (int i = 0; i < mid; i++) {
-            left[i] = arr[i];
-        }
-        for (int i = mid; i < arr.length; i++) {
-            right[i - mid] = arr[i];
-        }
+#         // Copy data to temporary subarrays
+#         for (int i = 0; i < mid; i++) {
+#             left[i] = arr[i];
+#         }
+#         for (int i = mid; i < arr.length; i++) {
+#             right[i - mid] = arr[i];
+#         }
 
-        // Recursive calls to sort each half
-        mergeSort(left);
-        mergeSort(right);
+#         // Recursive calls to sort each half
+#         mergeSort(left);
+#         mergeSort(right);
 
-        int i = 0, j = 0, k = 0;
-        while (i < left.length && j < right.length) {
-            if (left[i] <= right[j]) {
-                arr[k++] = left[i++];
-            } else {
-                arr[k++] = right[j++];
-            }
-        }
-        while (i < left.length) {
-            arr[k++] = left[i++];
-        }
-        while (j < right.length) {
-            arr[k++] = right[j++];
-        }
-    }
-"""
-call_template = "p.mergeSort($$size$$);"
-num_inputs = 100
+#         int i = 0, j = 0, k = 0;
+#         while (i < left.length && j < right.length) {
+#             if (left[i] <= right[j]) {
+#                 arr[k++] = left[i++];
+#             } else {
+#                 arr[k++] = right[j++];
+#             }
+#         }
+#         while (i < left.length) {
+#             arr[k++] = left[i++];
+#         }
+#         while (j < right.length) {
+#             arr[k++] = right[j++];
+#         }
+#     }
+# """
+# call_template = "p.mergeSort($$size$$);"
+# num_inputs = 100
 
-java_code = instrument_java_function(user_function, call_template, num_inputs)
-write_and_compile_java(java_code)
-run_java_program()
+# java_code = instrument_java_function(user_function, call_template, num_inputs)
+# write_and_compile_java(java_code)
+# run_java_program()

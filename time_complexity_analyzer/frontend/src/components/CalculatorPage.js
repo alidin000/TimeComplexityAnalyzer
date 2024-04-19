@@ -27,21 +27,30 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   };
 
   const handleAnalyseClick = () => {
-    AxiosInstance.post('/api/analyse-code/', { 
+    if (!user || !code || !language) {
+        console.error('Missing required fields');
+        return;
+    }
+
+    const payload = {
       username: user,
       code: code,
       language: language,
       time_complexity: "O(n)",
       space_complexity: "O(1)",
-    })
+    };
+
+    console.log(payload);
+
+    AxiosInstance.post('/api/analyse-code/', payload)
     .then(response => {
       console.log(response.data.output);
       setOutputText(response.data.output);
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('Error:', error.response ? error.response.data : error);
     });
-  };
+};
 
   return (
     <div className="">

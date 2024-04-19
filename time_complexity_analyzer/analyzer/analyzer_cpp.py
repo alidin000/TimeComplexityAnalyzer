@@ -141,22 +141,22 @@ def run_cpp_analysis(call, user_function, num_inputs=10):
     run_cpp_program(executable_path)
 
 # Example usage
-call = "findMaximum(array);"
-user_function = """
-int findMaximum(const std::vector<int>& array) {
-    if (array.empty()) {
-        throw std::runtime_error("Cannot find maximum in an empty array.");
-    }
+# call = "findMaximum(array);"
+# user_function = """
+# int findMaximum(const std::vector<int>& array) {
+#     if (array.empty()) {
+#         throw std::runtime_error("Cannot find maximum in an empty array.");
+#     }
 
-    int max = array[0];
-    for (int i = 1; i < array.size(); ++i) {
-        if (array[i] > max) {
-            max = array[i];
-        }
-    }
-    return max;
-}
-"""
-num_inputs = 50
+#     int max = array[0];
+#     for (int i = 1; i < array.size(); ++i) {
+#         if (array[i] > max) {
+#             max = array[i];
+#         }
+#     }
+#     return max;
+# }
+# """
+# num_inputs = 50
 
-run_cpp_analysis(call, user_function, num_inputs)
+# run_cpp_analysis(call, user_function, num_inputs)
