@@ -14,6 +14,30 @@ from analyzer.analyzer_python import run_instrumented_python_code
 from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 from analyzer.graph_fitting import parse_and_analyze
 
+def extract_call_template(user_code, language):
+    patterns = {
+        'java': r"public\s+static\s+\w+\s+(\w+)\s*\(",
+        'cpp': r"\b\w+\s+\w+\s*\([^)]*\)\s*{",
+        'python': r"def\s+(\w+)\s*\(",
+    }
+    regex = patterns.get(language.lower())
+    if not regex:
+        raise ValueError("Unsupported language for analysis.")
+
+    match = re.search(regex, user_code)
+    if not match:
+        raise ValueError("No valid function name found in the provided code.")
+
+    function_name = match.group(1)
+    if language.lower() == 'cpp':
+        call_template = f"{function_name}(generateInput(size)); // Adjust for C++ specifics if necessary"
+    elif language.lower() == 'java':
+        call_template = f"p.{function_name}(generateInput(size));"
+    else:
+        call_template = f"{function_name}(generate_input(size))"  # Python style
+
+    return call_template
+
 @api_view(['POST'])
 def analyse_code(request):
     code_data = request.data
@@ -25,7 +49,7 @@ def analyse_code(request):
         code_serializer.save()
         user_code = code_serializer.validated_data.get('code')  
         language = code_serializer.validated_data.get('language', 'java').lower() 
-
+        call_template = extract_call_template(user_code, language)
         language_map = {
             'java': handle_java_code,
             'cpp': handle_cpp_code,
@@ -33,15 +57,15 @@ def analyse_code(request):
         }
 
         if language in language_map:
-            return language_map[language](user_code)
+            return language_map[language](user_code, call_template)
         else:
             return Response({"error": f"Language '{language}' not supported for analysis."}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(code_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def handle_java_code(user_code):
+def handle_java_code(user_code, call_template):
     try:
-        java_code = instrument_java_function(user_code)
+        java_code = instrument_java_function(user_code, call_template, num_inputs=50)
         write_and_compile_java(java_code)
         run_java_program()
         output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
@@ -50,9 +74,9 @@ def handle_java_code(user_code):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-def handle_cpp_code(user_code):
+def handle_cpp_code(user_code, call_template):
     try:
-        cpp_code = instrument_cpp_function(user_code)
+        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=50)
         write_and_compile_cpp(cpp_code)
         run_cpp_program()
         output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_cpp.txt")
@@ -61,7 +85,7 @@ def handle_cpp_code(user_code):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-def handle_python_code(user_code):
+def handle_python_code(user_code, call_template):
     try:
         output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_python.txt")
         
