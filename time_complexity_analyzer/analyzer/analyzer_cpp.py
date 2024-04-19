@@ -113,38 +113,50 @@ int main() {{
 
     return instrumented_function
 
-call = "mySortFunction(array);"
+def write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path):
+    with open(cpp_file_path, "w") as cpp_file:
+        cpp_file.write(instrumented_code)
+
+    compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
+    subprocess.run(compile_command, shell=True)
+
+def run_cpp_program(executable_path):
+    if platform.system() == "Windows":
+        run_command = f"{executable_path}.exe"
+    else:
+        run_command = f"./{executable_path}"
+
+    subprocess.run(run_command, shell=True)
+
+def run_cpp_analysis(call, user_function, num_inputs=10):
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    cpp_file_name = "InstrumentedPrototype"
+    cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
+    executable_path = os.path.join(script_dir, cpp_file_name)
+
+    instrumented_code = instrument_cpp_function(call, user_function, num_inputs)
+
+    write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path)
+
+    run_cpp_program(executable_path)
+
+# Example usage
+call = "findMaximum(array);"
 user_function = """
-void mySortFunction(std::vector<int>& array) {
-    for (size_t i = 0; i < array.size(); ++i) {
-        for (size_t j = i + 1; j < array.size(); ++j) {
-            if (array[i] > array[j]) {
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            }
+int findMaximum(const std::vector<int>& array) {
+    if (array.empty()) {
+        throw std::runtime_error("Cannot find maximum in an empty array.");
+    }
+
+    int max = array[0];
+    for (int i = 1; i < array.size(); ++i) {
+        if (array[i] > max) {
+            max = array[i];
         }
     }
+    return max;
 }
 """
 num_inputs = 50
-instrumented_code = instrument_cpp_function(call, user_function, num_inputs)
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-cpp_file_name = "InstrumentedPrototype"
-cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
-# cpp_outpuot_file_path = os.path.join(script_dir, f"output_cpp.txt")
-executable_path = os.path.join(script_dir, cpp_file_name)
-
-with open(cpp_file_path, "w") as cpp_file:
-    cpp_file.write(instrumented_code)
-
-compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
-subprocess.run(compile_command, shell=True)
-
-if platform.system() == "Windows":
-    run_command = f"{executable_path}.exe"
-else:
-    run_command = f"./{executable_path}"
-
-subprocess.run(run_command, shell=True)
+run_cpp_analysis(call, user_function, num_inputs)

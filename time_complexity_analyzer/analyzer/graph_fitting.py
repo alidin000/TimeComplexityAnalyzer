@@ -111,7 +111,7 @@ def parse_and_analyze(file_path):
 
 
 if __name__ == "__main__":
-    file_path = 'C://Users//user//Desktop//THESIS//TimeComplexityAnalyzer//time_complexity_analyzer//analyzer//output_python.txt' 
+    file_path = 'C://Users//user//Desktop//THESIS//TimeComplexityAnalyzer//time_complexity_analyzer//analyzer//output_java.txt' 
     best_fits = parse_and_analyze(file_path)
 
     for line_num, fit in best_fits['lines'].items():

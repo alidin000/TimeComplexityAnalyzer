@@ -117,11 +117,6 @@ public void mergeSort(int[] arr) {
         mergeSort(left);
         mergeSort(right);
 
-        // Merge the sorted halves
-        merge(arr, left, right);
-    }
-
-    private void merge(int[] arr, int[] left, int[] right) {
         int i = 0, j = 0, k = 0;
         while (i < left.length && j < right.length) {
             if (left[i] <= right[j]) {
@@ -139,7 +134,7 @@ public void mergeSort(int[] arr) {
     }
 """
 call_template = "p.mergeSort($$size$$);"
-num_inputs = 50
+num_inputs = 100
 
 java_code = instrument_java_function(user_function, call_template, num_inputs)
 write_and_compile_java(java_code)

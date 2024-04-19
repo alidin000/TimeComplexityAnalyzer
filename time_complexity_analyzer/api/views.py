@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 
 from analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
+from analyzer.analyzer_python import execute_python_code, instrument_python_function
+from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 from analyzer.graph_fitting import parse_and_analyze
 
 @api_view(['POST'])
@@ -18,34 +20,55 @@ def analyse_code(request):
     code_serializer = CodeSerializer(data=code_data)
     
     if code_serializer.is_valid():
-        code_serializer.save()  
+        code_serializer.save()
         user_code = code_serializer.data.get('code')
-        language = code_data.get('language', 'java') 
+        language = code_data.get('language', 'java').lower()
 
-        if language.lower() == 'java':
-            match = re.search(r"\s+(\w+)\s*\(", user_code)
-            if not match:
-                return Response({"error": "No valid Java function found for analysis."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            function_name = match.group(1)
-            call_template = f"p.{function_name}($$size$$);"  
+        # Define a mapping for language handling
+        language_map = {
+            'java': handle_java_code,
+            'cpp': handle_cpp_code,
+            'python': handle_python_code
+        }
 
-            num_inputs = 5  
-            try:
-                java_code = instrument_java_function(user_code, call_template, num_inputs)
-                write_and_compile_java(java_code)
-                run_java_program()
-
-                output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
-                best_fits = parse_and_analyze(output_file_path)  
-
-                return Response(best_fits)  
-            except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        if language in language_map:
+            return language_map[language](user_code)
         else:
             return Response({"error": f"Language '{language}' not supported for analysis."}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(code_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_java_code(user_code):
+    try:
+        java_code = instrument_java_function(user_code)
+        write_and_compile_java(java_code)
+        run_java_program()
+        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
+        best_fits = parse_and_analyze(output_file_path)
+        return Response(best_fits)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_cpp_code(user_code):
+    try:
+        cpp_code = instrument_cpp_function(user_code)
+        write_and_compile_cpp(cpp_code)
+        run_cpp_program()
+        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_cpp.txt")
+        best_fits = parse_and_analyze(output_file_path)
+        return Response(best_fits)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_python_code(user_code):
+    try:
+        python_code = instrument_python_function(user_code)
+        execute_python_code(python_code)
+        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_python.txt")
+        best_fits = parse_and_analyze(output_file_path)
+        return Response(best_fits)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CodeViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
