@@ -78,7 +78,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     return full_java_code
 
 def write_and_compile_java(java_code):
-    java_file_dir = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer")
+    java_file_dir = os.path.dirname(os.path.abspath(__file__))
     os.makedirs(java_file_dir, exist_ok=True)
     java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
 
@@ -87,7 +87,7 @@ def write_and_compile_java(java_code):
     with open(java_file_path, "w") as java_file:
         java_file.write(java_code)
     
-    subprocess.run(["javac", java_file_path], check=True)
+    subprocess.run(["javac",  ], check=True)
 
 def run_java_program():
     classpath = os.path.join(os.getcwd(), "time_complexity_analyzer")
@@ -97,48 +97,14 @@ def run_java_program():
 """TODO: try to fix the issue with two or more functions"""
 
 user_function = """
-public void mergeSort(int[] arr) {
-        if (arr.length < 2) {
-            return; // Base case: array is already sorted if it has less than two elements.
-        }
-        int mid = arr.length / 2;
-        int[] left = new int[mid];
-        int[] right = new int[arr.length - mid];
-
-        // Copy data to temporary subarrays
-        for (int i = 0; i < mid; i++) {
-            left[i] = arr[i];
-        }
-        for (int i = mid; i < arr.length; i++) {
-            right[i - mid] = arr[i];
-        }
-
-        // Recursive calls to sort each half
-        mergeSort(left);
-        mergeSort(right);
-
-        // Merge the sorted halves
-        merge(arr, left, right);
+public void Sum(int[] arr) {
+    int sum = 0;
+    for (int i = 0; i < arr.length; i++) {
+        sum += arr[i];
     }
-
-    private void merge(int[] arr, int[] left, int[] right) {
-        int i = 0, j = 0, k = 0;
-        while (i < left.length && j < right.length) {
-            if (left[i] <= right[j]) {
-                arr[k++] = left[i++];
-            } else {
-                arr[k++] = right[j++];
-            }
-        }
-        while (i < left.length) {
-            arr[k++] = left[i++];
-        }
-        while (j < right.length) {
-            arr[k++] = right[j++];
-        }
-    }
+}
 """
-call_template = "p.mergeSort($$size$$);"
+call_template = "p.Sum($$size$$);"
 num_inputs = 50
 
 java_code = instrument_java_function(user_function, call_template, num_inputs)
