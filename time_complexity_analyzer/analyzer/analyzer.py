@@ -94,7 +94,7 @@ def run_java_program():
     command = ["java", "-cp", classpath, "analyzer.InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
-"""TODO: try to fix the issue with two or more functions"""
+# """TODO: try to fix the issue with two or more functions"""
 
 user_function = """
 public void Sum(int[] arr) {
