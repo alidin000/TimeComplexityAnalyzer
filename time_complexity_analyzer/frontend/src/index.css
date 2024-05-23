@@ -413,3 +413,8 @@ li {
   font-weight: bold;
   text-align: center;
 }
+
+.logo-image {
+  width: 100px; /* Adjust the size as needed */
+  height: auto;
+}

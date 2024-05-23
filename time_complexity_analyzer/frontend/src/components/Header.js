@@ -1,6 +1,7 @@
 // Header.jsx
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 const Header = ({ isLoggedIn, handleLogout }) => {
   const location = useLocation();
@@ -8,7 +9,9 @@ const Header = ({ isLoggedIn, handleLogout }) => {
 
   return (
     <header>
-      <div className="logo">LOGO</div>
+      <div className="logo">
+        <img src={logo} alt="Logo" className="logo-image" />
+      </div>
       <nav>
         <ul>
           {currentPath === '/learning' ? (
