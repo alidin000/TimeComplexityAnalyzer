@@ -3,7 +3,8 @@ import subprocess
 import os
 
 def instrument_java_function(user_function, call_template, num_inputs, output_file_path):
-    function_name = re.search(r"public\s+\w+\s+(\w+)\(", user_function).group(1)
+    print(user_function)
+    function_name = re.search(r"public\s+(?:static\s+)?\w+\s+(\w+)\(", user_function).group(1)
     output_file_path = output_file_path.replace("\\", "\\\\")
     java_prolog = """
     import java.io.PrintWriter;
@@ -55,6 +56,7 @@ def instrument_java_function(user_function, call_template, num_inputs, output_fi
     }}
     """
 
+
     lines = user_function.strip().splitlines()
     instrumented_user_function = lines[0]
     last_line_index = len(lines) - 1
@@ -91,11 +93,14 @@ def run_java_program():
     subprocess.run(command, check=True)
 
 # user_function = """
-# public void Sum(int[] arr) {
-#     int sum = 0;
-#     for (int i = 0; i < arr.length; i++) {
-#         sum += arr[i];
-#     }
+# public static boolean isPalindrome(String text) {
+#         int length = text.length();
+#         for (int i = 0; i < length / 2; i++) {
+#                 if (text.charAt(i) != text.charAt(length - 1 - i)) {
+#                         return false;
+#         }
+#         }
+#         return true;
 # }
 # """
 # call_template = "p.Sum($$size$$);"

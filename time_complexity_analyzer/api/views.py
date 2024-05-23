@@ -16,7 +16,7 @@ from analyzer.graph_fitting import parse_and_analyze
 
 def extract_call_template(user_code, language):
     patterns = {
-        'java': r"public\s+static\s+\w+\s+(\w+)\s*\(",
+        'java': r"(?:public\s+)?(?:static\s+)?\w+\s+(\w+)\s*\(",
         'cpp': r"\b\w+\s+\w+\s*\([^)]*\)\s*{",
         'python': r"def\s+(\w+)\s*\(",
     }
@@ -66,8 +66,7 @@ def analyse_code(request):
 def handle_java_code(user_code, call_template):
     try:
         output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
-        java_code = instrument_java_function(user_code, call_template, 50, 
-                                             )
+        java_code = instrument_java_function(user_code, call_template, 50, output_file_path)
         print(java_code)
         write_and_compile_java(java_code)
         run_java_program()
