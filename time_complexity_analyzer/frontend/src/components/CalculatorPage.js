@@ -11,14 +11,14 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const user = isAuthenticated ? currentUser : "Unknown";
 
   const defaultCodes = {
-    'Java': `public static boolean isPalindrome(String text) {\n\tint length = text.length();\n\tfor (int i = 0; i < length / 2; i++) {\n\t\tif (text.charAt(i) != text.charAt(length - 1 - i)) {\n\t\t\treturn false;\n\t\t}\n\t}\n\treturn true;\n}`,
+    'Java': `public static boolean isPalindrome(String text) {\n\tint length = text.length();\n\tfor (int i = 0; i < length / 2; i++) {\n\t\tif (text.charAt(i) != text.charAt(length - 1 - i)) {\n\t\t\treturn false;\n\t}\n\t}\n\treturn true;\n}`,
     'Python': `def circle_area(radius):\n\t\"\"\"This function calculates the area of a circle.\"\"\"\n\tpi = 3.14159\n\treturn pi * radius * radius`,
     'C++': `int factorial(int num) {\n\tif (num < 0) {\n\t\treturn -1;\n\t} else if (num == 0) {\n\t\treturn 1;\n\t} else {\n\t\treturn num * factorial(num - 1);\n\t}\n}`
   };
 
   useEffect(() => {
     setCode(defaultCodes[language]);
-  }, []);
+  }, [language]);
 
   const handleLanguageChange = (selectedLanguage) => {
     setLanguage(selectedLanguage);
@@ -34,8 +34,8 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
   const handleAnalyseClick = () => {
     if (!user || !code || !language) {
-        console.error('Missing required fields');
-        return;
+      console.error('Missing required fields');
+      return;
     }
 
     const payload = {
@@ -49,13 +49,13 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     console.log(payload);
 
     AxiosInstance.post('/api/analyse-code/', payload)
-    .then(response => {
-      console.log(response.data.output);
-      setOutputText(response.data.output);
-    })
-    .catch(error => {
-      console.error('Error:', error.response ? error.response.data : error);
-    });
+      .then(response => {
+        console.log(response.data.output);
+        setOutputText(response.data.output);
+      })
+      .catch(error => {
+        console.error('Error:', error.response ? error.response.data : error);
+      });
   };
 
   return (

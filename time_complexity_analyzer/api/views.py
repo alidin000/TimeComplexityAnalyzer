@@ -65,10 +65,13 @@ def analyse_code(request):
 
 def handle_java_code(user_code, call_template):
     try:
-        java_code = instrument_java_function(user_code, call_template, num_inputs=50)
+        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
+        java_code = instrument_java_function(user_code, call_template, 50, 
+                                             )
+        print(java_code)
         write_and_compile_java(java_code)
         run_java_program()
-        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
+
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
@@ -93,7 +96,6 @@ def handle_python_code(user_code, call_template):
             os.remove(output_file_path)
 
         run_instrumented_python_code(user_code, number_of_inputs=50)
-
         if os.path.exists(output_file_path):
             best_fits = parse_and_analyze(output_file_path)
             return Response(best_fits)

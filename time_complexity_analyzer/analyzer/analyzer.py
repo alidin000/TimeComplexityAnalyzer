@@ -2,11 +2,10 @@ import re
 import subprocess
 import os
 
-def instrument_java_function(user_function, call_template, num_inputs):
+def instrument_java_function(user_function, call_template, num_inputs, output_file_path):
     function_name = re.search(r"public\s+\w+\s+(\w+)\(", user_function).group(1)
+    output_file_path = output_file_path.replace("\\", "\\\\")
     java_prolog = """
-    package analyzer;
-
     import java.io.PrintWriter;
     import java.io.File;
     import java.io.IOException;
@@ -38,7 +37,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
         }}
 
         public static void main(String[] args) {{
-            try(PrintWriter pw = new PrintWriter(new File("time_complexity_analyzer/analyzer/output_java.txt"))) {{
+            try(PrintWriter pw = new PrintWriter(new File("{output_file_path}"))) {{
                 for (int size = 1; size <= {num_inputs}; size++) {{
                     InstrumentedPrototype p = new InstrumentedPrototype();
                     long startTime = System.nanoTime();
@@ -57,7 +56,7 @@ def instrument_java_function(user_function, call_template, num_inputs):
     """
 
     lines = user_function.strip().splitlines()
-    instrumented_user_function = lines[0] 
+    instrumented_user_function = lines[0]
     last_line_index = len(lines) - 1
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
@@ -78,35 +77,32 @@ def instrument_java_function(user_function, call_template, num_inputs):
     return full_java_code
 
 def write_and_compile_java(java_code):
-    java_file_dir = os.path.dirname(os.path.abspath(__file__))
-    os.makedirs(java_file_dir, exist_ok=True)
+    java_file_dir = os.path.dirname(__file__)
     java_file_path = os.path.join(java_file_dir, "InstrumentedPrototype.java")
-
-    os.path.join(os.path.dirname(__file__), "output_java.txt")
 
     with open(java_file_path, "w") as java_file:
         java_file.write(java_code)
     
-    subprocess.run(["javac",  ], check=True)
+    subprocess.run(["javac", java_file_path], check=True)
 
 def run_java_program():
-    classpath = os.path.join(os.getcwd(), "time_complexity_analyzer")
-    command = ["java", "-cp", classpath, "analyzer.InstrumentedPrototype"]
+    java_file_dir = os.path.dirname(__file__)
+    command = ["java", "-cp", java_file_dir, "InstrumentedPrototype"]
     subprocess.run(command, check=True)
 
-# """TODO: try to fix the issue with two or more functions"""
+# user_function = """
+# public void Sum(int[] arr) {
+#     int sum = 0;
+#     for (int i = 0; i < arr.length; i++) {
+#         sum += arr[i];
+#     }
+# }
+# """
+# call_template = "p.Sum($$size$$);"
+# num_inputs = 50
 
-user_function = """
-public void Sum(int[] arr) {
-    int sum = 0;
-    for (int i = 0; i < arr.length; i++) {
-        sum += arr[i];
-    }
-}
-"""
-call_template = "p.Sum($$size$$);"
-num_inputs = 50
+# output_file_path = os.path.join(os.path.dirname(__file__), "output_java.txt")
 
-java_code = instrument_java_function(user_function, call_template, num_inputs)
-write_and_compile_java(java_code)
-run_java_program()
+# java_code = instrument_java_function(user_function, call_template, num_inputs, output_file_path)
+# write_and_compile_java(java_code)
+# run_java_program()
