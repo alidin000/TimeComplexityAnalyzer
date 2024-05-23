@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import algorithmsData from './algorithmsData.json';
+import algorithmsData from '../data_files/algorithmsData.json';
 
 
 const LearningPage = () => {

@@ -379,3 +379,37 @@ li {
 .form p a {
   color: #007bff;
 }
+
+/* Output component specific styles */
+.output-card {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+}
+
+.output-paper {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.complexity-constant {
+  background-color: #e0f7fa;
+}
+
+.complexity-logarithmic {
+  background-color: #ffe0b2;
+}
+
+.complexity-linear {
+  background-color: #ffccbc;
+}
+
+.complexity-quadratic {
+  background-color: #ffab91;
+}
+
+.overall-complexity {
+  margin-top: 20px;
+  font-weight: bold;
+  text-align: center;
+}

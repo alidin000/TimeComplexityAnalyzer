@@ -1,4 +1,4 @@
-// App.jsx
+// src/App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
@@ -7,42 +7,45 @@ import CalculatorPage from './components/CalculatorPage';
 import LearningPage from './components/LearningPage';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
+import Output from './components/Output';
+import './App.css';
 import 'primeflex/primeflex.css';
 
+
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
 
-    const handleLogin = (user) => {
-        setIsLoggedIn(true);
-        setUsername(user); 
-    };
+  const handleLogin = (user) => {
+    setIsLoggedIn(true);
+    setUsername(user); 
+  };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        setUsername('');
-    };
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUsername('');
+  };
 
-    return (
-        <Router>
-            <div className="App">
-                <Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<CalculatorPage isAuthenticated={isLoggedIn} currentUser={username} />}
-                    />
-                    <Route path="/learning" element={<LearningPage />} />
-                    <Route
-                        path="/login"
-                        element={<Login handleLogin={handleLogin} />}
-                    />
-                    <Route path="/signup" element={<SignUp />} />
-                </Routes>
-                <Footer />
-            </div>
-        </Router>
-    );
+  return (
+    <Router>
+      <div className="App">
+        <Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <Routes>
+          <Route
+            path="/"
+            element={<CalculatorPage isAuthenticated={isLoggedIn} currentUser={username} />}
+          />
+          <Route path="/learning" element={<LearningPage />} />
+          <Route
+            path="/login"
+            element={<Login handleLogin={handleLogin} />}
+          />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
+  );
 }
 
 export default App;
