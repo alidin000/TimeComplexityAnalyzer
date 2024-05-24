@@ -2,6 +2,10 @@ import platform
 import subprocess
 import os
 
+def ensure_directory_exists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 def instrument_cpp_function(call, user_function, num_inputs=10):
     cpp_prolog = """
 #include <iostream>
@@ -124,6 +128,8 @@ def run_cpp_program(executable_path):
 
 def run_cpp_analysis(call, user_function, num_inputs=10):
     script_dir = os.path.dirname(os.path.realpath(__file__))
+    ensure_directory_exists(script_dir)
+
     cpp_file_name = "InstrumentedPrototype"
     cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
     executable_path = os.path.join(script_dir, cpp_file_name)

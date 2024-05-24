@@ -77,13 +77,14 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        run_cpp_analysis(call_template ,user_code, num_inputs=50)
-        output_file_path = os.path.join(os.getcwd(), "analyzer", "output_cpp.txt")
+        run_cpp_analysis(call_template, user_code, num_inputs=50)
+        output_file_path = os.path.join(os.getcwd(), "output_cpp.txt")
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 def handle_python_code(user_code, call_template):
     try:
