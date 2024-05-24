@@ -3,7 +3,6 @@ import subprocess
 import os
 
 def instrument_java_function(user_function, call_template, num_inputs, output_file_path):
-    print(user_function)
     function_name = re.search(r"public\s+(?:static\s+)?\w+\s+(\w+)\(", user_function).group(1)
     output_file_path = output_file_path.replace("\\", "\\\\")
     java_prolog = """
@@ -38,7 +37,7 @@ def instrument_java_function(user_function, call_template, num_inputs, output_fi
         }}
 
         public static void main(String[] args) {{
-            try(PrintWriter pw = new PrintWriter(new File("{output_file_path}"))) {{
+            try(PrintWriter pw = new PrintWriter(new File("output_java.txt"))) {{
                 for (int size = 1; size <= {num_inputs}; size++) {{
                     InstrumentedPrototype p = new InstrumentedPrototype();
                     long startTime = System.nanoTime();
@@ -55,7 +54,6 @@ def instrument_java_function(user_function, call_template, num_inputs, output_fi
         }}
     }}
     """
-
 
     lines = user_function.strip().splitlines()
     instrumented_user_function = lines[0]
@@ -93,17 +91,17 @@ def run_java_program():
     subprocess.run(command, check=True)
 
 # user_function = """
-# public static boolean isPalindrome(String text) {
-#         int length = text.length();
-#         for (int i = 0; i < length / 2; i++) {
-#                 if (text.charAt(i) != text.charAt(length - 1 - i)) {
-#                         return false;
+# public boolean isPalindrome(int[] arr) {
+#     int length = arr.length;
+#     for (int i = 0; i < length / 2; i++) {
+#         if (arr[i] != arr[length - 1 - i]) {
+#             return false;
 #         }
-#         }
-#         return true;
+#     }
+#     return true;
 # }
 # """
-# call_template = "p.Sum($$size$$);"
+# call_template = "p.isPalindrome($$size$$);"
 # num_inputs = 50
 
 # output_file_path = os.path.join(os.path.dirname(__file__), "output_java.txt")

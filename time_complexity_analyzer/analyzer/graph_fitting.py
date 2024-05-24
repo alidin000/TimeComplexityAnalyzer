@@ -89,7 +89,6 @@ def select_best_fitting_model(x_data, y_data):
 
 def parse_and_analyze(file_path):
     line_exec_times, function_exec_times = parse_output_file(file_path)
-    
 
     best_fits = {'lines': {}, 'function': None}
 
@@ -111,7 +110,7 @@ def parse_and_analyze(file_path):
 
 
 if __name__ == "__main__":
-    file_path = 'C://Users//user//Desktop//THESIS//TimeComplexityAnalyzer//time_complexity_analyzer//analyzer//output_java.txt' 
+    file_path = r'C:\Users\user\Desktop\THESIS\TimeComplexityAnalyzer\time_complexity_analyzer\output_java.txt' 
     best_fits = parse_and_analyze(file_path)
 
     for line_num, fit in best_fits['lines'].items():

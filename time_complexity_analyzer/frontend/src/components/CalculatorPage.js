@@ -3,10 +3,23 @@ import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
 import AxiosInstance from './Axios';
 
+const time_complexity_notation = {
+  'constant': 'O(1)',
+  'linear': 'O(n)',
+  'quadratic': 'O(n^2)',
+  'logarithmic': 'O(log n)',
+  'exponential': 'O(2^n)',
+  'cubic': 'O(n^3)',
+  'log_linear': 'O(n log n)',
+  'factorial': 'O(n!)',
+  'polynomial': 'O(n^k)'
+};
+
 function CalculatorPage({ isAuthenticated, currentUser }) {
   const [code, setCode] = useState(``);
   const [language, setLanguage] = useState('Python');
   const [outputText, setOutputText] = useState("// Output will be displayed here");
+  const [results, setResults] = useState([]);
   const [userModifiedCode, setUserModifiedCode] = useState(false);
   const user = isAuthenticated ? currentUser : "Unknown";
 
@@ -50,12 +63,52 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
     AxiosInstance.post('/api/analyse-code/', payload)
       .then(response => {
-        console.log(response.data.output);
-        setOutputText(response.data.output);
+        console.log("printing the output now");
+        console.log(response.data);
+        setResults(formatResults(response.data, code));
+        setOutputText(formatOutput(response.data, code));
       })
       .catch(error => {
         console.error('Error:', error.response ? error.response.data : error);
       });
+  };
+
+  const formatResults = (data, code) => {
+    const codeLines = code.split('\n');
+    const results = codeLines.map((line, index) => {
+      const lineInfo = data.lines[index + 1];
+      if (lineInfo) {
+        const complexity = lineInfo.model;
+        return {
+          line: line.trim(),
+          complexity,
+          notation: time_complexity_notation[complexity] || ''
+        };
+      }
+      return { line: line.trim(), function: '', complexity: '' };
+    });
+
+    const functionComplexity = data.function ? data.function.model : 'N/A';
+    results.functionComplexity = functionComplexity;
+    results.functionComplexityWord = functionComplexity;
+    results.functionNotation = time_complexity_notation[functionComplexity] || '';
+
+    return results;
+  };
+
+  const formatOutput = (data, code) => {
+    const codeLines = code.split('\n');
+    const linesOutput = codeLines.map((line, index) => {
+      const lineInfo = data.lines[index + 1];
+      if (lineInfo) {
+        return `${line} -> ${time_complexity_notation[lineInfo.model] || ''} {${lineInfo.model}}`;
+      }
+      return line;
+    });
+
+    const overallComplexity = data.function ? `\nOverall Function Time Complexity: ${time_complexity_notation[data.function.model] || ''} {${data.function.model}}` : "";
+    linesOutput.push(overallComplexity);
+    return linesOutput.join('\n');
   };
 
   return (
@@ -77,7 +130,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           </div>
         </div>
         <div className="flex card ml-8 w-full">
-          <Output outputText={outputText} />
+          <Output outputText={outputText} results={results} />
         </div>
       </div>
       <div className="bottom-section">

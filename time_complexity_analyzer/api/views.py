@@ -34,7 +34,7 @@ def extract_call_template(user_code, language):
     elif language.lower() == 'java':
         call_template = f"p.{function_name}(generateInput(size));"
     else:
-        call_template = f"{function_name}(generate_input(size))"  # Python style
+        call_template = f"{function_name}(generate_input(size))"
 
     return call_template
 
@@ -65,16 +65,16 @@ def analyse_code(request):
 
 def handle_java_code(user_code, call_template):
     try:
-        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_java.txt")
+        output_file_path = os.path.join(os.getcwd(),"output_java.txt")
+        print (output_file_path)
         java_code = instrument_java_function(user_code, call_template, 50, output_file_path)
-        print(java_code)
         write_and_compile_java(java_code)
         run_java_program()
-
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        print("Running didn't work, or reading output file didn't work:", e.args)
+        return Response("shitt")
 
 def handle_cpp_code(user_code, call_template):
     try:
@@ -85,6 +85,7 @@ def handle_cpp_code(user_code, call_template):
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
+        print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 def handle_python_code(user_code, call_template):
@@ -101,6 +102,7 @@ def handle_python_code(user_code, call_template):
         else:
             return Response({"error": "Output file does not exist. Analysis may have failed."}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
+        print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
