@@ -81,7 +81,7 @@ def handle_cpp_code(user_code, call_template):
         cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=50)
         write_and_compile_cpp(cpp_code)
         run_cpp_program()
-        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_cpp.txt")
+        output_file_path = os.path.join(os.getcwd(), "analyzer", "output_cpp.txt")
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
@@ -90,12 +90,12 @@ def handle_cpp_code(user_code, call_template):
 
 def handle_python_code(user_code, call_template):
     try:
-        output_file_path = os.path.join(os.getcwd(), "time_complexity_analyzer", "analyzer", "output_python.txt")
+        output_file_path = os.path.join(os.getcwd(), "analyzer", "output_python.txt")
         
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
-
         run_instrumented_python_code(user_code, number_of_inputs=50)
+        print(output_file_path)
         if os.path.exists(output_file_path):
             best_fits = parse_and_analyze(output_file_path)
             return Response(best_fits)
