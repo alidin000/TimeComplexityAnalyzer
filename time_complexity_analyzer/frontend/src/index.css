@@ -1,94 +1,21 @@
-
+/* General Styles */
 body, html {
   margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the App component takes up at least the full height of the viewport */
+  min-height: 100vh;
 }
-
-footer {
-  margin-top: auto; /* Push the footer to the bottom */
-}
-
-.header {
-  text-align: center;
-}
-
-.input-fields {
-  margin-bottom: 20px;
-}
-
-.input-fields label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.input-fields input[type="number"],
-.input-fields input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.input-fields button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.execution-time,
-.output-area,
-.output {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 40px;
-  min-height: 200px;
-}
-
-.tabs {
-  margin-bottom: 20px;
-}
-
-.tabs ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-}
-
-.tabs li {
-  margin-right: 10px;
-}
-
-.tabs button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.tabs .active button {
-  font-weight: bold;
-}
-
-/* NavBar.css */
 
 header {
-  background-color: #333;
+  background-color: #3f51b5;
   color: #fff;
   display: flex;
   justify-content: space-between;
@@ -96,13 +23,31 @@ header {
   padding: 10px 20px;
 }
 
-.logo {
-  font-size: 1.5rem;
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-center {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  width: 100px;
+  height: auto;
 }
 
 ul {
   list-style-type: none;
   display: flex;
+  margin: 0;
+  padding: 0;
 }
 
 li {
@@ -119,16 +64,12 @@ li {
   color: #ff9800;
 }
 
-.link-style span {
-  color: #ff9800;
-}
-
-
-/* Footer.css */
-.footer {
-  background-color: #333;
+/* Footer Styles */
+footer {
+  background-color: #3f51b5;
   color: #fff;
   padding: 20px;
+  margin-top: auto;
 }
 
 .footer-content {
@@ -139,40 +80,19 @@ li {
   margin: 0 auto;
 }
 
-.footer-copyright a,
-.footer-links a {
+.footer-content a {
   color: #fff;
   text-decoration: none;
-  margin-right: 10px; /* Add margin-right to create space between links */
+  margin-right: 10px;
 }
 
-.footer-links a:first-child {
-  margin-left: 0;
-}
-
-/* CalculatorPage.css */
+/* CalculatorPage Styles */
 .calculator-page {
   display: flex;
   flex-direction: column;
-  height: 80vh;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-}
-
-.top-section {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-}
-
-.left-section,
-.right-section,
-.bottom-section {
-  flex: 1;
-}
-
-.bottom-section {
-  padding-top: 10px;
 }
 
 .text-section {
@@ -180,7 +100,7 @@ li {
   background-color: #f2f2f2;
 }
 
-/* CodeEditor.css */
+/* CodeEditor Styles */
 .code-editor-area {
   position: relative;
 }
@@ -192,105 +112,13 @@ li {
   margin-bottom: 20px;
 }
 
-.code-editor textarea {
-  font-size: 16px;
-}
-
-/* learningPage.css */
-.learning-page {
-  display: flex;
-  padding: 20px;
-}
-
-.left-panel {
-  flex: 1;
-}
-
-.right-panel {
-  flex: 2;
-  margin-left: 20px;
-}
-
-.algorithm-topics-list {
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.algorithm-topics-list a {
-  display: block;
-  margin-bottom: 5px;
-  color: #333;
-  text-decoration: none;
-}
-
-.algorithm-topics-list a:hover {
-  text-decoration: underline;
-}
-
-.tab-switcher {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-.tab-button {
-  flex: 1;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  font-size: 16px;
-  padding: 5px 10px;
-  color: #333;
-}
-
-.tab-button.active {
-  font-weight: bold;
-  background-color: #f0f0f0;
-}
-
-.tab-button:not(:last-child) {
-  margin-right: 10px;
-}
-
-.switchers {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.switcher-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  font-size: 14px;
-  padding: 5px 10px;
-  color: #333;
-}
-
-.switcher-button.active {
-  font-weight: bold;
-}
-
-.subtopics-heading {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-.user-icon {
-  font-size: 24px; /* Adjust the font size as needed */
-  margin-left: 10px; /* Adjust the margin to position the icon */
-  color: #fff; /* Set the color of the icon */
-}
-
 .analyse-button {
   position: absolute;
   bottom: 10px;
   right: 10px;
   padding: 10px 20px;
   background-color: #007bff;
-  color: #0a0a0a;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -300,7 +128,68 @@ li {
   background-color: #0056b3;
 }
 
-/* Sign Up and Login Page Styles */
+/* LearningPage Styles */
+.learning-page {
+  display: flex;
+  padding: 20px;
+}
+
+.left-panel {
+  width: 200px;
+  margin-right: 20px;
+}
+
+.right-panel {
+  flex: 1;
+}
+
+.algorithm-topics-list {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.algorithm-topics-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 5px;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.algorithm-topics-list button:hover {
+  text-decoration: underline;
+}
+
+.tab-switcher, .switchers {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab-button, .switcher-button {
+  flex: 1;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  color: #333;
+}
+
+.tab-button.active, .switcher-button.active {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+.tab-button:not(:last-child), .switcher-button:not(:last-child) {
+  margin-right: 10px;
+}
+
+/* Login and Signup Page Styles */
 .wrapper {
   display: flex;
   justify-content: center;
@@ -330,11 +219,6 @@ li {
   border-radius: 4px;
 }
 
-.flex {
-  display: flex;
-  justify-content: center;
-}
-
 .submit-btn {
   width: 100%;
   padding: 10px;
@@ -355,32 +239,7 @@ li {
   text-align: center;
 }
 
-/* Login component specific styles */
-.heading {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* Signup component specific styles */
-.form h3 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.form p {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.form p a {
-  color: #007bff;
-}
-
-/* Output component specific styles */
+/* Output Component Styles */
 .output-card {
   margin: 20px auto;
   width: 90%;
@@ -392,21 +251,10 @@ li {
   overflow-x: auto;
 }
 
-.complexity-constant {
-  background-color: #e0f7fa;
-}
-
-.complexity-logarithmic {
-  background-color: #ffe0b2;
-}
-
-.complexity-linear {
-  background-color: #ffccbc;
-}
-
-.complexity-quadratic {
-  background-color: #ffab91;
-}
+.complexity-constant { background-color: #e0f7fa; }
+.complexity-logarithmic { background-color: #ffe0b2; }
+.complexity-linear { background-color: #ffccbc; }
+.complexity-quadratic { background-color: #ffab91; }
 
 .overall-complexity {
   margin-top: 20px;
@@ -414,7 +262,8 @@ li {
   text-align: center;
 }
 
-.logo-image {
-  width: 100px; /* Adjust the size as needed */
-  height: auto;
+.user-icon {
+  font-size: 24px;
+  margin-left: 10px;
+  color: #fff;
 }

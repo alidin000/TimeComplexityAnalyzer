@@ -17,7 +17,7 @@ from analyzer.graph_fitting import parse_and_analyze
 def extract_call_template(user_code, language):
     patterns = {
         'java': r"(?:public\s+)?(?:static\s+)?\w+\s+(\w+)\s*\(",
-        'cpp': r"\b\w+\s+(\w+)\s*\([^)]*\)\s*{",
+        'cpp': r"\b(?:\w+\s+)*(\w+)\s*\([^)]*\)\s*{",
         'python': r"def\s+(\w+)\s*\(",
     }
     regex = patterns.get(language.lower())
@@ -82,7 +82,7 @@ def handle_cpp_code(user_code, call_template):
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
-        print("Running didn't work, or reading output file didn't work:", e.args)
+        print("Running didn't work, or reading output file didn't work:", e)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 

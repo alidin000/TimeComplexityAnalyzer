@@ -1,24 +1,22 @@
-// src/App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CssBaseline, Box } from '@mui/material';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CalculatorPage from './components/CalculatorPage';
 import LearningPage from './components/LearningPage';
 import Login from './components/Login';
-import SignUp from './components/SignUp';
-import Output from './components/Output';
+import Signup from './components/SignUp';
 import './App.css';
 import 'primeflex/primeflex.css';
 
-
-function App() {
+const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
 
   const handleLogin = (user) => {
     setIsLoggedIn(true);
-    setUsername(user); 
+    setUsername(user);
   };
 
   const handleLogout = () => {
@@ -28,24 +26,21 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <CssBaseline />
+      <Box display="flex" flexDirection="column" minHeight="100vh">
         <Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-        <Routes>
-          <Route
-            path="/"
-            element={<CalculatorPage isAuthenticated={isLoggedIn} currentUser={username} />}
-          />
-          <Route path="/learning" element={<LearningPage />} />
-          <Route
-            path="/login"
-            element={<Login handleLogin={handleLogin} />}
-          />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
+        <Box flex={1}>
+          <Routes>
+            <Route path="/" element={<CalculatorPage isAuthenticated={isLoggedIn} currentUser={username} />} />
+            <Route path="/learning" element={<LearningPage />} />
+            <Route path="/login" element={<Login handleLogin={handleLogin} />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </Box>
         <Footer />
-      </div>
+      </Box>
     </Router>
   );
-}
+};
 
 export default App;

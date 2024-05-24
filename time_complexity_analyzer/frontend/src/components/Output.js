@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
-import Paper from '@mui/material/Paper';
+import { Paper, Box, Typography } from '@mui/material';
 
 function Output({ outputText = '', results = [] }) {
   useEffect(() => {
@@ -34,10 +34,10 @@ function Output({ outputText = '', results = [] }) {
   };
 
   return (
-    <div className="card surface-700 output-card">
-      <Paper elevation={3} variant="outlined" className="output-paper">
+    <Box className="card surface-700 output-card" p={2}>
+      <Paper elevation={3} variant="outlined" className="output-paper" sx={{ p: 2 }}>
         <pre>
-          <code className="language-java"> {/* Update this class based on the detected language */}
+          <code className="language-java">
             {results.map((result, index) => (
               <div key={index} className={getLineClassName(result.complexity)}>
                 {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
@@ -45,11 +45,11 @@ function Output({ outputText = '', results = [] }) {
             ))}
           </code>
         </pre>
-        <div className="overall-complexity">
+        <Typography variant="h6" mt={2}>
           Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord}
-        </div>
+        </Typography>
       </Paper>
-    </div>
+    </Box>
   );
 }
 

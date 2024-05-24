@@ -1,68 +1,89 @@
-// Header.jsx
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton, Typography, Button, Menu, MenuItem, Box } from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import logo from '../assets/logo.png';
 
 const Header = ({ isLoggedIn, handleLogout }) => {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
-    <header>
-      <div className="logo">
-        <img src={logo} alt="Logo" className="logo-image" />
-      </div>
-      <nav>
-        <ul>
-          {currentPath === '/learning' ? (
-            <>
-              <li>
-                <NavLink to="/" activeclassname="active" exact="true" className="link-style">
-                  CALCULATOR
-                </NavLink>
-              </li>
-            </>
-          ) : (
-            <li>
-              <NavLink to="/learning" activeclassname="active" exact="true" className="link-style">
-                LEARNING
-              </NavLink>
-            </li>
-          )}
-          <li>
-            <NavLink to="/about-us" activeclassname="active" className="link-style">
-              ABOUT US
-            </NavLink>
-          </li>
+    <AppBar position="static">
+      <Toolbar>
+        <Box className="header-left">
+          <IconButton edge="start" color="inherit" aria-label="logo">
+            <img src={logo} alt="Logo" className="logo-image" />
+          </IconButton>
+        </Box>
+        <Box className="header-center">
+          <Typography variant="h6">
+            {currentPath === '/learning' ? 'Learning' : 'Calculator'}
+          </Typography>
+        </Box>
+        <Box className="header-right">
+          <Button color="inherit" component={NavLink} to="/" exact>
+            CALCULATOR
+          </Button>
+          <Button color="inherit" component={NavLink} to="/learning" exact>
+            LEARNING
+          </Button>
+          <Button color="inherit" component={NavLink} to="/about-us">
+            ABOUT US
+          </Button>
           {isLoggedIn ? (
-            <li>
-              <button onClick={handleLogout} className="link-style">
-                Logout
-              </button>
-            </li>
+            <>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
           ) : (
             <>
-              <li>
-                <NavLink to="/login" activeclassname="active" className="link-style">
-                  Login
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/signup" activeclassname="active" className="link-style">
-                  Sign Up
-                </NavLink>
-              </li>
+              <Button color="inherit" component={NavLink} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={NavLink} to="/signup">
+                Sign Up
+              </Button>
             </>
           )}
-        </ul>
-        {isLoggedIn && (
-        <div className="user-icon">
-          {/* Use Font Awesome user icon */}
-          <i className="fas fa-user"></i>
-        </div>
-      )}
-      </nav>
-    </header>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

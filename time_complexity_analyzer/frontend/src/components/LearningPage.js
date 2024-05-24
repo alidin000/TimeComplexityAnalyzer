@@ -1,43 +1,53 @@
 import React, { useState } from "react";
+import { Card, CardContent, Typography, Button, Tabs, Tab, Box, Select, MenuItem } from "@mui/material";
 import algorithmsData from '../data_files/algorithmsData.json';
-
 
 const LearningPage = () => {
   const [selectedTab, setSelectedTab] = useState('Algorithms');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(algorithmsData[0].name);
 
-  const handleTabChange = (tab) => {
-    setSelectedTab(tab);
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
   };
 
   return (
-    <div className="learning-page" style={{ display: 'flex', flexDirection: 'row' }}>
-      <div className="left-panel" style={{ width: '200px', marginRight: '20px' }}>
-        <h2 className="subtopics-heading">Algorithm Topics</h2>
-        <div className="card">
-          <AlgorithmTopicsList onSelect={setSelectedAlgorithm} />
-        </div>
-      </div>
-      <div className="right-panel" style={{ flex: 1 }}>
-        <div className="tab-switcher">
-          <TabButton onClick={() => handleTabChange('Algorithms')} active={selectedTab === 'Algorithms'}>Algorithms</TabButton>
-          <TabButton onClick={() => handleTabChange('Quizzes')} active={selectedTab === 'Quizzes'}>Quizzes</TabButton>
-        </div>
-        <div className="topics-section">
-          {selectedTab === 'Algorithms' ? <AlgorithmsContent algorithmName={selectedAlgorithm} /> : <QuizzesContent algorithm={algorithmsData.find(algo => algo.name === selectedAlgorithm)} />}
-        </div>
-      </div>
-    </div>
+    <Box display="flex" flexDirection="row" p={2}>
+      <Box width="200px" mr={2}>
+        <Typography variant="h6" gutterBottom>
+          Algorithm Topics
+        </Typography>
+        <Card>
+          <CardContent>
+            <AlgorithmTopicsList onSelect={setSelectedAlgorithm} />
+          </CardContent>
+        </Card>
+      </Box>
+      <Box flex={1}>
+        <Tabs value={selectedTab} onChange={handleTabChange}>
+          <Tab label="Algorithms" value="Algorithms" />
+          <Tab label="Quizzes" value="Quizzes" />
+        </Tabs>
+        <Box mt={2}>
+          {selectedTab === 'Algorithms' ? (
+            <AlgorithmsContent algorithmName={selectedAlgorithm} />
+          ) : (
+            <QuizzesContent algorithm={algorithmsData.find(algo => algo.name === selectedAlgorithm)} />
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
 const AlgorithmTopicsList = ({ onSelect }) => {
   return (
-    <div className="algorithm-topics-list" style={{ display: 'flex', flexDirection: 'column' }}>
+    <Box display="flex" flexDirection="column">
       {algorithmsData.map((algo, index) => (
-        <button key={index} onClick={() => onSelect(algo.name)} style={{ padding: '10px', margin: '5px 0', textAlign: 'left', width: '100%' }}>{algo.name}</button>
+        <Button key={index} onClick={() => onSelect(algo.name)} sx={{ textAlign: 'left' }}>
+          {algo.name}
+        </Button>
       ))}
-    </div>
+    </Box>
   );
 };
 
@@ -49,36 +59,50 @@ const AlgorithmsContent = ({ algorithmName }) => {
   const renderContent = () => {
     switch (selectedSwitcher) {
       case 'Description':
-        return <p>{algorithm.description}</p>;
+        return <Typography>{algorithm.description}</Typography>;
       case 'Code':
         return (
-          <div>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="java">Java</option>
-            </select>
+          <Box>
+            <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <MenuItem value="python">Python</MenuItem>
+              <MenuItem value="javascript">JavaScript</MenuItem>
+              <MenuItem value="java">Java</MenuItem>
+            </Select>
             <pre>{algorithm.code[language]}</pre>
-          </div>
+          </Box>
         );
       case 'Visualization':
-        return <iframe src={algorithm.video} title="Algorithm Visualization" width="560" height="315" allowFullScreen></iframe>;
+        return (
+          <iframe
+            src={algorithm.video}
+            title="Algorithm Visualization"
+            width="560"
+            height="315"
+            allowFullScreen
+          ></iframe>
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="algorithms-content">
-      <div className="switchers">
-        <SwitcherButton onClick={() => setSelectedSwitcher('Description')} active={selectedSwitcher === 'Description'}>Description</SwitcherButton>
-        <SwitcherButton onClick={() => setSelectedSwitcher('Code')} active={selectedSwitcher === 'Code'}>Code</SwitcherButton>
-        <SwitcherButton onClick={() => setSelectedSwitcher('Visualization')} active={selectedSwitcher === 'Visualization'}>Visualization</SwitcherButton>
-      </div>
-      <div className="output">
+    <Card>
+      <CardContent>
+        <Box display="flex" mb={2}>
+          <Button onClick={() => setSelectedSwitcher('Description')} variant={selectedSwitcher === 'Description' ? 'contained' : 'outlined'}>
+            Description
+          </Button>
+          <Button onClick={() => setSelectedSwitcher('Code')} variant={selectedSwitcher === 'Code' ? 'contained' : 'outlined'}>
+            Code
+          </Button>
+          <Button onClick={() => setSelectedSwitcher('Visualization')} variant={selectedSwitcher === 'Visualization' ? 'contained' : 'outlined'}>
+            Visualization
+          </Button>
+        </Box>
         {renderContent()}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -86,7 +110,7 @@ const QuizzesContent = ({ algorithm }) => {
   if (algorithm && algorithm.quiz && algorithm.quiz.length > 0) {
     return <QuizComponent quizData={algorithm.quiz} />;
   } else {
-    return <p>No quiz available for this algorithm.</p>;
+    return <Typography>No quiz available for this algorithm.</Typography>;
   }
 };
 
@@ -102,44 +126,39 @@ const QuizComponent = ({ quizData }) => {
     const nextQuestionIndex = currentQuestionIndex + 1;
     if (nextQuestionIndex < quizData.length) {
       setCurrentQuestionIndex(nextQuestionIndex);
-      setSelectedOption(null); 
+      setSelectedOption(null);
     } else {
       alert(`Quiz completed. You scored ${correctAnswers} out of ${quizData.length}`);
-      setCurrentQuestionIndex(0); 
-      setCorrectAnswers(0); 
+      setCurrentQuestionIndex(0);
+      setCorrectAnswers(0);
       setSelectedOption(null);
     }
   };
 
   if (!quizData || quizData.length === 0 || !quizData[currentQuestionIndex].options) {
-    return <p>No quiz or quiz options available.</p>;
+    return <Typography>No quiz or quiz options available.</Typography>;
   }
 
   return (
-    <div>
-      <h3>{quizData[currentQuestionIndex].question}</h3>
-      {quizData[currentQuestionIndex].options.map((option, index) => (
-        <button key={index} onClick={() => setSelectedOption(option)} className={selectedOption === option ? 'selected' : ''}>{option}</button>
-      ))}
-      <button onClick={handleAnswer} disabled={!selectedOption}>Submit</button>
-    </div>
-  );
-};
-
-
-const TabButton = ({ onClick, active, children }) => {
-  return (
-    <button className={`tab-button ${active ? 'active' : ''}`} onClick={onClick}>
-      {children}
-    </button>
-  );
-};
-
-const SwitcherButton = ({ onClick, active, children }) => {
-  return (
-    <button className={`switcher-button ${active ? 'active' : ''}`} onClick={onClick}>
-      {children}
-    </button>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">{quizData[currentQuestionIndex].question}</Typography>
+        {quizData[currentQuestionIndex].options.map((option, index) => (
+          <Button
+            key={index}
+            onClick={() => setSelectedOption(option)}
+            variant={selectedOption === option ? 'contained' : 'outlined'}
+            fullWidth
+            sx={{ my: 1 }}
+          >
+            {option}
+          </Button>
+        ))}
+        <Button onClick={handleAnswer} disabled={!selectedOption} variant="contained" color="primary">
+          Submit
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 

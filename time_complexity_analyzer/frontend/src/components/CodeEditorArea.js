@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CodeEditor from '@uiw/react-textarea-code-editor';
+import { Card, CardContent } from "@mui/material";
 
 export default function CodeEditorArea({ language, code, onCodeChange }) {
   const [localCode, setLocalCode] = useState(code);
@@ -15,10 +16,9 @@ export default function CodeEditorArea({ language, code, onCodeChange }) {
   };
 
   return (
-    <div className="flex flex-column">
-      <div className="card flex flex-column">
+    <Card className="w-100 mt-3">
+      <CardContent>
         <CodeEditor
-          className="w-30rem h-20rem overflow-scroll"
           value={localCode}
           language={language}
           placeholder={`Please enter ${language} code.`}
@@ -27,10 +27,13 @@ export default function CodeEditorArea({ language, code, onCodeChange }) {
           rows={25}
           style={{
             backgroundColor: "#f5f5f5",
-            fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+            fontFamily: 'ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace',
+            fontSize: 14,
+            height: '100%',
+            overflow: 'auto',
           }}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

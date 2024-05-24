@@ -85,22 +85,29 @@ int main() {{
 
     instrumented_lines = [cpp_prolog]
     lines = user_function.strip().split('\n')
-    closing_brace_index = len(lines) - lines[::-1].index('}') - 1
+
+    closing_brace_index = None
+    for i, line in enumerate(lines):
+        if line.strip() == '}':
+            closing_brace_index = i
+            break
+
+    if closing_brace_index is None:
+        raise ValueError("No closing brace '}' found in the function body")
 
     instrumented_lines.append(lines[0])
 
     for i, line in enumerate(lines[1:closing_brace_index], start=1):
-        if line.strip() and line.strip() != "}":  
+        if line.strip() and line.strip() != "}":
             instrumented_line = f"""
             lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();
             {line}
             lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - getLastLineInfo({i})).count();"""
             instrumented_lines.append(instrumented_line)
         else:
-            instrumented_lines.append(line)  
+            instrumented_lines.append(line)
 
-    instrumented_lines.append('    ' + lines[closing_brace_index])
-
+    instrumented_lines.append(lines[closing_brace_index])
     instrumented_lines.append(cpp_epilog)
 
     instrumented_function = "\n".join(instrumented_lines)
@@ -135,7 +142,7 @@ def run_cpp_analysis(call, user_function, num_inputs=10):
     executable_path = os.path.join(script_dir, cpp_file_name)
 
     instrumented_code = instrument_cpp_function(call, user_function, num_inputs)
-
+    print("here we go")
     write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path)
 
     run_cpp_program(executable_path)
