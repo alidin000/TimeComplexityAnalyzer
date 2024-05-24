@@ -37,7 +37,7 @@ public:
         srand(time(0)); 
 
         for (int i = 0; i < size; ++i) {{
-            array[i] = rand() % 100;  //TODO: Needs to be changed later, according to user constraints
+            array[i] = rand() % 100;
         }}
 
         return array;
@@ -49,25 +49,15 @@ public:
         {call}
         lineInfoTotal[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - functionStartTime).count(); // Total function execution time
     }}
-
-    void saveResults(int size) {{
-        std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt", std::ios::app);
-        outFile << "size = " << size << "\\n";
-        outFile << "Function execution time: " << lineInfoTotal[0] << " ns\\n";
-        outFile << "{{";
-        bool isFirst = true;
-        for (auto it = ++lineInfoTotal.begin(); it != lineInfoTotal.end(); ++it) {{
-            if (!isFirst) outFile << ", ";
-            isFirst = false;
-            outFile << it->first << "=" << it->second;
-        }}
-        outFile << "}}\\n";
-        outFile.close();
-    }}
 }};
 
 int main() {{
-    std::ofstream outFile("time_complexity_analyzer/analyzer/output_cpp.txt");
+    std::ofstream outFile("output_cpp.txt");
+    if (!outFile) {{
+        std::cerr << "Error: Could not open the file for writing." << std::endl;
+        return 1; // Return an error code
+    }}
+
     for(int i = 0; i < {num_inputs}; i++) {{
         InstrumentedPrototype p;
         std::vector<int> array = p.generateRandomArray(i + 1);
@@ -118,7 +108,9 @@ def write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path):
         cpp_file.write(instrumented_code)
 
     compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
-    subprocess.run(compile_command, shell=True)
+    result = subprocess.run(compile_command, shell=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Compilation failed with return code {result.returncode}")
 
 def run_cpp_program(executable_path):
     if platform.system() == "Windows":
@@ -126,7 +118,9 @@ def run_cpp_program(executable_path):
     else:
         run_command = f"./{executable_path}"
 
-    subprocess.run(run_command, shell=True)
+    result = subprocess.run(run_command, shell=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"Execution failed with return code {result.returncode}")
 
 def run_cpp_analysis(call, user_function, num_inputs=10):
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -141,20 +135,12 @@ def run_cpp_analysis(call, user_function, num_inputs=10):
     run_cpp_program(executable_path)
 
 # Example usage
-# call = "findMaximum(array);"
+# call = "squareArray(array);"
 # user_function = """
-# int findMaximum(const std::vector<int>& array) {
-#     if (array.empty()) {
-#         throw std::runtime_error("Cannot find maximum in an empty array.");
+# void squareArray(std::vector<int>& arr) {
+#     for (int i = 0; i < arr.size(); ++i) {
+#         arr[i] = arr[i] * arr[i];
 #     }
-
-#     int max = array[0];
-#     for (int i = 1; i < array.size(); ++i) {
-#         if (array[i] > max) {
-#             max = array[i];
-#         }
-#     }
-#     return max;
 # }
 # """
 # num_inputs = 50

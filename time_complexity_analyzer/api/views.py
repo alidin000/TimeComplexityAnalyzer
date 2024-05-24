@@ -11,13 +11,13 @@ from rest_framework.decorators import api_view
 
 from analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
 from analyzer.analyzer_python import run_instrumented_python_code
-from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
+from analyzer.analyzer_cpp import run_cpp_analysis
 from analyzer.graph_fitting import parse_and_analyze
 
 def extract_call_template(user_code, language):
     patterns = {
         'java': r"(?:public\s+)?(?:static\s+)?\w+\s+(\w+)\s*\(",
-        'cpp': r"\b\w+\s+\w+\s*\([^)]*\)\s*{",
+        'cpp': r"\b\w+\s+(\w+)\s*\([^)]*\)\s*{",
         'python': r"def\s+(\w+)\s*\(",
     }
     regex = patterns.get(language.lower())
@@ -30,7 +30,7 @@ def extract_call_template(user_code, language):
 
     function_name = match.group(1)
     if language.lower() == 'cpp':
-        call_template = f"{function_name}(generateInput(size)); // Adjust for C++ specifics if necessary"
+        call_template = f"{function_name}(array);"
     elif language.lower() == 'java':
         call_template = f"p.{function_name}(generateInput(size));"
     else:
@@ -44,23 +44,22 @@ def analyse_code(request):
     code_serializer = CodeSerializer(data=code_data)
 
     print("Incoming data: ", code_serializer.initial_data)
-
     if code_serializer.is_valid():
         code_serializer.save()
-        user_code = code_serializer.validated_data.get('code')  
-        language = code_serializer.validated_data.get('language', 'java').lower() 
+        user_code = code_serializer.validated_data.get('code')
+        language = code_serializer.validated_data.get('language', 'java').lower()
         call_template = extract_call_template(user_code, language)
         language_map = {
             'java': handle_java_code,
             'cpp': handle_cpp_code,
             'python': handle_python_code
         }
-
         if language in language_map:
             return language_map[language](user_code, call_template)
         else:
             return Response({"error": f"Language '{language}' not supported for analysis."}, status=status.HTTP_400_BAD_REQUEST)
     else:
+        print("Validation errors: ", code_serializer.errors)
         return Response(code_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def handle_java_code(user_code, call_template):
@@ -78,9 +77,7 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=50)
-        write_and_compile_cpp(cpp_code)
-        run_cpp_program()
+        run_cpp_analysis(call_template ,user_code, num_inputs=50)
         output_file_path = os.path.join(os.getcwd(), "analyzer", "output_cpp.txt")
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)

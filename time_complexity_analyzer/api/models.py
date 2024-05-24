@@ -12,7 +12,7 @@ class UserProfile(models.Model):
 class Code(models.Model):
     LANGUAGES = (
         ('Python', 'Python'),
-        ('C++', 'C++'),
+        ('Cpp', 'Cpp'),
         ('Java', 'Java'),
     )
 
