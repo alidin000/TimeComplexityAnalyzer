@@ -5,7 +5,7 @@
 <h2>Key Features:</h2>
 <ul>
     <li><strong>Multi-Language Support</strong>: Analyze and compare code efficiency in Java, C++, and Python.</li>
-    <li><strong>Algorithm Visualizations</strong>: Engage with dynamic visualizations that illustrate how your code performs under various conditions.</li>
+    <li><strong>Algorithm Learning</strong>: Engage with different types of algorithms and data structures.</li>
     <li><strong>Interactive Quizzes</strong>: Test your understanding and apply what you've learned through interactive quizzes tailored to each programming language.</li>
 </ul>
 
