@@ -104,6 +104,8 @@ def handle_python_code(user_code, call_template):
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+from rest_framework.exceptions import NotFound, ValidationError
+
 class CodeViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Code.objects.all()
@@ -123,12 +125,18 @@ class CodeViewSet(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        code = self.queryset.get(id=pk)
+        try:
+            code = self.queryset.get(id=pk)
+        except Code.DoesNotExist:
+            raise NotFound("Code not found.")
         serializer = self.serializer_class(code)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        code = self.queryset.get(id=pk)
+        try:
+            code = self.queryset.get(id=pk)
+        except Code.DoesNotExist:
+            raise NotFound("Code not found.")
         serializer = self.serializer_class(code, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -137,7 +145,10 @@ class CodeViewSet(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        code = self.queryset.get(id=pk)
+        try:
+            code = self.queryset.get(id=pk)
+        except Code.DoesNotExist:
+            raise NotFound("Code not found.")
         code.delete()
         return Response({"message": "Code snippet deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
@@ -161,12 +172,18 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        user = self.queryset.get(id=pk)
+        try:
+            user = self.queryset.get(id=pk)
+        except User.DoesNotExist:
+            raise NotFound("User not found.")
         serializer = self.serializer_class(user)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
-        user = self.queryset.get(id=pk)
+        try:
+            user = self.queryset.get(id=pk)
+        except User.DoesNotExist:
+            raise NotFound("User not found.")
         serializer = self.serializer_class(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -175,13 +192,19 @@ class UserViewSet(viewsets.ViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        user = self.queryset.get(id=pk)
+        try:
+            user = self.queryset.get(id=pk)
+        except User.DoesNotExist:
+            raise NotFound("User not found.")
         user.delete()
         return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
 
     def login(self, request):
         username = request.data.get('username', None)
         password = request.data.get('password', None)
+
+        if not username or not password:
+            return Response({"detail": "Username and password are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = authenticate(request, username=username, password=password)
 
