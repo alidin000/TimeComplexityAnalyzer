@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Card, CardContent, Button, Select, MenuItem, Typography, FormControl, InputLabel, Box } from "@mui/material";
 import CodeEditorArea from "./CodeEditorArea";
-import Output from "./Output";
+import Output from "./CodeOut";
 import AxiosInstance from "./Axios";
 import InfoSection from "./InfoSection";
 
