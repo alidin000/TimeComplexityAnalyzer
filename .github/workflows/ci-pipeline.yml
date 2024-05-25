@@ -16,17 +16,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - run: npm ci
-      working-directory: ./frontend
+      working-directory: ./time_complexity_analyzer/frontend
+
     - run: npm run build --if-present
-      working-directory: ./frontend
+      working-directory: ./time_complexity_analyzer/frontend
+
     - run: npm test
-      working-directory: ./frontend
+      working-directory: ./time_complexity_analyzer/frontend
 
   test-django:
     runs-on: ubuntu-latest
