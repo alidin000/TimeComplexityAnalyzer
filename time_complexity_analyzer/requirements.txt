@@ -5,3 +5,5 @@ pytest>=6.2
 pytest-django>=4.1
 djangorestframework-simplejwt>=4.8
 django-cors-headers>=3.7
+numpy>=1.21.0
+scipy>=1.7.0

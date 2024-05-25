@@ -175,7 +175,8 @@ class APITests(TestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('password', response.data)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'Username and password are required.')
 
 
 class SerializerTests(TestCase):
