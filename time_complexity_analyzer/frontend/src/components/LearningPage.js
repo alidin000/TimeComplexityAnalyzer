@@ -41,7 +41,7 @@ const LearningPage = () => {
 
 const AlgorithmTopicsList = ({ onSelect }) => {
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" maxHeight="400px" overflow="auto">
       {algorithmsData.map((algo, index) => (
         <Button key={index} onClick={() => onSelect(algo.name)} sx={{ textAlign: 'left' }}>
           {algo.name}
