@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
-import { Paper, Box, Typography } from '@mui/material';
+import { Card, CardContent, Box, Typography } from '@mui/material';
 
 function Output({ outputText = '', results = [] }) {
   useEffect(() => {
@@ -34,21 +34,23 @@ function Output({ outputText = '', results = [] }) {
   };
 
   return (
-    <Box className="card surface-700 output-card" p={2}>
-      <Paper elevation={3} variant="outlined" className="output-paper" sx={{ p: 2 }}>
-        <pre>
-          <code className="language-java">
-            {results.map((result, index) => (
-              <div key={index} className={getLineClassName(result.complexity)}>
-                {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
-              </div>
-            ))}
-          </code>
-        </pre>
-        <Typography variant="h6" mt={2}>
-          Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord}
-        </Typography>
-      </Paper>
+    <Box className="output-container" p={2}>
+      <Card className="output-card">
+        <CardContent>
+          <pre style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px', overflow: 'auto' }}>
+            <code className="language-python">
+              {results.map((result, index) => (
+                <div key={index} className={getLineClassName(result.complexity)}>
+                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
+                </div>
+              ))}
+            </code>
+          </pre>
+          <Typography className="overall-complexity" variant="h6" mt={2}>
+            Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord}
+          </Typography>
+        </CardContent>
+      </Card>
     </Box>
   );
 }

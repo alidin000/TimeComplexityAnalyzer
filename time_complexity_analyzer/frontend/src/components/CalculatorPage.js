@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, CardContent, Button, Select, MenuItem, Typography } from "@mui/material";
+import { Container, Card, CardContent, Button, Select, MenuItem, Typography, FormControl, InputLabel, Box } from "@mui/material";
 import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
 import AxiosInstance from "./Axios";
@@ -55,6 +55,8 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
   useEffect(() => {
     setCode(defaultCodes[language]);
+    setOutputText("// Output will be displayed here");
+    setResults([]);
   }, [language]);
 
   const handleLanguageChange = (selectedLanguage) => {
@@ -141,12 +143,21 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     <Container>
       <Card className="mt-4">
         <CardContent>
-          <Typography variant="h6">Select Language:</Typography>
-          <Select value={language} onChange={(e) => handleLanguageChange(e.target.value)}>
-            <MenuItem value="Java">Java</MenuItem>
-            <MenuItem value="Python">Python</MenuItem>
-            <MenuItem value="Cpp">C++</MenuItem>
-          </Select>
+          <Box display="flex" justifyContent="center">
+            <FormControl variant="outlined" sx={{ width: 200 }}>
+              <InputLabel id="language-select-label">Language</InputLabel>
+              <Select
+                labelId="language-select-label"
+                value={language}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                label="Language"
+              >
+                <MenuItem value="Java">Java</MenuItem>
+                <MenuItem value="Python">Python</MenuItem>
+                <MenuItem value="Cpp">C++</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </CardContent>
       </Card>
       <div className="flex flex-row mt-3">

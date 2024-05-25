@@ -240,21 +240,36 @@ footer {
 }
 
 /* Output Component Styles */
-.output-card {
-  margin: 20px auto;
-  width: 90%;
-  max-width: 1000px;
+.output-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.output-paper {
-  padding: 20px;
-  overflow-x: auto;
+.output-card {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+}
+
+.output-card pre {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
 }
 
 .complexity-constant { background-color: #e0f7fa; }
 .complexity-logarithmic { background-color: #ffe0b2; }
 .complexity-linear { background-color: #ffccbc; }
 .complexity-quadratic { background-color: #ffab91; }
+.complexity-exponential { background-color: #ffcdd2; }
+.complexity-cubic { background-color: #d1c4e9; }
+.complexity-log-linear { background-color: #f0f4c3; }
+.complexity-factorial { background-color: #ffe0b2; }
+.complexity-polynomial { background-color: #c8e6c9; }
 
 .overall-complexity {
   margin-top: 20px;

@@ -24,12 +24,11 @@ export default function CodeEditorArea({ language, code, onCodeChange }) {
           placeholder={`Please enter ${language} code.`}
           onChange={handleChange}
           padding={15}
-          rows={25}
           style={{
             backgroundColor: "#f5f5f5",
             fontFamily: 'ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace',
             fontSize: 14,
-            height: '100%',
+            height: '400px',
             overflow: 'auto',
           }}
         />
