@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, CardContent, Typography, Button, Tabs, Tab, Box, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, Typography, Button, Tabs, Tab, Box, Select, MenuItem, Link } from "@mui/material";
 import algorithmsData from '../data_files/algorithmsData.json';
 
 const LearningPage = () => {
@@ -51,21 +51,36 @@ const AlgorithmTopicsList = ({ onSelect }) => {
   );
 };
 
+const extractUrl = (description) => {
+  const urlMatch = description.match(/\(https?:\/\/[^\s]+\)/);
+  return urlMatch ? urlMatch[0].slice(1, -1) : null;
+};
+
 const AlgorithmsContent = ({ algorithmName }) => {
   const [selectedSwitcher, setSelectedSwitcher] = useState('Description');
   const [language, setLanguage] = useState('python');
   const algorithm = algorithmsData.find(algo => algo.name === algorithmName);
+  const url = extractUrl(algorithm.description);
 
   const renderContent = () => {
     switch (selectedSwitcher) {
       case 'Description':
-        return <Typography>{algorithm.description}</Typography>;
+        return (
+          <Typography>
+            {algorithm.description.replace(/\[.*\]\(https?:\/\/[^\s]+\)/, '')}
+            {url && (
+              <Link href={url} target="_blank" rel="noopener">
+                Learn more
+              </Link>
+            )}
+          </Typography>
+        );
       case 'Code':
         return (
           <Box>
             <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
               <MenuItem value="python">Python</MenuItem>
-              <MenuItem value="javascript">JavaScript</MenuItem>
+              <MenuItem value="c++">C++</MenuItem>
               <MenuItem value="java">Java</MenuItem>
             </Select>
             <pre>{algorithm.code[language]}</pre>
@@ -73,13 +88,7 @@ const AlgorithmsContent = ({ algorithmName }) => {
         );
       case 'Visualization':
         return (
-          <iframe
-            src={algorithm.video}
-            title="Algorithm Visualization"
-            width="560"
-            height="315"
-            allowFullScreen
-          ></iframe>
+          <Box dangerouslySetInnerHTML={{ __html: algorithm.video }} />
         );
       default:
         return null;
@@ -118,6 +127,7 @@ const QuizComponent = ({ quizData }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
   const handleAnswer = () => {
     if (selectedOption === quizData[currentQuestionIndex].answer) {
@@ -128,15 +138,29 @@ const QuizComponent = ({ quizData }) => {
       setCurrentQuestionIndex(nextQuestionIndex);
       setSelectedOption(null);
     } else {
-      alert(`Quiz completed. You scored ${correctAnswers} out of ${quizData.length}`);
-      setCurrentQuestionIndex(0);
-      setCorrectAnswers(0);
-      setSelectedOption(null);
+      setShowResults(true);
     }
   };
 
-  if (!quizData || quizData.length === 0 || !quizData[currentQuestionIndex].options) {
-    return <Typography>No quiz or quiz options available.</Typography>;
+  const handleRestart = () => {
+    setCurrentQuestionIndex(0);
+    setCorrectAnswers(0);
+    setSelectedOption(null);
+    setShowResults(false);
+  };
+
+  if (showResults) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h6">Quiz Results</Typography>
+          <Typography>You scored {correctAnswers} out of {quizData.length}</Typography>
+          <Button onClick={handleRestart} variant="contained" color="primary">
+            Restart Quiz
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

@@ -7,6 +7,7 @@ import CalculatorPage from './components/CalculatorPage';
 import LearningPage from './components/LearningPage';
 import Login from './components/Login';
 import Signup from './components/SignUp';
+import AboutUs from './components/AboutUs';
 import './App.css';
 import 'primeflex/primeflex.css';
 
@@ -35,6 +36,7 @@ const App = () => {
             <Route path="/learning" element={<LearningPage />} />
             <Route path="/login" element={<Login handleLogin={handleLogin} />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/about-us" element={<AboutUs />} />
           </Routes>
         </Box>
         <Footer />
