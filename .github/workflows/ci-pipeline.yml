@@ -25,15 +25,15 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
-      working-directory: ./time_complexity_analyzer/frontend
+      working-directory: ../time_complexity_analyzer/frontend
 
     - name: Build the project
       run: npm run build --if-present
-      working-directory: ./time_complexity_analyzer/frontend
+      working-directory: ../time_complexity_analyzer/frontend
 
     - name: Run tests
       run: npm test
-      working-directory: ./time_complexity_analyzer/frontend
+      working-directory: ../time_complexity_analyzer/frontend
 
   test-django:
     runs-on: ubuntu-latest
