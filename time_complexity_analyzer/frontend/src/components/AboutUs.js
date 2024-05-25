@@ -10,27 +10,35 @@ const AboutUs = () => {
             About Us
           </Typography>
           <Typography variant="body1" paragraph>
-            Welcome to our website! Our mission is to help you learn about algorithms and data structures, and to provide you with tools to calculate the time complexity of various algorithms with certain limitations.
+            Welcome to our platform! Our mission is to provide you with the tools and knowledge to understand algorithms and data structures comprehensively. We aim to assist you in calculating the time complexity of various algorithms, albeit with certain limitations.
           </Typography>
           <Typography variant="body1" paragraph>
-            On our Learning Page, you'll find comprehensive tutorials and resources to understand different data structures and algorithms. We also offer visualizations to make learning more engaging and effective.
+            On our Learning Page, you will find detailed tutorials and resources designed to help you grasp different data structures and algorithms. We also offer visualizations to make your learning experience more engaging and effective.
           </Typography>
           <Typography variant="body1" paragraph>
-            Use our Calculator Page to estimate the time complexity of your algorithms. This tool is designed to assist you in better understanding how your code performs and to help you optimize it.
+            Utilize our Calculator Page to estimate the time complexity of your algorithms. This tool is crafted to help you gain insights into your code’s performance and to assist in its optimization.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Please note that our tool is not yet perfect and may not always provide accurate results. Further research and development are required to enhance its accuracy.
           </Typography>
           <Typography variant="h5" gutterBottom>
-            Time Complexity Animations
+            A short video about Time Complexity 
           </Typography>
-          <Box mt={2}>
+          <Box mt={2} position="relative" paddingTop="56.25%">
             <iframe
-              width="100%"
-              height="500"
               src="https://www.youtube.com/embed/IA8On-kfxYo?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x"
               title="Time Complexity Animations | Data Structure | Visual How"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%'
+              }}
             ></iframe>
           </Box>
         </CardContent>

@@ -4,7 +4,6 @@ import CodeEditorArea from "./CodeEditorArea";
 import Output from "./Output";
 import AxiosInstance from "./Axios";
 import InfoSection from "./InfoSection";
-import Footer from "./Footer";
 
 const time_complexity_notation = {
   constant: "O(1)",
@@ -17,6 +16,33 @@ const time_complexity_notation = {
   factorial: "O(n!)",
   polynomial: "O(n^k)",
 };
+
+const limitations = {
+  Java: [
+    "Function must be defined as: public type functionName(int[] arr)",
+    "No static methods allowed",
+    "No annotations",
+    "Only one function should be present",
+    "No third-party libraries",
+    "No empty lines or comments"
+  ],
+  Python: [
+    "Function must accept a list as an argument",
+    "Correct indentation is required",
+    "No decorators",
+    "Only one function should be present",
+    "No third-party libraries",
+    "No empty lines or comments"
+  ],
+  Cpp: [
+    "Function must be defined as: type functionName(std::vector<int>& arr)",
+    "No public or private keywords",
+    "Only one function should be present",
+    "No third-party libraries",
+    "No empty lines or comments"
+  ]
+};
+
 
 function CalculatorPage({ isAuthenticated, currentUser }) {
   const [code, setCode] = useState(``);
@@ -175,7 +201,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           </CardContent>
         </Card>
       </div>
-      <InfoSection language={language} />
+      <InfoSection language={language} limitations={limitations[language]} />
     </Container>
   );
 }
