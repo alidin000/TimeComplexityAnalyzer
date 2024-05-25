@@ -20,7 +20,6 @@ class Code(models.Model):
     code = models.TextField()
     language = models.CharField(max_length=100, choices=LANGUAGES)
     time_complexity = models.CharField(max_length=100)
-    space_complexity = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
