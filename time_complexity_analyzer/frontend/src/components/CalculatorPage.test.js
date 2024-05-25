@@ -1,20 +1,22 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CalculatorPage from './CalculatorPage';
 import AxiosInstance from './Axios';
 
 jest.mock('./Axios');
 
-test('renders CalculatorPage component and changes language', () => {
+test('renders language selection dropdown', () => {
   render(<CalculatorPage isAuthenticated={true} currentUser="testUser" />);
-  
   expect(screen.getByLabelText(/Language/i)).toBeInTheDocument();
-  
-  fireEvent.change(screen.getByLabelText(/Language/i), { target: { value: 'Java' } });
-  expect(screen.getByDisplayValue(/Java/i)).toBeInTheDocument();
 });
 
-test('handles Analyse button click', async () => {
+test('changes language and updates code editor', () => {
+  render(<CalculatorPage isAuthenticated={true} currentUser="testUser" />);
+  fireEvent.change(screen.getByLabelText(/Language/i), { target: { value: 'Java' } });
+  expect(screen.getByDisplayValue(/public boolean isSorted/i)).toBeInTheDocument();
+});
+
+test('handles Analyse button click and displays results', async () => {
   AxiosInstance.post.mockResolvedValue({
     data: {
       lines: {
@@ -26,8 +28,9 @@ test('handles Analyse button click', async () => {
   });
 
   render(<CalculatorPage isAuthenticated={true} currentUser="testUser" />);
-  
   fireEvent.click(screen.getByText(/Analyse/i));
-  
-  expect(await screen.findByText(/Overall Function Time Complexity/i)).toBeInTheDocument();
+
+  await waitFor(() => {
+    expect(screen.getByText(/Overall Time Complexity/i)).toBeInTheDocument();
+  });
 });

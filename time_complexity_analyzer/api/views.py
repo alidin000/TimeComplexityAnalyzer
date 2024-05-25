@@ -108,6 +108,7 @@ class CodeViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Code.objects.all()
     serializer_class = CodeSerializer
+
     def list(self, request):
         query_set = self.queryset
         serializer = self.serializer_class(query_set, many=True)
@@ -117,9 +118,9 @@ class CodeViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
         code = self.queryset.get(id=pk)
@@ -133,17 +134,19 @@ class CodeViewSet(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         code = self.queryset.get(id=pk)
         code.delete()
-        return Response({"message": "Code snippet deleted successfully."},status=204)
+        return Response({"message": "Code snippet deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
 
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
     def list(self, request):
         query_set = self.queryset
         serializer = self.serializer_class(query_set, many=True)
@@ -153,9 +156,9 @@ class UserViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
         user = self.queryset.get(id=pk)
@@ -169,13 +172,13 @@ class UserViewSet(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=400)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
         user = self.queryset.get(id=pk)
         user.delete()
-        return Response({"message": "User deleted successfully."},status=204)
-    
+        return Response({"message": "User deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
     def login(self, request):
         username = request.data.get('username', None)
         password = request.data.get('password', None)
@@ -187,5 +190,4 @@ class UserViewSet(viewsets.ViewSet):
             serializer = self.serializer_class(user)
             return Response(f'successfully logged in :{serializer.data}')
         else:
-            print("errors: ",request.data)
-            return Response("Invalid username ordsad password", status=status.HTTP_401_UNAUTHORIZED)
+            return Response("Invalid username or password", status=status.HTTP_401_UNAUTHORIZED)

@@ -3,7 +3,19 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Login from './Login';
 
-test('renders Login component and handles login', () => {
+test('renders login form', () => {
+  render(
+    <Router>
+      <Login handleLogin={jest.fn()} />
+    </Router>
+  );
+
+  expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+  expect(screen.getByText(/Submit/i)).toBeInTheDocument();
+});
+
+test('handles login submission', async () => {
   render(
     <Router>
       <Login handleLogin={jest.fn()} />
@@ -12,8 +24,8 @@ test('renders Login component and handles login', () => {
 
   fireEvent.change(screen.getByLabelText(/Username/i), { target: { value: 'testUser' } });
   fireEvent.change(screen.getByLabelText(/Password/i), { target: { value: 'testPassword' } });
-
   fireEvent.click(screen.getByText(/Submit/i));
 
-  expect(screen.getByText(/Please try again/i)).toBeInTheDocument();
+  // Assuming you handle login and navigate elsewhere
+  expect(await screen.findByText(/Please try again/i)).toBeInTheDocument();
 });
