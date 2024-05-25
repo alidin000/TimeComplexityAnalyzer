@@ -10,11 +10,11 @@ test('renders header links when not logged in', () => {
     </Router>
   );
 
-  expect(screen.getByText(/CALCULATOR/i)).toBeInTheDocument();
-  expect(screen.getByText(/LEARNING/i)).toBeInTheDocument();
-  expect(screen.getByText(/ABOUT US/i)).toBeInTheDocument();
-  expect(screen.getByText(/Login/i)).toBeInTheDocument();
-  expect(screen.getByText(/Sign Up/i)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /CALCULATOR/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /LEARNING/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /ABOUT US/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Login/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /Sign Up/i })).toBeInTheDocument();
 });
 
 test('renders header links when logged in', () => {
@@ -24,9 +24,9 @@ test('renders header links when logged in', () => {
     </Router>
   );
 
-  expect(screen.getByText(/CALCULATOR/i)).toBeInTheDocument();
-  expect(screen.getByText(/LEARNING/i)).toBeInTheDocument();
-  expect(screen.getByText(/ABOUT US/i)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /CALCULATOR/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /LEARNING/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /ABOUT US/i })).toBeInTheDocument();
   fireEvent.click(screen.getByLabelText(/account of current user/i));
-  expect(screen.getByText(/Logout/i)).toBeInTheDocument();
+  expect(screen.getByRole('menuitem', { name: /Logout/i })).toBeInTheDocument();
 });
