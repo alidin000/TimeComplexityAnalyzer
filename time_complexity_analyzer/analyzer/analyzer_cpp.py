@@ -1,4 +1,4 @@
-import platform
+import re
 import subprocess
 import os
 
@@ -6,19 +6,22 @@ def ensure_directory_exists(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def instrument_cpp_function(call, user_function, num_inputs=10):
+def instrument_cpp_function(user_function, call_template, num_inputs=10):
+    function_name = re.search(r"\b(?:\w+\s+)+(\w+)\s*\(", user_function).group(1)
     cpp_prolog = """
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include <map>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm> // Needed for std::sort and std::swap
 
 class InstrumentedPrototype {
 public:
     std::map<int, std::chrono::high_resolution_clock::time_point> lineInfoLastStart;
     std::map<int, long long> lineInfoTotal;
-    std::chrono::high_resolution_clock::time_point functionStartTime;
 
     InstrumentedPrototype() {
         // Constructor
@@ -36,126 +39,154 @@ public:
     """
 
     cpp_epilog = f"""
-    std::vector<int> generateRandomArray(int size) {{
-        std::vector<int> array(size);
+    std::vector<int> generateInput(int size) {{
+        std::vector<int> input(size);
         srand(time(0)); 
 
         for (int i = 0; i < size; ++i) {{
-            array[i] = rand() % 100;
+            input[i] = rand() % 100;
         }}
 
-        return array;
-    }}
-        
-    void execute(std::vector<int>& _array) {{
-        std::vector<int> array = _array;
-        functionStartTime = std::chrono::high_resolution_clock::now();
-        {call}
-        lineInfoTotal[0] = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - functionStartTime).count(); // Total function execution time
-    }}
-}};
-
-int main() {{
-    std::ofstream outFile("output_cpp.txt");
-    if (!outFile) {{
-        std::cerr << "Error: Could not open the file for writing." << std::endl;
-        return 1; // Return an error code
+        return input;
     }}
 
-    for(int i = 0; i < {num_inputs}; i++) {{
+    void execute(int size) {{
         InstrumentedPrototype p;
-        std::vector<int> array = p.generateRandomArray(i + 1);
-        p.execute(array);
-
-        outFile << "size = " << i+1 << "\\n";
-        outFile << "Function execution time: " << p.lineInfoTotal[0] << " ns\\n";
+        std::vector<int> input = generateInput(size);
+        auto startTime = std::chrono::high_resolution_clock::now();
+        {call_template.replace("$$size$$", "input")}
+        auto endTime = std::chrono::high_resolution_clock::now();
+        long long execTime = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
+        
+        std::ofstream outFile("output_cpp.txt", std::ios_base::app);
+        outFile << "size = " << size << "\\n";
+        outFile << "Function execution time: " << execTime << " ns\\n";
         outFile << "{{";
         bool isFirst = true;
-        for (auto it = ++p.lineInfoTotal.begin(); it != p.lineInfoTotal.end(); ++it) {{
+        for (auto it = p.lineInfoTotal.begin(); it != p.lineInfoTotal.end(); ++it) {{
             if (!isFirst) outFile << ", ";
             isFirst = false;
             outFile << it->first << "=" << it->second;
         }}
         outFile << "}}\\n";
+        outFile.close();
     }}
-    outFile.close();
+
+    void run() {{
+        for (int size = 1; size <= {num_inputs}; ++size) {{
+            execute(size);
+        }}
+    }}
+}};
+
+int main() {{
+    InstrumentedPrototype prototype;
+    prototype.run();
     return 0;
 }}
 """
 
-    instrumented_lines = [cpp_prolog]
-    lines = user_function.strip().split('\n')
-
-    closing_brace_index = None
-    for i, line in enumerate(lines):
-        if line.strip() == '}':
-            closing_brace_index = i
-            break
-
-    if closing_brace_index is None:
-        raise ValueError("No closing brace '}' found in the function body")
-
-    instrumented_lines.append(lines[0])
-
-    for i, line in enumerate(lines[1:closing_brace_index], start=1):
-        if line.strip() and line.strip() != "}":
-            instrumented_line = f"""
-            lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();
-            {line}
-            lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - getLastLineInfo({i})).count();"""
-            instrumented_lines.append(instrumented_line)
+    lines = user_function.strip().splitlines()
+    instrumented_user_function = lines[0]
+    last_line_index = len(lines) - 1
+    for i, line in enumerate(lines[1:], start=2):
+        trimmed_line = line.strip()
+        if not trimmed_line or trimmed_line == '}' or i == last_line_index:
+            instrumented_line = line
+        elif "return" in trimmed_line:
+            instrumented_line = f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n" + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
         else:
-            instrumented_lines.append(line)
+            instrumented_line = (
+                f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
+                + line + "\n"
+                + f"this->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+            )
+        instrumented_user_function += "\n" + instrumented_line
 
-    instrumented_lines.append(lines[closing_brace_index])
-    instrumented_lines.append(cpp_epilog)
+    full_cpp_code = cpp_prolog + instrumented_user_function + cpp_epilog
+    return full_cpp_code
 
-    instrumented_function = "\n".join(instrumented_lines)
+def write_and_compile_cpp(cpp_code):
+    cpp_file_dir = os.path.dirname(__file__)
+    cpp_file_path = os.path.join(cpp_file_dir, "InstrumentedPrototype.cpp")
 
-    return instrumented_function
-
-def write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path):
     with open(cpp_file_path, "w") as cpp_file:
-        cpp_file.write(instrumented_code)
+        cpp_file.write(cpp_code)
+    
+    subprocess.run(["g++", "-std=c++14", cpp_file_path, "-o", os.path.join(cpp_file_dir, "InstrumentedPrototype")], check=True)
 
-    compile_command = f"g++ -std=c++14 {cpp_file_path} -o {executable_path}"
-    result = subprocess.run(compile_command, shell=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"Compilation failed with return code {result.returncode}")
-
-def run_cpp_program(executable_path):
-    if platform.system() == "Windows":
-        run_command = f"{executable_path}.exe"
-    else:
-        run_command = f"./{executable_path}"
-
-    result = subprocess.run(run_command, shell=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"Execution failed with return code {result.returncode}")
-
-def run_cpp_analysis(call, user_function, num_inputs=10):
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    ensure_directory_exists(script_dir)
-
-    cpp_file_name = "InstrumentedPrototype"
-    cpp_file_path = os.path.join(script_dir, f"{cpp_file_name}.cpp")
-    executable_path = os.path.join(script_dir, cpp_file_name)
-
-    instrumented_code = instrument_cpp_function(call, user_function, num_inputs)
-    print("here we go")
-    write_and_compile_cpp(instrumented_code, cpp_file_path, executable_path)
-
-    run_cpp_program(executable_path)
+def run_cpp_program():
+    cpp_file_dir = os.path.dirname(__file__)
+    command = [os.path.join(cpp_file_dir, "InstrumentedPrototype")]
+    subprocess.run(command, check=True)
 
 # Example usage
-# call = "squareArray(array);"
-# user_function = """
-# void squareArray(std::vector<int>& arr) {
+# test_cases = [
+#     {
+#         "user_function": """
+# void sumArray(std::vector<int>& arr) {
+#     int sum = 0;
 #     for (int i = 0; i < arr.size(); ++i) {
-#         arr[i] = arr[i] * arr[i];
+#         sum += arr[i];
 #     }
 # }
-# """
+# """,
+#         "call_template": "p.sumArray($$size$$);"
+#     },
+#     {
+#         "user_function": """
+# void findMax(std::vector<int>& arr) {
+#     if (arr.empty()) return;
+#     int max_val = arr[0];
+#     for (int i = 1; i < arr.size(); ++i) {
+#         if (arr[i] > max_val) {
+#             max_val = arr[i];
+#         }
+#     }
+# }
+# """,
+#         "call_template": "p.findMax($$size$$);"
+#     },
+#     {
+#         "user_function": """
+# void reverseArray(std::vector<int>& arr) {
+#     int n = arr.size();
+#     for (int i = 0; i < n / 2; ++i) {
+#         std::swap(arr[i], arr[n - i - 1]);
+#     }
+# }
+# """,
+#         "call_template": "p.reverseArray($$size$$);"
+#     },
+#     {
+#         "user_function": """
+# void sortArray(std::vector<int>& arr) {
+#     std::sort(arr.begin(), arr.end());
+# }
+# """,
+#         "call_template": "p.sortArray($$size$$);"
+#     },
+#     {
+#         "user_function": """
+# void isSorted(std::vector<int>& arr) {
+#     for (int i = 1; i < arr.size(); ++i) {
+#         if (arr[i] < arr[i - 1]) {
+#             return;
+#         }
+#     }
+# }
+# """,
+#         "call_template": "p.isSorted($$size$$);"
+#     }
+# ]
+
+# # Running all test cases
 # num_inputs = 50
 
-# run_cpp_analysis(call, user_function, num_inputs)
+# for test in test_cases:
+#     user_function = test["user_function"]
+#     call_template = test["call_template"]
+    
+#     cpp_code = instrument_cpp_function(user_function, call_template, num_inputs)
+#     write_and_compile_cpp(cpp_code)
+#     run_cpp_program()

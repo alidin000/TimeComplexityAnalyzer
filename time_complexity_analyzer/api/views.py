@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view
 
 from analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
 from analyzer.analyzer_python import run_instrumented_python_code
-from analyzer.analyzer_cpp import run_cpp_analysis
+from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 from analyzer.graph_fitting import parse_and_analyze
 
 def extract_call_template(user_code, language):
@@ -30,7 +30,7 @@ def extract_call_template(user_code, language):
 
     function_name = match.group(1)
     if language.lower() == 'cpp':
-        call_template = f"{function_name}(array);"
+        call_template = f"p.{function_name}($$size$$);"
     elif language.lower() == 'java':
         call_template = f"p.{function_name}(generateInput(size));"
     else:
@@ -77,14 +77,15 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        run_cpp_analysis(call_template, user_code, num_inputs=50)
+        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=50)
+        write_and_compile_cpp(cpp_code)
+        run_cpp_program()
         output_file_path = os.path.join(os.getcwd(), "output_cpp.txt")
         best_fits = parse_and_analyze(output_file_path)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 def handle_python_code(user_code, call_template):
     try:
@@ -102,7 +103,6 @@ def handle_python_code(user_code, call_template):
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class CodeViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
