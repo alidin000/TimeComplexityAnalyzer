@@ -9,7 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
+    defaults:
+      run:
+        working-directory: ./time_complexity_analyzer/frontend
+    
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x]
@@ -22,18 +26,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: ./time_complexity_analyzer/frontend/package-lock.json
 
-    - name: Install dependencies
-      run: npm ci
-      working-directory: ./time_complexity_analyzer/frontend/
+    - run: npm ci
 
-    - name: Build the project
-      run: npm run build --if-present
-      working-directory: ./time_complexity_analyzer/frontend/
+    - run: npm run build --if-present
 
-    - name: Run tests
-      run: npm test
-      working-directory: ./time_complexity_analyzer/frontend/
+    - run: npm test
 
   test-django:
     runs-on: ubuntu-latest
