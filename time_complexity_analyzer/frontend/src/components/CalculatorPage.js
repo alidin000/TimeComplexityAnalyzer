@@ -128,7 +128,6 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     .catch((error) => {
       console.error("Error:", error.response ? error.response.data : error);
     });
-    console.log("BKLABALLA");
   };
   
 

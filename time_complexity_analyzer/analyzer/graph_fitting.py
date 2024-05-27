@@ -136,7 +136,6 @@ def select_best_fitting_model(x_data, y_data):
 
 def parse_and_analyze(file_paths):
     sizes = [int(path.split('_')[-1].split('.')[0]) for path in file_paths]
-    selected_sizes = [100, 500, 1000]
     aggregated_line_exec_times = {}
     aggregated_function_exec_times = {size: [] for size in sizes}
 
@@ -153,19 +152,19 @@ def parse_and_analyze(file_paths):
     best_fits = {'lines': {}, 'function': None}
 
     for line_num, exec_times_by_size in aggregated_line_exec_times.items():
-        avg_exec_times = [np.mean(exec_times_by_size[size]) for size in selected_sizes if size in exec_times_by_size]
-        x_data = np.array(selected_sizes)
+        avg_exec_times = [np.mean(exec_times_by_size[size]) for size in sizes if size in exec_times_by_size]
+        x_data = np.array(sizes)
         y_data = np.array(avg_exec_times)
         best_fit = select_best_fitting_model(x_data, y_data)
-        avg_exec_time = {size: np.mean(exec_times_by_size[size]) for size in selected_sizes if size in exec_times_by_size}
+        avg_exec_time = {size: np.mean(exec_times_by_size[size]) for size in sizes if size in exec_times_by_size}
         best_fits['lines'][line_num] = {'best_fit': best_fit, 'average_exec_times': avg_exec_time}
 
-    avg_function_exec_times = [np.mean(aggregated_function_exec_times[size]) for size in selected_sizes]
+    avg_function_exec_times = [np.mean(aggregated_function_exec_times[size]) for size in sizes]
     if avg_function_exec_times:
-        x_data = np.array(selected_sizes)
+        x_data = np.array(sizes)
         y_data = np.array(avg_function_exec_times)
         overall_best_fit = select_best_fitting_model(x_data, y_data)
-        avg_exec_time = {size: np.mean(aggregated_function_exec_times[size]) for size in selected_sizes}
+        avg_exec_time = {size: np.mean(aggregated_function_exec_times[size]) for size in sizes}
         best_fits['function'] = {'best_fit': overall_best_fit, 'average_exec_times': avg_exec_time}
 
     return best_fits

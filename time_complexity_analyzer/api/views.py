@@ -113,7 +113,6 @@ def handle_python_code(user_code, call_template):
                 os.remove(output_file_path)
 
             run_instrumented_python_code(user_code, 50, size)
-        print(output_file_paths)
         best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
     except Exception as e:
