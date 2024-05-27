@@ -1,5 +1,8 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box } from '@mui/material';
+import { Card, CardContent, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const complexityColors = {
   constant: 'green',
@@ -28,10 +31,10 @@ function Output({ outputText = '', results = [], error = '' }) {
   });
 
   const renderExecutionTimes = (avgExecTimes) => (
-    <Box sx={{ marginTop: 2 }}>
-      <Typography variant="body2">
+    <Box sx={{ marginTop: 1 }}>
+      <Typography variant="body2" component="div">
         {Object.entries(avgExecTimes).map(([size, time]) => (
-          <span key={size}>{`${size}: ${time.toFixed(2)} ns, `}</span>
+          <Chip key={size} label={`${size}: ${time.toFixed(2)} ns`} sx={{ marginRight: 0.5, marginBottom: 0.5 }} />
         ))}
       </Typography>
     </Box>
@@ -41,26 +44,66 @@ function Output({ outputText = '', results = [], error = '' }) {
     <Card className="output-card" sx={{ marginTop: 2 }}>
       <CardContent>
         {error ? (
-          <Typography variant="h6" color="error" gutterBottom>
-            Can't calculate it. Please check your code and try again.
-          </Typography>
+          <Box display="flex" alignItems="center" color="error.main">
+            <ErrorIcon />
+            <Typography variant="h6" color="error" gutterBottom sx={{ marginLeft: 1 }}>
+              Can't calculate it. Please check your code and try again.
+            </Typography>
+          </Box>
         ) : (
           <>
-            <pre style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px', overflow: 'auto' }}>
-              {results.map((result, index) => (
-                <div key={index} style={getLineStyle(result.complexity)}>
-                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
-                  {result.complexity && renderExecutionTimes(result.avgExecTimes)}
-                </div>
-              ))}
-            </pre>
+            <Accordion defaultExpanded>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="h6">Line-by-Line Analysis</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Line</TableCell>
+                        <TableCell>Code</TableCell>
+                        <TableCell>Complexity</TableCell>
+                        <TableCell>Average Execution Times(size : time)</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {results.map((result, index) => (
+                        <TableRow key={index} style={getLineStyle(result.complexity)}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{result.line}</TableCell>
+                          <TableCell>
+                            {result.complexity ? (
+                              <Chip
+                                label={`${result.notation} {${result.complexity}}`}
+                                style={{ backgroundColor: complexityColors[result.complexity], color: 'white' }}
+                              />
+                            ) : (
+                              'N/A'
+                            )}
+                          </TableCell>
+                          <TableCell>{renderExecutionTimes(result.avgExecTimes)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
             {results.functionComplexity && (
-              <>
-                <Typography className="overall-complexity" variant="h6" mt={2}>
-                  Overall Function Time Complexity: {results.functionNotation} {results.functionComplexityWord}
-                </Typography>
-                {renderExecutionTimes(results.functionAvgExecTimes)}
-              </>
+              <Accordion defaultExpanded>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="h6">Overall Function Analysis</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box>
+                    <Typography variant="h6" className="overall-complexity">
+                      Overall Function Time Complexity: <Chip label={`${results.functionNotation} {${results.functionComplexityWord}}`} style={{ backgroundColor: complexityColors[results.functionComplexity], color: 'white' }} />
+                    </Typography>
+                    {renderExecutionTimes(results.functionAvgExecTimes)}
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
             )}
           </>
         )}

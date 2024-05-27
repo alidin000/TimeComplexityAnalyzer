@@ -186,7 +186,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   };
 
   return (
-    <Container sx={{ maxWidth: "1600px" }}>
+    <Container sx={{ maxWidth: "1800px" }}>
       <Card className="mt-4">
         <CardContent>
           <Box display="flex" justifyContent="center">
@@ -215,7 +215,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
             </Button>
           </CardContent>
         </Card>
-        <Card className="flex-grow-1" sx={{ flex: 2 }}>
+        <Card className="flex-grow-2" sx={{ flex: 3 }}>
           <CardContent>
             <Output outputText={outputText} results={results} error={error} />
           </CardContent>
