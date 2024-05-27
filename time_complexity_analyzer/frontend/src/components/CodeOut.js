@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
-import { Card, CardContent, Box, Typography } from '@mui/material';
+import { Card, CardContent, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 function Output({ outputText = '', results = [] }) {
   useEffect(() => {
@@ -33,6 +33,27 @@ function Output({ outputText = '', results = [] }) {
     }
   };
 
+  const renderExecutionTimes = (avgExecTimes) => (
+    <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <Table size="small" aria-label="execution times table">
+        <TableHead>
+          <TableRow>
+            {Object.keys(avgExecTimes).map(size => (
+              <TableCell key={size} align="center">{size}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            {Object.entries(avgExecTimes).map(([size, time]) => (
+              <TableCell key={size} align="center">{time.toFixed(2)} ns</TableCell>
+            ))}
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+
   return (
     <Box className="output-container" p={2}>
       <Card className="output-card">
@@ -41,14 +62,20 @@ function Output({ outputText = '', results = [] }) {
             <code className="language-python">
               {results.map((result, index) => (
                 <div key={index} className={getLineClassName(result.complexity)}>
-                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}} (Avg times: ${Object.entries(result.avgExecTimes).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ")})` : result.line.trim()}
+                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
+                  {result.complexity && renderExecutionTimes(result.avgExecTimes)}
                 </div>
               ))}
             </code>
           </pre>
-          <Typography className="overall-complexity" variant="h6" mt={2}>
-            Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord} (Avg times: {Object.entries(results.functionAvgExecTimes || {}).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ")})
-          </Typography>
+          {results.functionComplexity && (
+            <>
+              <Typography className="overall-complexity" variant="h6" mt={2}>
+                Overall Function Time Complexity: {results.functionNotation} {results.functionComplexityWord}
+              </Typography>
+              {renderExecutionTimes(results.functionAvgExecTimes)}
+            </>
+          )}
         </CardContent>
       </Card>
     </Box>

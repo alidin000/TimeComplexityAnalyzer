@@ -109,27 +109,29 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       console.error("Missing required fields");
       return;
     }
-    
+
     const payload = {
       username: user,
       code: code,
       language: language,
       time_complexity: "O(n)"
     };
-    console.log(payload);
-    
+
     AxiosInstance.post("/api/analyse-code/", payload)
-    .then((response) => {
-      console.log("Printing the output now");
-      console.log(response.data);
-      setResults(formatResults(response.data, code));
-      setOutputText(formatOutput(response.data, code));
-    })
-    .catch((error) => {
-      console.error("Error:", error.response ? error.response.data : error);
-    });
+      .then((response) => {
+        console.log("Printing the output now");
+        console.log(response.data);
+        setResults(formatResults(response.data, code));
+        setOutputText(formatOutput(response.data, code));
+      })
+      .catch((error) => {
+        console.error("Error:", error.response ? error.response.data : error);
+      });
   };
   
+  
+
+
 
   const formatResults = (data, code) => {
     const codeLines = code.split("\n");
@@ -164,7 +166,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       const lineInfo = data.lines ? data.lines[index + 1] : null;
       if (lineInfo) {
         const avgExecTimes = lineInfo.average_exec_times 
-          ? Object.entries(lineInfo.average_exec_times).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ") 
+          ? Object.entries(lineInfo.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ") 
           : "";
         return `${line} -> ${time_complexity_notation[lineInfo.best_fit ? lineInfo.best_fit.model : ""] || ""} {${lineInfo.best_fit ? lineInfo.best_fit.model : "N/A"}} (Avg times: ${avgExecTimes})`;
       }
@@ -172,7 +174,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     });
 
     const overallAvgExecTimes = data.function && data.function.average_exec_times 
-      ? Object.entries(data.function.average_exec_times).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ")
+      ? Object.entries(data.function.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ")
       : "";
     const overallComplexity = data.function
       ? `\nOverall Function Time Complexity: ${time_complexity_notation[data.function.best_fit ? data.function.best_fit.model : ""] || ""} {${data.function.best_fit ? data.function.best_fit.model : "N/A"}} (Avg times: ${overallAvgExecTimes})`
@@ -182,7 +184,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   };
 
   return (
-    <Container>
+    <Container sx={{ maxWidth: "1600px" }}>
       <Card className="mt-4">
         <CardContent>
           <Box display="flex" justifyContent="center">
@@ -202,8 +204,8 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           </Box>
         </CardContent>
       </Card>
-      <div className="flex flex-row mt-3">
-        <Card className="flex-grow-1">
+      <div className="flex flex-row mt-3" style={{ display: "flex", width: "100%" }}>
+        <Card className="flex-grow-1" sx={{ flex: 1, marginRight: "1rem" }}>
           <CardContent>
             <CodeEditorArea language={language} code={code} onCodeChange={handleCodeChange} />
             <Button variant="contained" color="primary" className="mt-4" onClick={handleAnalyseClick}>
@@ -211,7 +213,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
             </Button>
           </CardContent>
         </Card>
-        <Card className="flex-grow-1 ml-4">
+        <Card className="flex-grow-1" sx={{ flex: 2 }}>
           <CardContent>
             <Output outputText={outputText} results={results} />
           </CardContent>
