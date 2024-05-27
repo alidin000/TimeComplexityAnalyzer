@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 
-def run_instrumented_python_code(user_code, number_of_inputs=50):
+def run_instrumented_python_code(user_code, number_of_inputs, size_array):
     def extract_function_name(code):
         match = re.search(r"def (\w+)\(", code)
         if match:
@@ -28,16 +28,16 @@ class Prototype:
         return [random.randint(0, 1000) for _ in range(size)]
 
     def run(self):
-        output_file = os.path.join(os.path.dirname(__file__), "output_python.txt")
+        output_file = os.path.join(os.path.dirname(__file__), "output_python_{size_array}.txt")
         with open(output_file, "w") as pw:
             for size in range(1, {number_of_inputs} + 1): 
-                input_array = self.generate_input(size)
+                input_array = self.generate_input({size_array})
                 start_time = time.time()
                 self.{function_name}(input_array)
                 end_time = time.time()
                 exec_time = (end_time - start_time) * 1e9
 
-                pw.write(f"size = {{size}}\\n")
+                pw.write(f"test case = {{size}}\\n")
                 pw.write(f"Function execution time: {{exec_time:.0f}} ns\\n")
                 line_output = {{}}
                 for line_num, count in sorted(self.line_info_total.items()):

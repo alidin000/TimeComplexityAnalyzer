@@ -95,17 +95,20 @@ def handle_cpp_code(user_code, call_template):
 
 def handle_python_code(user_code, call_template):
     try:
-        output_file_path = os.path.join(os.getcwd(), "analyzer", "output_python.txt")
-        
-        if os.path.exists(output_file_path):
-            os.remove(output_file_path)
-        run_instrumented_python_code(user_code, number_of_inputs=1000)
-        print(output_file_path)
-        if os.path.exists(output_file_path):
-            best_fits = parse_and_analyze(output_file_path)
-            return Response(best_fits)
-        else:
-            return Response({"error": "Output file does not exist. Analysis may have failed."}, status=status.HTTP_400_BAD_REQUEST)
+        sizes = [10, 50, 100, 200, 500, 1000]
+        output_file_paths = []
+
+        for size in sizes:
+            output_file_path = os.path.join(os.getcwd(),"analyzer", f"output_python_{size}.txt")
+            output_file_paths.append(output_file_path)
+
+            if os.path.exists(output_file_path):
+                os.remove(output_file_path)
+
+            run_instrumented_python_code(user_code, 50, size)
+        print(output_file_paths)
+        best_fits = parse_and_analyze(output_file_paths)
+        return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

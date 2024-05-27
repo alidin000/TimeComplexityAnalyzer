@@ -8,7 +8,7 @@ import InfoSection from "./InfoSection";
 const time_complexity_notation = {
   constant: "O(1)",
   linear: "O(n)",
-  quadratic: "O(n)",
+  quadratic: "O(n^2)",
   logarithmic: "O(log n)",
   exponential: "O(2^n)",
   cubic: "O(n^3)",
