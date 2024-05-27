@@ -16,7 +16,7 @@ def instrument_cpp_function(user_function, call_template, num_inputs, size_array
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <algorithm> // Needed for std::sort and std::swap
+#include <algorithm>
 
 class InstrumentedPrototype {
 public:

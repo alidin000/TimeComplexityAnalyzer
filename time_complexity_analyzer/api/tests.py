@@ -1,3 +1,6 @@
+import os
+import re
+import subprocess
 from django.test import TestCase
 from django.urls import reverse
 from api.models import Code, UserProfile
@@ -5,6 +8,9 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIClient
 from api.serializers import CodeSerializer, UserSerializer
+from analyzer.analyzer import instrument_java_function, run_java_program, write_and_compile_java
+from analyzer.analyzer_python import run_instrumented_python_code
+from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 
 class APITests(TestCase):
 
@@ -18,7 +24,7 @@ class APITests(TestCase):
         url = reverse('codes-list')
         data = {
             'username': self.user.username,
-            'code': 'def example():\n    pass',
+            'code': 'def example(arr):\n    return sum(arr)',
             'language': 'Python',
             'time_complexity': 'O(1)',
         }
@@ -31,7 +37,7 @@ class APITests(TestCase):
         url = reverse('codes-list')
         data = {
             'username': self.user.username,
-            'code': 'def example():\n    pass',
+            'code': 'def example(arr):\n    return sum(arr)',
             'language': 'Python',
         }
         response = self.client.post(url, data, format='json')
@@ -41,7 +47,7 @@ class APITests(TestCase):
     def test_retrieve_code(self):
         code = Code.objects.create(
             username=self.user.username,
-            code='def example():\n    pass',
+            code='def example(arr):\n    return sum(arr)',
             language='Python',
             time_complexity='O(1)',
         )
@@ -60,7 +66,7 @@ class APITests(TestCase):
     def test_update_code(self):
         code = Code.objects.create(
             username=self.user.username,
-            code='def example():\n    pass',
+            code='def example(arr):\n    return sum(arr)',
             language='Python',
             time_complexity='O(1)',
         )
@@ -68,7 +74,7 @@ class APITests(TestCase):
         url = reverse('codes-detail', args=[code.id])
         data = {
             'username': self.user.username,
-            'code': 'def example_updated():\n    pass',
+            'code': 'def example_updated(arr):\n    return sum(arr)',
             'language': 'Python',
             'time_complexity': 'O(1)',
         }
@@ -80,7 +86,7 @@ class APITests(TestCase):
     def test_update_code_invalid_data(self):
         code = Code.objects.create(
             username=self.user.username,
-            code='def example():\n    pass',
+            code='def example(arr):\n    return sum(arr)',
             language='Python',
             time_complexity='O(1)',
         )
@@ -99,7 +105,7 @@ class APITests(TestCase):
     def test_delete_code(self):
         code = Code.objects.create(
             username=self.user.username,
-            code='def example():\n    pass',
+            code='def example(arr):\n    return sum(arr)',
             language='Python',
             time_complexity='O(1)',
         )
@@ -120,7 +126,7 @@ class APITests(TestCase):
         url = reverse('analyse-code')
         data = {
             'username': self.user.username,
-            'code': 'def example():\n    pass',
+            'code': 'def example(arr):\n    return sum(arr)',
             'language': 'Python'
         }
         response = self.client.post(url, data, format='json')
@@ -184,7 +190,7 @@ class SerializerTests(TestCase):
     def test_code_serializer(self):
         data = {
             'username': 'testuser',
-            'code': 'def example():\n    pass',
+            'code': 'def example(arr):\n    return sum(arr)',
             'language': 'Python',
             'time_complexity': 'O(1)',
         }
@@ -196,7 +202,7 @@ class SerializerTests(TestCase):
     def test_code_serializer_missing_fields(self):
         data = {
             'username': 'testuser',
-            'code': 'def example():\n    pass',
+            'code': 'def example(arr):\n    return sum(arr)',
             'language': 'Python',
         }
         serializer = CodeSerializer(data=data)
@@ -230,14 +236,253 @@ class UtilityFunctionTests(TestCase):
     def test_extract_call_template(self):
         from api.views import extract_call_template
 
-        python_code = 'def example(size):\n    pass'
+        python_code = 'def example(arr):\n    return sum(arr)'
         call_template = extract_call_template(python_code, 'python')
         self.assertEqual(call_template, 'example(generate_input(size))')
 
-        java_code = 'public void example(int size) {\n    }'
+        java_code = 'int example(int[] arr) {\n    return sum(arr);\n}'
         call_template = extract_call_template(java_code, 'java')
-        self.assertEqual(call_template, 'p.example(generateInput(size));')
+        self.assertEqual(call_template, 'p.example(input);')
 
-        cpp_code = 'void example(int size) {\n    }'
+        cpp_code = 'void example(std::vector<int>& arr) {\n    return sum(arr);\n}'
         call_template = extract_call_template(cpp_code, 'cpp')
         self.assertEqual(call_template, 'p.example($$size$$);')
+
+
+
+class InstrumentedCodeTests(TestCase):
+
+    def test_instrument_python_function(self):
+        user_code = """
+def example(arr):
+    return sum(arr)
+"""
+        output_path = os.path.join(os.getcwd(), 'analyzer', 'output_python_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        run_instrumented_python_code(user_code, 50, 50)
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)
+
+    def test_instrument_java_function(self):
+        user_code = """
+public int example(int[] arr) {
+    int sum = 0;
+    for (int i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+"""
+        output_path = os.path.join(os.getcwd(), 'output_java_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        java_code = instrument_java_function(user_code, "p.example(input);", 50, output_path, 50)
+        java_file_path = os.path.join(os.getcwd(), 'analyzer', 'InstrumentedPrototype.java')
+        write_and_compile_java(java_code)
+        
+        self.assertTrue(os.path.exists(java_file_path))
+        
+        compile_result = subprocess.run(["javac", java_file_path], capture_output=True, text=True)
+        self.assertEqual(compile_result.returncode, 0)
+        
+        run_java_program()
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)
+
+    def test_instrument_cpp_function(self):
+        user_code = """
+void example(std::vector<int>& arr) {
+    int sum = 0;
+    for (int i = 0; i < arr.size(); ++i) {
+        sum += arr[i];
+    }
+}
+"""
+        output_path = os.path.join(os.getcwd(), 'output_cpp_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        cpp_code = instrument_cpp_function(user_code, "p.example($$size$$);", 50, 50)
+        cpp_file_path = os.path.join(os.getcwd(),'analyzer',  'InstrumentedPrototype.cpp')
+        write_and_compile_cpp(cpp_code)
+        
+        self.assertTrue(os.path.exists(cpp_file_path))
+        
+        compile_result = subprocess.run(["g++", "-std=c++14", cpp_file_path, "-o", os.path.join(os.getcwd(), "InstrumentedPrototype")], capture_output=True, text=True)
+        self.assertEqual(compile_result.returncode, 0)
+        
+        run_cpp_program()
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)
+
+    def test_instrument_python_function_complex(self):
+        user_code = """
+def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        left_half = arr[:mid]
+        right_half = arr[mid:]
+        merge_sort(left_half)
+        merge_sort(right_half)
+        i = j = k = 0
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] < right_half[j]:
+                arr[k] = left_half[i]
+                i += 1
+            else:
+                arr[k] = right_half[j]
+                j += 1
+            k += 1
+        while i < len(left_half):
+            arr[k] = left_half[i]
+            i += 1
+            k += 1
+        while j < len(right_half):
+            arr[k] = right_half[j]
+            j += 1
+            k += 1
+"""
+        output_path = os.path.join(os.getcwd(), 'analyzer', 'output_python_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        run_instrumented_python_code(user_code, 50, 50)
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)
+
+    def test_instrument_java_function_complex(self):
+        user_code = """
+public int example(int[] arr) {
+    if (arr.length > 1) {
+        int mid = arr.length / 2;
+        int[] left_half = new int[mid];
+        int[] right_half = new int[arr.length - mid];
+
+        System.arraycopy(arr, 0, left_half, 0, mid);
+        System.arraycopy(arr, mid, right_half, 0, arr.length - mid);
+
+        example(left_half);
+        example(right_half);
+
+        int i = 0, j = 0, k = 0;
+        while (i < left_half.length && j < right_half.length) {
+            if (left_half[i] < right_half[j]) {
+                arr[k++] = left_half[i++];
+            } else {
+                arr[k++] = right_half[j++];
+            }
+        }
+
+        while (i < left_half.length) {
+            arr[k++] = left_half[i++];
+        }
+
+        while (j < right_half.length) {
+            arr[k++] = right_half[j++];
+        }
+    }
+    return 0;
+}
+"""
+        output_path = os.path.join(os.getcwd(), 'output_java_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        java_code = instrument_java_function(user_code, "p.example(input);", 50, output_path, 50)
+        java_file_path = os.path.join(os.getcwd(),'analyzer', 'InstrumentedPrototype.java')
+        write_and_compile_java(java_code)
+        
+        self.assertTrue(os.path.exists(java_file_path))
+        
+        compile_result = subprocess.run(["javac", java_file_path], capture_output=True, text=True)
+        self.assertEqual(compile_result.returncode, 0)
+        
+        run_java_program()
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)
+
+    def test_instrument_cpp_function_complex(self):
+        user_code = """
+void example(std::vector<int>& arr) {
+    if (arr.size() > 1) {
+        int mid = arr.size() / 2;
+        std::vector<int> left_half(arr.begin(), arr.begin() + mid);
+        std::vector<int> right_half(arr.begin() + mid, arr.end());
+
+        example(left_half);
+        example(right_half);
+
+        int i = 0, j = 0, k = 0;
+        while (i < left_half.size() && j < right_half.size()) {
+            if (left_half[i] < right_half[j]) {
+                arr[k++] = left_half[i++];
+            } else {
+                arr[k++] = right_half[j++];
+            }
+        }
+
+        while (i < left_half.size()) {
+            arr[k++] = left_half[i++];
+        }
+
+        while (j < right_half.size()) {
+            arr[k++] = right_half[j++];
+        }
+    }
+}
+"""
+        output_path = os.path.join(os.getcwd(), 'output_cpp_50.txt')
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+        cpp_code = instrument_cpp_function(user_code, "p.example($$size$$);", 50, 50)
+        cpp_file_path = os.path.join(os.getcwd(), 'analyzer', 'InstrumentedPrototype.cpp')
+        write_and_compile_cpp(cpp_code)
+        
+        self.assertTrue(os.path.exists(cpp_file_path))
+        
+        compile_result = subprocess.run(["g++", "-std=c++14", cpp_file_path, "-o", os.path.join(os.getcwd(), "InstrumentedPrototype")], capture_output=True, text=True)
+        self.assertEqual(compile_result.returncode, 0)
+        
+        run_cpp_program()
+        
+        self.assertTrue(os.path.exists(output_path))
+
+        with open(output_path, 'r') as file:
+            content = file.read()
+            self.assertIn('Function execution time:', content)
+            self.assertIn('{', content)
+            self.assertIn('}', content)

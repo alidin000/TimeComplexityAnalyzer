@@ -70,16 +70,20 @@ def handle_java_code(user_code, call_template):
         for size in sizes:
             output_file_path = os.path.join(os.getcwd(), f"output_java_{size}.txt")
             output_file_paths.append(output_file_path)
+
+            if os.path.exists(output_file_path):
+                os.remove(output_file_path)
+
             java_code = instrument_java_function(user_code, call_template, 50, output_file_path, size)
             write_and_compile_java(java_code)
             run_java_program()
-        print("here")
+
         best_fits = parse_and_analyze(output_file_paths)
-        print("best fits:",best_fits)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
-        return Response("Error occurred")
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 def handle_cpp_code(user_code, call_template):
     try:
@@ -87,17 +91,22 @@ def handle_cpp_code(user_code, call_template):
         output_file_paths = []
 
         for size in sizes:
+            output_file_path = os.path.join(os.getcwd(), f"output_cpp_{size}.txt")
+            output_file_paths.append(output_file_path)
+
+            if os.path.exists(output_file_path):
+                os.remove(output_file_path)
+
             cpp_code = instrument_cpp_function(user_code, call_template, 50, size)
             write_and_compile_cpp(cpp_code)
             run_cpp_program()
-            output_file_path = os.path.join(os.getcwd(), f"output_cpp_{size}.txt")
-            output_file_paths.append(output_file_path)
 
         best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def handle_python_code(user_code, call_template):
@@ -106,18 +115,20 @@ def handle_python_code(user_code, call_template):
         output_file_paths = []
 
         for size in sizes:
-            output_file_path = os.path.join(os.getcwd(),"analyzer", f"output_python_{size}.txt")
+            output_file_path = os.path.join(os.getcwd(), "analyzer", f"output_python_{size}.txt")
             output_file_paths.append(output_file_path)
 
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
             run_instrumented_python_code(user_code, 50, size)
+
         best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 from rest_framework.exceptions import NotFound, ValidationError
 
