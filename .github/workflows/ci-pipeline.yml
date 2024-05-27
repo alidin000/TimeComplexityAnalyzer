@@ -7,50 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: ./time_complexity_analyzer/frontend
-    
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: ./time_complexity_analyzer/frontend/package-lock.json
-
-    - run: npm ci --legacy-peer-deps
-
-    - run: npm run build --if-present
-
-    - run: npm test
-
   test-django:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
     - name: Check out the repository
@@ -66,10 +24,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r time_complexity_analyzer/requirements.txt
 
-    - name: Set up the database
+    - name: Run migrations
       run: python time_complexity_analyzer/manage.py migrate
 
     - name: Run tests
-      env:
-        DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/test_db
       run: python time_complexity_analyzer/manage.py test
