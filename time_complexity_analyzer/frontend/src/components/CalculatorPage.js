@@ -15,6 +15,15 @@ const time_complexity_notation = {
   log_linear: "O(n log n)",
   factorial: "O(n!)",
   polynomial: "O(n^k)",
+  inverse_ackermann: "O(α(n))",
+  iterated_logarithmic: "O(log* n)",
+  polylogarithmic: "O((log n)^k)",
+  fractional_power: "O(n^c)",
+  quasilinear: "O(n log^k n)",
+  quasi_polynomial: "O(exp((log n)^k))",
+  subexponential: "O(exp(n^c))",
+  polynomial_linear_exponent: "O(2^(O(n)))",
+  double_exponential: "O(2^(2^n))",
 };
 
 const limitations = {
@@ -105,13 +114,13 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       username: user,
       code: code,
       language: language,
-      time_complexity: "O(n)",
+      time_complexity: "O(n)"
     };
     console.log(payload);
     
     AxiosInstance.post("/api/analyse-code/", payload)
     .then((response) => {
-      console.log("printing the output now");
+      console.log("Printing the output now");
       console.log(response.data);
       setResults(formatResults(response.data, code));
       setOutputText(formatOutput(response.data, code));
@@ -121,6 +130,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     });
     console.log("BKLABALLA");
   };
+  
 
   const formatResults = (data, code) => {
     const codeLines = code.split("\n");

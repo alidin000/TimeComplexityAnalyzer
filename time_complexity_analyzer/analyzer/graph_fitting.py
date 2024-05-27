@@ -29,6 +29,33 @@ def factorial_complexity(x, a):
 def polynomial(x, *coeffs):
     return sum(c * x**i for i, c in enumerate(reversed(coeffs)))
 
+def inverse_ackermann(x, a):
+    return a * np.log(np.log(np.log(x + 1) + 1) + 1)
+
+def iterated_logarithmic(x, a, b):
+    return a * np.log(np.log(x + 1)) + b
+
+def polylogarithmic(x, a, b, c):
+    return a * (np.log(x)**b) + c
+
+def fractional_power(x, a, b):
+    return a * (x ** b)
+
+def quasilinear(x, a, b, c):
+    return a * x * (np.log(x) ** b) + c
+
+def quasi_polynomial(x, a, b):
+    return a * np.exp(np.log(x)**b)
+
+def subexponential(x, a, b):
+    return a * np.exp(x ** b)
+
+def polynomial_linear_exponent(x, a, b):
+    return a * 2**(b * x)
+
+def double_exponential(x, a, b):
+    return a * 2**(2**x)
+
 def error_function(params, x, y, model):
     return model(x, *params) - y
 
@@ -41,7 +68,16 @@ models = {
     'cubic': {'func': cubic, 'initial_guess': [1, 1, 1, 1]},
     'log_linear': {'func': log_linear, 'initial_guess': [1, 1]},
     'factorial': {'func': factorial_complexity, 'initial_guess': [1]},
-    'polynomial': {'func': polynomial, 'initial_guess': [1, 1, 1, 1]} 
+    'polynomial': {'func': polynomial, 'initial_guess': [1, 1, 1, 1]},
+    'inverse_ackermann': {'func': inverse_ackermann, 'initial_guess': [1]},
+    'iterated_logarithmic': {'func': iterated_logarithmic, 'initial_guess': [1, 1]},
+    'polylogarithmic': {'func': polylogarithmic, 'initial_guess': [1, 1, 1]},
+    'fractional_power': {'func': fractional_power, 'initial_guess': [1, 0.5]},
+    'quasilinear': {'func': quasilinear, 'initial_guess': [1, 1, 1]},
+    'quasi_polynomial': {'func': quasi_polynomial, 'initial_guess': [1, 1]},
+    'subexponential': {'func': subexponential, 'initial_guess': [1, 0.5]},
+    'polynomial_linear_exponent': {'func': polynomial_linear_exponent, 'initial_guess': [1, 1]},
+    'double_exponential': {'func': double_exponential, 'initial_guess': [1, 1]}
 }
 
 time_complexity_notation = {
@@ -53,7 +89,16 @@ time_complexity_notation = {
     'cubic': 'O(n^3)',
     'log_linear': 'O(n log n)',
     'factorial': 'O(n!)',
-    'polynomial': 'O(n^k)'
+    'polynomial': 'O(n^k)',
+    'inverse_ackermann': 'O(α(n))',
+    'iterated_logarithmic': 'O(log* n)',
+    'polylogarithmic': 'O((log n)^k)',
+    'fractional_power': 'O(n^c)',
+    'quasilinear': 'O(n log^k n)',
+    'quasi_polynomial': 'O(exp((log n)^k))',
+    'subexponential': 'O(exp(n^c))',
+    'polynomial_linear_exponent': 'O(2^(O(n)))',
+    'double_exponential': 'O(2^(2^n))'
 }
 
 def parse_output_file(file_path):
