@@ -83,15 +83,22 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=1000)
-        write_and_compile_cpp(cpp_code)
-        run_cpp_program()
-        output_file_path = os.path.join(os.getcwd(), "output_cpp.txt")
-        best_fits = parse_and_analyze(output_file_path)
+        sizes = [10, 50, 100, 200, 500, 1000]
+        output_file_paths = []
+
+        for size in sizes:
+            cpp_code = instrument_cpp_function(user_code, call_template, 50, size)
+            write_and_compile_cpp(cpp_code)
+            run_cpp_program()
+            output_file_path = os.path.join(os.getcwd(), f"output_cpp_{size}.txt")
+            output_file_paths.append(output_file_path)
+
+        best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
     except Exception as e:
-        print("Running didn't work, or reading output file didn't work:", e)
+        print("Running didn't work, or reading output file didn't work:", e.args)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 def handle_python_code(user_code, call_template):
     try:

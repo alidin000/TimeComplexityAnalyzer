@@ -6,7 +6,7 @@ def ensure_directory_exists(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def instrument_cpp_function(user_function, call_template, num_inputs=10):
+def instrument_cpp_function(user_function, call_template, num_inputs, size_array):
     function_name = re.search(r"\b(?:\w+\s+)+(\w+)\s*\(", user_function).group(1)
     cpp_prolog = """
 #include <iostream>
@@ -58,7 +58,7 @@ public:
         auto endTime = std::chrono::high_resolution_clock::now();
         long long execTime = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
         
-        std::ofstream outFile("output_cpp.txt", std::ios_base::app);
+        std::ofstream outFile("output_cpp_{size_array}.txt", std::ios_base::app);
         outFile << "size = " << size << "\\n";
         outFile << "Function execution time: " << execTime << " ns\\n";
         outFile << "{{";
@@ -74,7 +74,7 @@ public:
 
     void run() {{
         for (int size = 1; size <= {num_inputs}; ++size) {{
-            execute(size);
+            execute({size_array});
         }}
     }}
 }};
