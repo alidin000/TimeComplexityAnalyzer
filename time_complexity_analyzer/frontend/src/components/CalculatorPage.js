@@ -68,8 +68,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           if num > max_value:
               max_value = num
       return max_value`,
-    Cpp: `  
-  int sumArray(std::vector<int>& arr) {
+    Cpp: `int sumArray(std::vector<int>& arr) {
       int sum = 0;
       for (int num : arr) {
           sum += num;

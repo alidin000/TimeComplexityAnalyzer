@@ -94,7 +94,10 @@ int main() {{
         if not trimmed_line or trimmed_line == '}' or i == last_line_index:
             instrumented_line = line
         elif "return" in trimmed_line:
-            instrumented_line = f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n" + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+            instrumented_line = (
+                f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
+                + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+            )
         else:
             instrumented_line = (
                 f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
@@ -182,11 +185,12 @@ def run_cpp_program():
 
 # # Running all test cases
 # num_inputs = 50
+# size_array = [50, 100, 1000]
 
 # for test in test_cases:
 #     user_function = test["user_function"]
 #     call_template = test["call_template"]
     
-#     cpp_code = instrument_cpp_function(user_function, call_template, num_inputs)
+#     cpp_code = instrument_cpp_function(user_function, call_template, num_inputs, size_array)
 #     write_and_compile_cpp(cpp_code)
 #     run_cpp_program()
