@@ -60,6 +60,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const [language, setLanguage] = useState("Python");
   const [outputText, setOutputText] = useState("// Output will be displayed here");
   const [results, setResults] = useState([]);
+  const [error, setError] = useState("");
   const [userModifiedCode, setUserModifiedCode] = useState(false);
   const user = isAuthenticated ? currentUser : "Unknown";
 
@@ -93,6 +94,8 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     setCode(defaultCodes[language]);
     setOutputText("// Output will be displayed here");
     setResults([]);
+    setError("");
+    setUserModifiedCode(false);
   }, [language]);
 
   const handleLanguageChange = (selectedLanguage) => {
@@ -100,6 +103,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     if (!userModifiedCode || code === "") {
       setCode(defaultCodes[selectedLanguage]);
     }
+    setError("");  // Clear any previous errors when changing language
   };
 
   const handleCodeChange = (newCode) => {
@@ -109,7 +113,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
   const handleAnalyseClick = () => {
     if (!user || !code || !language) {
-      console.error("Missing required fields");
+      setError("Can't calculate it. Please check your code and try again.");
       return;
     }
 
@@ -122,19 +126,14 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
     AxiosInstance.post("/api/analyse-code/", payload)
       .then((response) => {
-        console.log("Printing the output now");
-        console.log(response.data);
         setResults(formatResults(response.data, code));
         setOutputText(formatOutput(response.data, code));
+        setError("");
       })
       .catch((error) => {
-        console.error("Error:", error.response ? error.response.data : error);
+        setError("Can't calculate it. Please check your code and try again.");
       });
   };
-  
-  
-
-
 
   const formatResults = (data, code) => {
     const codeLines = code.split("\n");
@@ -218,7 +217,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         </Card>
         <Card className="flex-grow-1" sx={{ flex: 2 }}>
           <CardContent>
-            <Output outputText={outputText} results={results} />
+            <Output outputText={outputText} results={results} error={error} />
           </CardContent>
         </Card>
       </div>
