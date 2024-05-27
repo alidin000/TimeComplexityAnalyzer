@@ -2,7 +2,7 @@ import re
 import subprocess
 import os
 
-def instrument_java_function(user_function, call_template, num_inputs, output_file_path):
+def instrument_java_function(user_function, call_template, num_inputs, output_file_path, size_array):
     function_name = re.search(r"public\s+(?:static\s+)?\w+\s+(\w+)\(", user_function).group(1)
     output_file_path = output_file_path.replace("\\", "\\\\")
     java_prolog = """
@@ -37,14 +37,15 @@ def instrument_java_function(user_function, call_template, num_inputs, output_fi
         }}
 
         public static void main(String[] args) {{
-            try(PrintWriter pw = new PrintWriter(new File("output_java.txt"))) {{
+            try(PrintWriter pw = new PrintWriter(new File("output_java_{size_array}.txt"))) {{
                 for (int size = 1; size <= {num_inputs}; size++) {{
                     InstrumentedPrototype p = new InstrumentedPrototype();
                     long startTime = System.nanoTime();
-                    {call_template.replace("$$size$$", "generateInput(size)")}
+                    int[] input = generateInput({size_array});
+                    {call_template}
                     long endTime = System.nanoTime();
                     long execTime = endTime - startTime;
-                    pw.printf("size = %d\\n", size);
+                    pw.printf("test case = %d\\n", size);
                     pw.printf("Function execution time: %d ns\\n", execTime);
                     pw.println(p.lineInfoTotal.toString());
                 }}

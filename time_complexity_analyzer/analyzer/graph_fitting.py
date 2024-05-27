@@ -61,53 +61,69 @@ def parse_output_file(file_path):
     function_exec_times = [] 
 
     with open(file_path, 'r') as file:
-        current_size = None
         for line in file:
-            if line.startswith('size = '):
-                current_size = int(line.strip().split('=')[1].strip())
+            if line.startswith('test case = '):
+                continue
             elif line.startswith('Function execution time: '):
-
                 exec_time = int(line.strip().split(': ')[1].split(' ')[0])
-                function_exec_times.append((current_size, exec_time))
+                function_exec_times.append(exec_time)
             elif line.startswith('{'):
                 exec_times = eval(line.strip().replace('=', ':'))
                 for line_num, time in exec_times.items():
                     if line_num not in line_exec_times:
                         line_exec_times[line_num] = []
-                    line_exec_times[line_num].append((current_size, time))
+                    line_exec_times[line_num].append(time)
     return line_exec_times, function_exec_times
-
 
 def select_best_fitting_model(x_data, y_data):
     best_fit = {'model': None, 'params': None, 'rss': np.inf}
     for name, model in models.items():
-        result = least_squares(error_function, model['initial_guess'], args=(x_data, y_data, model['func']))
-        rss = np.sum(result.fun ** 2)  
-        if rss < best_fit['rss']:
-            best_fit = {'model': name, 'params': result.x, 'rss': rss}
+        try:
+            if name == 'logarithmic' and np.any(x_data <= 0):
+                continue
+            result = least_squares(error_function, model['initial_guess'], args=(x_data, y_data, model['func']))
+            rss = np.sum(result.fun ** 2)
+            if rss < best_fit['rss']:
+                best_fit = {'model': name, 'params': result.x, 'rss': rss}
+        except ValueError as e:
+            print(f"Error fitting model {name}: {e}")
     return best_fit
 
-def parse_and_analyze(file_path):
-    line_exec_times, function_exec_times = parse_output_file(file_path)
+def parse_and_analyze(file_paths):
+    sizes = [int(path.split('_')[-1].split('.')[0]) for path in file_paths]
+    selected_sizes = [100, 500, 1000]
+    aggregated_line_exec_times = {}
+    aggregated_function_exec_times = {size: [] for size in sizes}
 
+    for file_path, size in zip(file_paths, sizes):
+        line_exec_times, function_exec_times = parse_output_file(file_path)
+        
+        for line_num, times in line_exec_times.items():
+            if line_num not in aggregated_line_exec_times:
+                aggregated_line_exec_times[line_num] = {size: [] for size in sizes}
+            aggregated_line_exec_times[line_num][size].extend(times)
+        
+        aggregated_function_exec_times[size].extend(function_exec_times)
+    
     best_fits = {'lines': {}, 'function': None}
 
-    for line_num, times in line_exec_times.items():
-        sizes, exec_times = zip(*times)  
-        x_data = np.array(sizes)
-        y_data = np.array(exec_times)
+    for line_num, exec_times_by_size in aggregated_line_exec_times.items():
+        avg_exec_times = [np.mean(exec_times_by_size[size]) for size in selected_sizes if size in exec_times_by_size]
+        x_data = np.array(selected_sizes)
+        y_data = np.array(avg_exec_times)
         best_fit = select_best_fitting_model(x_data, y_data)
-        best_fits['lines'][line_num] = best_fit
+        avg_exec_time = {size: np.mean(exec_times_by_size[size]) for size in selected_sizes if size in exec_times_by_size}
+        best_fits['lines'][line_num] = {'best_fit': best_fit, 'average_exec_times': avg_exec_time}
 
-    if function_exec_times:
-        sizes, total_times = zip(*function_exec_times)  
-        x_data = np.array(sizes)
-        y_data = np.array(total_times)
+    avg_function_exec_times = [np.mean(aggregated_function_exec_times[size]) for size in selected_sizes]
+    if avg_function_exec_times:
+        x_data = np.array(selected_sizes)
+        y_data = np.array(avg_function_exec_times)
         overall_best_fit = select_best_fitting_model(x_data, y_data)
-        best_fits['function'] = overall_best_fit
+        avg_exec_time = {size: np.mean(aggregated_function_exec_times[size]) for size in selected_sizes}
+        best_fits['function'] = {'best_fit': overall_best_fit, 'average_exec_times': avg_exec_time}
 
     return best_fits
-
 
 if __name__ == "__main__":
     file_path = r'C:\Users\user\Desktop\THESIS\TimeComplexityAnalyzer\time_complexity_analyzer\output_java.txt' 

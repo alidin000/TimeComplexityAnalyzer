@@ -32,7 +32,7 @@ def extract_call_template(user_code, language):
     if language.lower() == 'cpp':
         call_template = f"p.{function_name}($$size$$);"
     elif language.lower() == 'java':
-        call_template = f"p.{function_name}(generateInput(size));"
+        call_template = f"p.{function_name}(input);"
     else:
         call_template = f"{function_name}(generate_input(size))"
 
@@ -64,20 +64,26 @@ def analyse_code(request):
 
 def handle_java_code(user_code, call_template):
     try:
-        output_file_path = os.path.join(os.getcwd(),"output_java.txt")
-        print (output_file_path)
-        java_code = instrument_java_function(user_code, call_template, 50, output_file_path)
-        write_and_compile_java(java_code)
-        run_java_program()
-        best_fits = parse_and_analyze(output_file_path)
+        sizes = [10, 50, 100, 200, 500, 1000]
+        output_file_paths = []
+
+        for size in sizes:
+            output_file_path = os.path.join(os.getcwd(), f"output_java_{size}.txt")
+            output_file_paths.append(output_file_path)
+            java_code = instrument_java_function(user_code, call_template, 50, output_file_path, size)
+            write_and_compile_java(java_code)
+            run_java_program()
+        print("here")
+        best_fits = parse_and_analyze(output_file_paths)
+        print("best fits:",best_fits)
         return Response(best_fits)
     except Exception as e:
         print("Running didn't work, or reading output file didn't work:", e.args)
-        return Response("shitt")
+        return Response("Error occurred")
 
 def handle_cpp_code(user_code, call_template):
     try:
-        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=50)
+        cpp_code = instrument_cpp_function(user_code, call_template, num_inputs=1000)
         write_and_compile_cpp(cpp_code)
         run_cpp_program()
         output_file_path = os.path.join(os.getcwd(), "output_cpp.txt")
@@ -93,7 +99,7 @@ def handle_python_code(user_code, call_template):
         
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
-        run_instrumented_python_code(user_code, number_of_inputs=50)
+        run_instrumented_python_code(user_code, number_of_inputs=1000)
         print(output_file_path)
         if os.path.exists(output_file_path):
             best_fits = parse_and_analyze(output_file_path)

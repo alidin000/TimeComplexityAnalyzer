@@ -41,13 +41,13 @@ function Output({ outputText = '', results = [] }) {
             <code className="language-python">
               {results.map((result, index) => (
                 <div key={index} className={getLineClassName(result.complexity)}>
-                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
+                  {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}} (Avg times: ${Object.entries(result.avgExecTimes).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ")})` : result.line.trim()}
                 </div>
               ))}
             </code>
           </pre>
           <Typography className="overall-complexity" variant="h6" mt={2}>
-            Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord}
+            Overall Time Complexity: {results.functionNotation} {results.functionComplexityWord} (Avg times: {Object.entries(results.functionAvgExecTimes || {}).map(([size, time]) => `Size ${size}: ${time.toFixed(2)} ns`).join(", ")})
           </Typography>
         </CardContent>
       </Card>
