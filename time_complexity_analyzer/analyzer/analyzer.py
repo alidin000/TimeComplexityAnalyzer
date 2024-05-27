@@ -31,7 +31,7 @@ def instrument_java_function(user_function, call_template, num_inputs, output_fi
             Random rand = new Random();
             int[] input = new int[size];
             for (int i = 0; i < size; i++) {{
-                input[i] = rand.nextInt(100); 
+                input[i] = rand.nextInt(1000); 
             }}
             return input;
         }}

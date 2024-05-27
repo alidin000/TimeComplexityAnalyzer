@@ -44,7 +44,7 @@ public:
         srand(time(0)); 
 
         for (int i = 0; i < size; ++i) {{
-            input[i] = rand() % 100;
+            input[i] = rand() % 1000;
         }}
 
         return input;

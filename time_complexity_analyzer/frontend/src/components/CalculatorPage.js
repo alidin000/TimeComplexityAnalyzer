@@ -33,7 +33,8 @@ const limitations = {
     "No annotations",
     "Only one function should be present",
     "No third-party libraries",
-    "No empty lines or comments"
+    "No empty lines or comments",
+    "Code will be run with the numbers between 0 and 10^3"
   ],
   Python: [
     "Function must accept a list as an argument",
@@ -41,14 +42,16 @@ const limitations = {
     "No decorators",
     "Only one function should be present",
     "No third-party libraries",
-    "No empty lines or comments"
+    "No empty lines or comments",
+    "Code will be run with the numbers between 0 and 10^3"
   ],
   Cpp: [
     "Function must be defined as: type functionName(std::vector<int>& arr)",
     "No public or private keywords",
     "Only one function should be present",
     "No third-party libraries",
-    "No empty lines or comments"
+    "No empty lines or comments",
+    "Code will be run with the numbers between 0 and 10^3"
   ]
 };
 
