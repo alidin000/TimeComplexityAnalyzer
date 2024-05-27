@@ -1,51 +1,40 @@
 import React from 'react';
-import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Card, CardContent, Typography, Box } from '@mui/material';
+
+const complexityColors = {
+  constant: 'green',
+  logarithmic: 'blue',
+  linear: 'orange',
+  quadratic: 'red',
+  exponential: 'purple',
+  cubic: 'brown',
+  log_linear: 'cyan',
+  factorial: 'magenta',
+  polynomial: 'black',
+  inverse_ackermann: 'pink',
+  iterated_logarithmic: 'teal',
+  polylogarithmic: 'indigo',
+  fractional_power: 'lime',
+  quasilinear: 'coral',
+  quasi_polynomial: 'salmon',
+  subexponential: 'khaki',
+  polynomial_linear_exponent: 'plum',
+  double_exponential: 'gold',
+};
 
 function Output({ outputText = '', results = [], error = '' }) {
-  const getLineClassName = (complexity) => {
-    switch (complexity) {
-      case 'constant':
-        return 'complexity-constant';
-      case 'logarithmic':
-        return 'complexity-logarithmic';
-      case 'linear':
-        return 'complexity-linear';
-      case 'quadratic':
-        return 'complexity-quadratic';
-      case 'exponential':
-        return 'complexity-exponential';
-      case 'cubic':
-        return 'complexity-cubic';
-      case 'log_linear':
-        return 'complexity-log-linear';
-      case 'factorial':
-        return 'complexity-factorial';
-      case 'polynomial':
-        return 'complexity-polynomial';
-      default:
-        return '';
-    }
-  };
+  const getLineStyle = (complexity) => ({
+    color: complexityColors[complexity] || 'black',
+  });
 
   const renderExecutionTimes = (avgExecTimes) => (
-    <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-      <Table size="small" aria-label="execution times table">
-        <TableHead>
-          <TableRow>
-            {Object.keys(avgExecTimes).map(size => (
-              <TableCell key={size} align="center">{size}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            {Object.entries(avgExecTimes).map(([size, time]) => (
-              <TableCell key={size} align="center">{time.toFixed(2)} ns</TableCell>
-            ))}
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box sx={{ marginTop: 2 }}>
+      <Typography variant="body2">
+        {Object.entries(avgExecTimes).map(([size, time]) => (
+          <span key={size}>{`${size}: ${time.toFixed(2)} ns, `}</span>
+        ))}
+      </Typography>
+    </Box>
   );
 
   return (
@@ -59,7 +48,7 @@ function Output({ outputText = '', results = [], error = '' }) {
           <>
             <pre style={{ backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '4px', overflow: 'auto' }}>
               {results.map((result, index) => (
-                <div key={index} className={getLineClassName(result.complexity)}>
+                <div key={index} style={getLineStyle(result.complexity)}>
                   {result.complexity ? `${result.line.trim()} - ${result.notation} {${result.complexity}}` : result.line.trim()}
                   {result.complexity && renderExecutionTimes(result.avgExecTimes)}
                 </div>

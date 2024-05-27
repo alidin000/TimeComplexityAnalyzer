@@ -103,7 +103,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     if (!userModifiedCode || code === "") {
       setCode(defaultCodes[selectedLanguage]);
     }
-    setError("");  // Clear any previous errors when changing language
+    setError("");
   };
 
   const handleCodeChange = (newCode) => {
@@ -138,7 +138,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const formatResults = (data, code) => {
     const codeLines = code.split("\n");
     const results = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[index + 1] : null;
+      const lineInfo = data.lines ? data.lines[language === 'Python' ? index : index + 1] : null;
       if (lineInfo) {
         const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "N/A";
         const avgExecTimes = lineInfo.average_exec_times || {};
@@ -165,7 +165,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const formatOutput = (data, code) => {
     const codeLines = code.split("\n");
     const linesOutput = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[index + 1] : null;
+      const lineInfo = data.lines ? data.lines[language === 'Python' ? index : index + 1] : null;
       if (lineInfo) {
         const avgExecTimes = lineInfo.average_exec_times 
           ? Object.entries(lineInfo.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ") 
