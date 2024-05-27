@@ -140,7 +140,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     const results = codeLines.map((line, index) => {
       const lineInfo = data.lines ? data.lines[language === 'Python' ? index : index + 1] : null;
       if (lineInfo) {
-        const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "N/A";
+        const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "";
         const avgExecTimes = lineInfo.average_exec_times || {};
         return {
           line: line.trim(),
@@ -152,7 +152,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       return { line: line.trim(), function: "", complexity: "", avgExecTimes: {} };
     });
 
-    const functionComplexity = data.function && data.function.best_fit ? data.function.best_fit.model : "N/A";
+    const functionComplexity = data.function && data.function.best_fit ? data.function.best_fit.model : "";
     const functionAvgExecTimes = data.function ? data.function.average_exec_times : {};
     results.functionComplexity = functionComplexity;
     results.functionComplexityWord = functionComplexity;
@@ -170,7 +170,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         const avgExecTimes = lineInfo.average_exec_times 
           ? Object.entries(lineInfo.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ") 
           : "";
-        return `${line} -> ${time_complexity_notation[lineInfo.best_fit ? lineInfo.best_fit.model : ""] || ""} {${lineInfo.best_fit ? lineInfo.best_fit.model : "N/A"}} (Avg times: ${avgExecTimes})`;
+        return `${line} -> ${time_complexity_notation[lineInfo.best_fit ? lineInfo.best_fit.model : ""] || ""} {${lineInfo.best_fit ? lineInfo.best_fit.model : ""}} (Avg times: ${avgExecTimes})`;
       }
       return line;
     });
@@ -179,7 +179,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       ? Object.entries(data.function.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ")
       : "";
     const overallComplexity = data.function
-      ? `\nOverall Function Time Complexity: ${time_complexity_notation[data.function.best_fit ? data.function.best_fit.model : ""] || ""} {${data.function.best_fit ? data.function.best_fit.model : "N/A"}} (Avg times: ${overallAvgExecTimes})`
+      ? `\nOverall Function Time Complexity: ${time_complexity_notation[data.function.best_fit ? data.function.best_fit.model : ""] || ""} {${data.function.best_fit ? data.function.best_fit.model : ""}} (Avg times: ${overallAvgExecTimes})`
       : "";
     linesOutput.push(overallComplexity);
     return linesOutput.join("\n");

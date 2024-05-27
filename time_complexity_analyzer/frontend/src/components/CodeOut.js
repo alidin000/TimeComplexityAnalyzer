@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 
 const complexityColors = {
@@ -79,7 +78,7 @@ function Output({ outputText = '', results = [], error = '' }) {
                                 style={{ backgroundColor: complexityColors[result.complexity], color: 'white' }}
                               />
                             ) : (
-                              'N/A'
+                              ''
                             )}
                           </TableCell>
                           <TableCell>{renderExecutionTimes(result.avgExecTimes)}</TableCell>

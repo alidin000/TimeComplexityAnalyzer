@@ -92,12 +92,13 @@ int main() {{
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
         if not trimmed_line or trimmed_line == '}' or i == last_line_index:
-            instrumented_line = line
-        elif "return" in trimmed_line:
-            instrumented_line = (
-                f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
-                + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
-            )
+            if "return" in trimmed_line or trimmed_line == '}':
+                instrumented_line = line
+            else:
+                instrumented_line = (
+                    f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
+                    + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+                )
         else:
             instrumented_line = (
                 f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
