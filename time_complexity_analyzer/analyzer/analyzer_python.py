@@ -20,7 +20,7 @@ from collections import defaultdict
 
 class Prototype:
     def __init__(self):
-        self.line_info_total = defaultdict(int)
+        self.line_info_total = defaultdict(float)
 """
 
     python_epilog = f"""
@@ -32,9 +32,9 @@ class Prototype:
         with open(output_file, "w") as pw:
             for size in range(1, {number_of_inputs} + 1): 
                 input_array = self.generate_input({size_array})
-                start_time = time.time()
+                start_time = time.perf_counter()
                 self.{function_name}(input_array)
-                end_time = time.time()
+                end_time = time.perf_counter()
                 exec_time = (end_time - start_time) * 1e9
 
                 pw.write(f"test case = {{size}}\\n")
@@ -59,10 +59,10 @@ class Prototype:
             instrumented_code += f"    {line}\n"
             continue
         indent = '    ' + re.match(r"\s*", lines[i+1] if line.endswith(':') else lines[i]).group(0)
-        instrumented_code += f"{indent}start_time_{i} = time.time()\n"
+        instrumented_code += f"{indent}start_time_{i} = time.perf_counter()\n"
         instrumented_code += f"    {line}\n"
         instrumented_code += (
-            f"{indent}self.line_info_total[{i}] += time.time() - start_time_{i}\n"
+            f"{indent}self.line_info_total[{i}] += time.perf_counter() - start_time_{i}\n"
         )
 
     instrumented_code += python_epilog
