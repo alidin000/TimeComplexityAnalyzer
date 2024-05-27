@@ -59,7 +59,7 @@ public:
         long long execTime = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
         
         std::ofstream outFile("output_cpp_{size_array}.txt", std::ios_base::app);
-        outFile << "size = " << size << "\\n";
+        outFile << "test case = " << size << "\\n";
         outFile << "Function execution time: " << execTime << " ns\\n";
         outFile << "{{";
         bool isFirst = true;
@@ -74,7 +74,7 @@ public:
 
     void run() {{
         for (int size = 1; size <= {num_inputs}; ++size) {{
-            execute({size_array});
+            execute(size);
         }}
     }}
 }};
