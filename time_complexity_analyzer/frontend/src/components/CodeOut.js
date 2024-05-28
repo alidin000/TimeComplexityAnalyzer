@@ -5,9 +5,9 @@ import ErrorIcon from '@mui/icons-material/Error';
 
 const complexityColors = {
   constant: 'green',
-  logarithmic: 'blue',
   linear: 'orange',
   quadratic: 'red',
+  logarithmic: 'blue',
   exponential: 'purple',
   cubic: 'brown',
   log_linear: 'cyan',
@@ -15,13 +15,16 @@ const complexityColors = {
   polynomial: 'black',
   inverse_ackermann: 'pink',
   iterated_logarithmic: 'teal',
+  log_logarithmic: 'navy',
   polylogarithmic: 'indigo',
   fractional_power: 'lime',
   quasilinear: 'coral',
   quasi_polynomial: 'salmon',
   subexponential: 'khaki',
+  subexponential_variant: 'olive',
   polynomial_linear_exponent: 'plum',
   double_exponential: 'gold',
+  exponential_poly: 'silver'
 };
 
 function Output({ outputText = '', results = [], error = '' }) {

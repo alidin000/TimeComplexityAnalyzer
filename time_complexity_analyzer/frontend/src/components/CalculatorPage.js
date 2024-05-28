@@ -17,13 +17,16 @@ const time_complexity_notation = {
   polynomial: "O(n^k)",
   inverse_ackermann: "O(α(n))",
   iterated_logarithmic: "O(log* n)",
+  log_logarithmic: "O(log log n)",
   polylogarithmic: "O((log n)^k)",
   fractional_power: "O(n^c)",
   quasilinear: "O(n log^k n)",
   quasi_polynomial: "O(exp((log n)^k))",
   subexponential: "O(exp(n^c))",
+  subexponential_variant: "2^(o(n))",
   polynomial_linear_exponent: "O(2^(O(n)))",
   double_exponential: "O(2^(2^n))",
+  exponential_poly: "O(2^(poly(n)))"
 };
 
 const limitations = {
