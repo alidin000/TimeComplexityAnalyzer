@@ -18,6 +18,21 @@
         "question": "What is the best case time complexity of Insertion Sort?",
         "options": ["O(n^2)", "O(n log n)", "O(n)"],
         "answer": "O(n) when the array is already sorted."
+      },
+      {
+        "question": "What is the worst case time complexity of Insertion Sort?",
+        "options": ["O(n^2)", "O(n log n)", "O(n)"],
+        "answer": "O(n^2)"
+      },
+      {
+        "question": "In which scenario is Insertion Sort most efficient?",
+        "options": ["When the array is large and unsorted", "When the array is small and nearly sorted", "When the array contains random elements"],
+        "answer": "When the array is small and nearly sorted"
+      },
+      {
+        "question": "Does Insertion Sort work well with linked lists?",
+        "options": ["Yes, it works well with linked lists", "No, it is not suitable for linked lists", "It can work but not efficiently"],
+        "answer": "Yes, it works well with linked lists"
       }
     ]
   },
@@ -40,6 +55,21 @@
         "question": "What is the time complexity of Selection Sort in all cases?",
         "options": ["O(n)", "O(n log n)", "O(n^2)"],
         "answer": "O(n^2) in all cases, making it inefficient on large lists."
+      },
+      {
+        "question": "What is the main disadvantage of Selection Sort?",
+        "options": ["It is very complex to implement", "It has high time complexity", "It requires additional memory space"],
+        "answer": "It has high time complexity"
+      },
+      {
+        "question": "Is Selection Sort a stable sorting algorithm?",
+        "options": ["Yes", "No"],
+        "answer": "No"
+      },
+      {
+        "question": "What is the best case time complexity of Selection Sort?",
+        "options": ["O(n)", "O(n log n)", "O(n^2)"],
+        "answer": "O(n^2)"
       }
     ]
   },
@@ -62,6 +92,21 @@
         "question": "What is the time complexity of Heap Sort?",
         "options": ["O(n)", "O(n log n)", "O(n^2)"],
         "answer": "O(n log n) for all cases."
+      },
+      {
+        "question": "Is Heap Sort a stable sorting algorithm?",
+        "options": ["Yes", "No"],
+        "answer": "No"
+      },
+      {
+        "question": "What is the space complexity of Heap Sort?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "What kind of data structure does Heap Sort use?",
+        "options": ["Array", "Binary Heap", "Linked List"],
+        "answer": "Binary Heap"
       }
     ]
   },
@@ -84,6 +129,21 @@
         "question": "What is the time complexity of Bubble Sort in the worst case?",
         "options": ["O(n)", "O(n log n)", "O(n^2)"],
         "answer": "O(n^2)"
+      },
+      {
+        "question": "Is Bubble Sort a stable sorting algorithm?",
+        "options": ["Yes", "No"],
+        "answer": "Yes"
+      },
+      {
+        "question": "What is the space complexity of Bubble Sort?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "What kind of data structure does Bubble Sort use?",
+        "options": ["Array", "Binary Heap", "Linked List"],
+        "answer": "Array"
       }
     ]
   },
@@ -106,6 +166,21 @@
         "question": "What is the key concept behind Quick Sort?",
         "options": ["Merging sorted arrays", "Partitioning the array around a pivot element", "Repeatedly swapping adjacent elements"],
         "answer": "Partitioning the array around a pivot element"
+      },
+      {
+        "question": "Is Quick Sort a stable sorting algorithm?",
+        "options": ["Yes", "No"],
+        "answer": "No"
+      },
+      {
+        "question": "What is the worst-case time complexity of Quick Sort?",
+        "options": ["O(n log n)", "O(n^2)", "O(n)"],
+        "answer": "O(n^2)"
+      },
+      {
+        "question": "What is the space complexity of Quick Sort?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(log n)"
       }
     ]
   },
@@ -128,6 +203,21 @@
         "question": "What is the time complexity of Merge Sort?",
         "options": ["O(n^2)", "O(n log n)", "O(n)"],
         "answer": "O(n log n)"
+      },
+      {
+        "question": "Is Merge Sort a stable sorting algorithm?",
+        "options": ["Yes", "No"],
+        "answer": "Yes"
+      },
+      {
+        "question": "What is the space complexity of Merge Sort?",
+        "options": ["O(1)", "O(n log n)", "O(n)"],
+        "answer": "O(n)"
+      },
+      {
+        "question": "What kind of data structure does Merge Sort use?",
+        "options": ["Array", "Binary Heap", "Linked List"],
+        "answer": "Array"
       }
     ]
   },
@@ -150,6 +240,21 @@
         "question": "What is the time complexity of inserting an element at the beginning of a Linked List?",
         "options": ["O(1)", "O(log n)", "O(n)"],
         "answer": "O(1)"
+      },
+      {
+        "question": "What is the time complexity of searching an element in a Linked List?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(n)"
+      },
+      {
+        "question": "What is the main advantage of a Linked List over an array?",
+        "options": ["Fixed size", "Faster access time", "Dynamic size"],
+        "answer": "Dynamic size"
+      },
+      {
+        "question": "What is a major drawback of Linked Lists?",
+        "options": ["High memory usage", "Fixed size", "Slow insertion"],
+        "answer": "High memory usage"
       }
     ]
   },
@@ -172,6 +277,21 @@
         "question": "What is the time complexity of searching an element in a Binary Search Tree?",
         "options": ["O(1)", "O(log n)", "O(n)"],
         "answer": "O(log n)"
+      },
+      {
+        "question": "What is the time complexity of inserting an element in a Binary Search Tree?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(log n)"
+      },
+      {
+        "question": "Is a Binary Search Tree a balanced tree?",
+        "options": ["Yes", "No"],
+        "answer": "No"
+      },
+      {
+        "question": "What is the worst-case time complexity of searching in a Binary Search Tree?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(n)"
       }
     ]
   },
@@ -187,35 +307,65 @@
     "quiz": [
       {
         "question": "What is a Stack?",
-        "options": ["A linear data structure that follows the LIFO (Last In, First Out) principle.", "A linear data structure that follows the FIFO (First In, First Out) principle.", "A tree-based data structure."],
+        "options": ["A linear data structure that follows the LIFO (Last In, First Out) principle.", "A linear data structure that follows the FIFO (First In, First Out) principle.", "A non-linear data structure used for hierarchical data."],
         "answer": "A linear data structure that follows the LIFO (Last In, First Out) principle."
       },
       {
-        "question": "What operation removes an element from a Stack?",
-        "options": ["Push", "Pop", "Peek"],
-        "answer": "Pop"
+        "question": "What is the time complexity of push operation in a Stack?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "What is the time complexity of pop operation in a Stack?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "Which operation is not possible directly in a Stack?",
+        "options": ["Push", "Pop", "Peek", "Traverse"],
+        "answer": "Traverse"
+      },
+      {
+        "question": "Which data structure can be used to implement recursion?",
+        "options": ["Queue", "Stack", "Linked List"],
+        "answer": "Stack"
       }
     ]
   },
   {
     "name": "Queue",
-    "description": "A Queue is a linear data structure that follows the FIFO (First In, First Out) principle, where the element added first is the first one to be removed. It can be implemented using arrays or linked lists. [Learn more](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))",
+    "description": "A Queue is a linear data structure that follows the FIFO (First In, First Out) principle, where elements are added at the rear and removed from the front. It can be implemented using arrays or linked lists. [Learn more](https://en.wikipedia.org/wiki/Queue_(abstract_data_type))",
     "code": {
-      "python": "class Queue:\n    def __init__(self):\n        self.queue = []\n\n    def enqueue(self, item):\n        self.queue.append(item)\n\n    def dequeue(self):\n        if not self.is_empty():\n            return self.queue.pop(0)\n\n    def is_empty(self):\n        return len(self.queue) == 0\n\n    def size(self):\n        return len(self.queue)",
-      "c++": "#include <iostream>\n#include <queue>\n\nclass Queue {\nprivate:\n    std::queue<int> queue;\npublic:\n    void enqueue(int item) {\n        queue.push(item);\n    }\n\n    int dequeue() {\n        if (!is_empty()) {\n            int item = queue.front();\n            queue.pop();\n            return item;\n        }\n        return -1; // Queue is empty\n    }\n\n    bool is_empty() {\n        return queue.empty();\n    }\n\n    int size() {\n        return queue.size();\n    }\n};",
+      "python": "class Queue:\n    def __init__(self):\n        self.queue = []\n\n    def enqueue(self, item):\n        self.queue.append(item)\n\n    def dequeue(self):\n        if not self.is_empty():\n            return self.queue.pop(0)\n\n    def is_empty(self):\n        return len(self.queue) == 0\n\n    def peek(self):\n        if not self.is_empty():\n            return self.queue[0]\n\n    def size(self):\n        return len(self.queue)",
+      "c++": "#include <iostream>\n#include <deque>\n\nclass Queue {\nprivate:\n    std::deque<int> queue;\npublic:\n    void enqueue(int item) {\n        queue.push_back(item);\n    }\n\n    int dequeue() {\n        if (!is_empty()) {\n            int item = queue.front();\n            queue.pop_front();\n            return item;\n        }\n        return -1; // Queue is empty\n    }\n\n    bool is_empty() {\n        return queue.empty();\n    }\n\n    int peek() {\n        if (!is_empty()) {\n            return queue.front();\n        }\n        return -1; // Queue is empty\n    }\n\n    int size() {\n        return queue.size();\n    }\n};",
       "java": "import java.util.LinkedList;\nimport java.util.Queue;\n\npublic class QueueExample {\n    public static void main(String[] args) {\n        Queue<Integer> queue = new LinkedList<>();\n        queue.add(1);\n        queue.add(2);\n        queue.add(3);\n        System.out.println(queue.remove()); // 1\n        System.out.println(queue.peek()); // 2\n        System.out.println(queue.isEmpty()); // false\n        System.out.println(queue.size()); // 2\n    }\n}"
     },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/agQQyKd0HBQ?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x\" title=\"Queue Animations | Data Structure | Visual How\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/0uu3xOGmG14?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x\" title=\"Queue Animations | Data Structure | Visual How\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
     "quiz": [
       {
         "question": "What is a Queue?",
-        "options": ["A linear data structure that follows the FIFO (First In, First Out) principle.", "A linear data structure that follows the LIFO (Last In, First Out) principle.", "A tree-based data structure."],
+        "options": ["A linear data structure that follows the LIFO (Last In, First Out) principle.", "A linear data structure that follows the FIFO (First In, First Out) principle.", "A non-linear data structure used for hierarchical data."],
         "answer": "A linear data structure that follows the FIFO (First In, First Out) principle."
       },
       {
-        "question": "What operation removes an element from a Queue?",
-        "options": ["Enqueue", "Dequeue", "Peek"],
-        "answer": "Dequeue"
+        "question": "What is the time complexity of enqueue operation in a Queue?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "What is the time complexity of dequeue operation in a Queue?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "Which operation is not possible directly in a Queue?",
+        "options": ["Enqueue", "Dequeue", "Peek", "Traverse"],
+        "answer": "Traverse"
+      },
+      {
+        "question": "Which data structure can be used to implement a printer's task scheduling?",
+        "options": ["Stack", "Queue", "Linked List"],
+        "answer": "Queue"
       }
     ]
   },
@@ -238,6 +388,21 @@
         "question": "What operation retrieves the highest priority element from a Priority Queue?",
         "options": ["Push", "Pop", "Peek"],
         "answer": "Pop"
+      },
+      {
+        "question": "What is the time complexity of inserting an element into a Priority Queue?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(log n)"
+      },
+      {
+        "question": "What is the time complexity of accessing the highest priority element?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(1)"
+      },
+      {
+        "question": "Which data structure is commonly used to implement a Priority Queue?",
+        "options": ["Heap", "Stack", "Linked List"],
+        "answer": "Heap"
       }
     ]
   },
@@ -260,6 +425,21 @@
         "question": "What is the time complexity of searching for a word in a Trie?",
         "options": ["O(1)", "O(n)", "O(m)", "O(m * n)"],
         "answer": "O(m) where m is the length of the word."
+      },
+      {
+        "question": "What is the time complexity of inserting a word in a Trie?",
+        "options": ["O(1)", "O(n)", "O(m)", "O(m * n)"],
+        "answer": "O(m) where m is the length of the word."
+      },
+      {
+        "question": "What is a common application of Tries?",
+        "options": ["Sorting arrays", "Implementing priority queues", "Autocomplete and spell checker"],
+        "answer": "Autocomplete and spell checker"
+      },
+      {
+        "question": "What is the main advantage of a Trie over a hash table?",
+        "options": ["Faster insertions", "Less memory usage", "Supports prefix queries efficiently"],
+        "answer": "Supports prefix queries efficiently"
       }
     ]
   },
@@ -268,7 +448,7 @@
     "description": "A Heap is a special tree-based data structure that satisfies the heap property: if P is a parent node of C, then the key (the value) of P is either greater than or equal to (in a max heap) or less than or equal to (in a min heap) the key of C. The node at the 'top' of the heap (with no parents) is called the root node. [Learn more](https://en.wikipedia.org/wiki/Heap_(data_structure))",
     "code": {
       "python": "class Heap:\n    def __init__(self):\n        self.heap = []\n\n    def insert(self, val):\n        self.heap.append(val)\n        self.__heapify_up(len(self.heap) - 1)\n\n    def __heapify_up(self, index):\n        parent = (index - 1) // 2\n        if index > 0 and self.heap[index] > self.heap[parent]:\n            self.heap[index], self.heap[parent] = self.heap[parent], self.heap[index]\n            self.__heapify_up(parent)",
-      "c++": "class Heap {\n    vector<int> h;\npublic:\n    void insert(int val) {\n        h.push_back(val);\n        heapify_up(h.size() - 1);\n    }\nprivate:\n    void heapify_up(int i) {\n        int parent = (i - 1) / 2;\n        if (i && h[parent] < h[i]) {\n            swap(h[i], h[parent]);\n            heapify_up(parent);\n        }\n    }\n};",
+      "c++": "class Heap {\n    std::vector<int> h;\npublic:\n    void insert(int val) {\n        h.push_back(val);\n        heapify_up(h.size() - 1);\n    }\nprivate:\n    void heapify_up(int i) {\n        int parent = (i - 1) / 2;\n        if (i && h[parent] < h[i]) {\n            std::swap(h[i], h[parent]);\n            heapify_up(parent);\n        }\n    }\n};",
       "java": "class Heap {\n    private int[] Heap;\n    private int size;\n    private int maxsize;\n\n    public Heap(int maxsize) {\n        this.maxsize = maxsize;\n        this.size = 0;\n        Heap = new int[this.maxsize + 1];\n        Heap[0] = Integer.MAX_VALUE;\n    }\n\n    private void heapifyUp(int pos) {\n        int parentPos = pos / 2;\n        if (pos > 1 && Heap[pos] > Heap[parentPos]) {\n            int tmp;\n            tmp = Heap[pos];\n            Heap[pos] = Heap[parentPos];\n            Heap[parentPos] = tmp;\n            heapifyUp(parentPos);\n        }\n    }\n\n    public void insert(int element) {\n        Heap[++size] = element;\n        heapifyUp(size);\n    }\n}"
     },
     "video": "<iframe width='900' height='500' src='https://www.youtube.com/embed/uU0iWaVxMgc?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x' title='Max Heap Animations | Data Structure | Visual How' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>",
@@ -282,6 +462,21 @@
         "question": "What is the time complexity of inserting an element into a Heap?",
         "options": ["O(1)", "O(log n)", "O(n)"],
         "answer": "O(log n)"
+      },
+      {
+        "question": "What is the time complexity of deleting the maximum element from a max-heap?",
+        "options": ["O(1)", "O(log n)", "O(n)"],
+        "answer": "O(log n)"
+      },
+      {
+        "question": "What is the main difference between a binary heap and a binary search tree?",
+        "options": ["Heaps are not necessarily binary.", "Heaps are complete binary trees, while BSTs are not necessarily complete.", "BSTs have the heap property."],
+        "answer": "Heaps are complete binary trees, while BSTs are not necessarily complete."
+      },
+      {
+        "question": "Which type of heap is used to implement a priority queue?",
+        "options": ["Max-heap", "Min-heap", "Binary search tree"],
+        "answer": "Min-heap"
       }
     ]
   },
@@ -293,7 +488,7 @@
       "c++": "#include <vector>\n#include <list>\n\nclass HashTable {\n    std::vector<std::list<std::pair<int, int>>> table;\npublic:\n    HashTable() : table(10) {}\n\n    int hash(int key) {\n        return key % table.size();\n    }\n\n    void insert(int key, int value) {\n        int index = hash(key);\n        table[index].push_back({key, value});\n    }\n};",
       "java": "import java.util.LinkedList;\n\nclass HashTable {\n    private LinkedList<Entry>[] table;\n\n    static class Entry {\n        int key;\n        int value;\n\n        Entry(int key, int value) {\n            this.key = key;\n            this.value = value;\n        }\n    }\n\n    public HashTable() {\n        table = new LinkedList[10];\n        for (int i = 0; i < table.length; i++) {\n            table[i] = new LinkedList<>();\n        }\n    }\n\n    private int hash(int key) {\n        return key % table.length;\n    }\n\n    public void insert(int key, int value) {\n        int index = hash(key);\n        table[index].add(new Entry(key, value));\n    }\n}"
     },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/VeYKEMY2F9k?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x\" title=\"Hashing Animations | Data Structure | Visual How\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/8hEyhs3OV1w?list=PLZh3kxyHrVp_AcOanN_jpuQbcMVdXbqei\" title=\"Hashing Animations | Data Structure | Visual How\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
     "quiz": [
       {
         "question": "What is a Hash Table?",
@@ -304,6 +499,21 @@
         "question": "What is the time complexity of inserting an element into a Hash Table in the average case?",
         "options": ["O(1)", "O(log n)", "O(n)"],
         "answer": "O(1)"
+      },
+      {
+        "question": "What is a collision in the context of Hash Tables?",
+        "options": ["Two keys mapping to the same index", "Two different tables having the same data", "An array out of bounds error"],
+        "answer": "Two keys mapping to the same index"
+      },
+      {
+        "question": "Which of the following is a common method to handle collisions in Hash Tables?",
+        "options": ["Quicksort", "Binary Search", "Chaining"],
+        "answer": "Chaining"
+      },
+      {
+        "question": "What is the load factor in a Hash Table?",
+        "options": ["The ratio of the number of elements to the size of the table", "The number of elements in the table", "The size of the table"],
+        "answer": "The ratio of the number of elements to the size of the table"
       }
     ]
   },
@@ -326,6 +536,21 @@
         "question": "What is the time complexity of Dijkstra's Algorithm using a priority queue?",
         "options": ["O(V^2)", "O(E log V)", "O(V log V)"],
         "answer": "O(E log V)"
+      },
+      {
+        "question": "Can Dijkstra's Algorithm handle negative weight edges?",
+        "options": ["Yes", "No", "Only if all edges have negative weights"],
+        "answer": "No"
+      },
+      {
+        "question": "What data structure is commonly used to implement Dijkstra's Algorithm efficiently?",
+        "options": ["Stack", "Queue", "Priority Queue"],
+        "answer": "Priority Queue"
+      },
+      {
+        "question": "What is a limitation of Dijkstra's Algorithm?",
+        "options": ["It does not work with weighted graphs.", "It cannot handle graphs with negative weight edges.", "It is not efficient for sparse graphs."],
+        "answer": "It cannot handle graphs with negative weight edges."
       }
     ]
   },
@@ -348,6 +573,21 @@
         "question": "What data structure is commonly used to implement DFS?",
         "options": ["Queue", "Stack", "Heap"],
         "answer": "Stack"
+      },
+      {
+        "question": "What is the time complexity of DFS for a graph with V vertices and E edges?",
+        "options": ["O(V + E)", "O(V^2)", "O(E log V)"],
+        "answer": "O(V + E)"
+      },
+      {
+        "question": "Which of the following problems can be solved using DFS?",
+        "options": ["Shortest path in an unweighted graph", "Topological sorting", "Minimum spanning tree"],
+        "answer": "Topological sorting"
+      },
+      {
+        "question": "In DFS, what is the purpose of the 'visited' array?",
+        "options": ["To keep track of the nodes that have been visited", "To store the order of traversal", "To store the shortest path"],
+        "answer": "To keep track of the nodes that have been visited"
       }
     ]
   },
@@ -370,6 +610,21 @@
         "question": "What data structure is commonly used to implement BFS?",
         "options": ["Queue", "Stack", "Heap"],
         "answer": "Queue"
+      },
+      {
+        "question": "What is the time complexity of BFS for a graph with V vertices and E edges?",
+        "options": ["O(V + E)", "O(V^2)", "O(E log V)"],
+        "answer": "O(V + E)"
+      },
+      {
+        "question": "Which of the following problems can be solved using BFS?",
+        "options": ["Shortest path in an unweighted graph", "Topological sorting", "Minimum spanning tree"],
+        "answer": "Shortest path in an unweighted graph"
+      },
+      {
+        "question": "In BFS, what is the purpose of the 'visited' array?",
+        "options": ["To keep track of the nodes that have been visited", "To store the order of traversal", "To store the shortest path"],
+        "answer": "To keep track of the nodes that have been visited"
       }
     ]
   },
@@ -379,173 +634,34 @@
     "code": {
       "python": "class Graph:\n    def __init__(self):\n        self.graph = {}\n\n    def add_edge(self, u, v):\n        if u not in self.graph:\n            self.graph[u] = []\n        self.graph[u].append(v)\n\n    def bfs(self, start):\n        visited = set()\n        queue = [start]\n        while queue:\n            vertex = queue.pop(0)\n            if vertex not in visited:\n                print(vertex)\n                visited.add(vertex)\n                queue.extend(set(self.graph[vertex]) - visited)\n\n    def dfs(self, start, visited=None):\n        if visited is None:\n            visited = set()\n        visited.add(start)\n        print(start)\n        for next in set(self.graph[start]) - visited:\n            self.dfs(next, visited)",
       "c++": "#include <iostream>\n#include <list>\n#include <queue>\n\nclass Graph {\n    int V;\n    std::list<int>* adj;\npublic:\n    Graph(int V) {\n        this->V = V;\n        adj = new std::list<int>[V];\n    }\n\n    void addEdge(int v, int w) {\n        adj[v].push_back(w);\n    }\n\n    void BFS(int s) {\n        bool* visited = new bool[V];\n        for (int i = 0; i < V; i++)\n            visited[i] = false;\n        std::queue<int> queue;\n        visited[s] = true;\n        queue.push(s);\n        while (!queue.empty()) {\n            s = queue.front();\n            std::cout << s << \" \";\n            queue.pop();\n            for (auto adjecent : adj[s]) {\n                if (!visited[adjecent]) {\n                    visited[adjecent] = true;\n                    queue.push(adjecent);\n                }\n            }\n        }\n    }\n\n    void DFSUtil(int v, bool visited[]) {\n        visited[v] = true;\n        std::cout << v << \" \";\n        for (auto i = adj[v].begin(); i != adj[v].end(); ++i)\n            if (!visited[*i])\n                DFSUtil(*i, visited);\n    }\n\n    void DFS(int v) {\n        bool* visited = new bool[V];\n        for (int i = 0; i < V; i++)\n            visited[i] = false;\n        DFSUtil(v, visited);\n    }\n};",
-      "java": "import java.util.*;\n\nclass Graph {\n    private int V;\n    private LinkedList<Integer> adj[];\n\n    Graph(int v) {\n        V = v;\n        adj = new LinkedList[v];\n        for (int i = 0; i < v; ++i)\n            adj[i] = new LinkedList();\n    }\n\n    void addEdge(int v, int w) {\n        adj[v].add(w);\n    }\n\n    void BFS(int s) {\n        boolean visited[] = new boolean[V];\n        LinkedList<Integer> queue = new LinkedList<Integer>();\n        visited[s] = true;\n        queue.add(s);\n        while (queue.size() != 0) {\n            s = queue.poll();\n            System.out.print(s + \" \");\n            Iterator<Integer> i = adj[s].listIterator();\n            while (i.hasNext()) {\n                int n = i.next();\n                if (!visited[n]) {\n                    visited[n] = true;\n                    queue.add(n);\n                }\n            }\n        }\n    }\n\n    void DFSUtil(int v, boolean visited[]) {\n        visited[v] = true;\n        System.out.print(v + \" \");\n        Iterator<Integer> i = adj[v].listIterator();\n        while (i.hasNext()) {\n            int n = i.next();\n            if (!visited[n])\n                DFSUtil(n, visited);\n        }\n    }\n\n    void DFS(int v) {\n        boolean visited[] = new boolean[V];\n        for (int i = 0; i < V; ++i)\n            if (!visited[i])\n                DFSUtil(i, visited);\n    }\n}"
+      "java": "import java.util.*;\n\nclass Graph {\n    private int V;\n    private LinkedList<Integer> adj[];\n\n    Graph(int v) {\n        V = v;\n        adj = new LinkedList[v];\n        for (int i = 0; i < v; ++i)\n            adj[i] = new LinkedList();\n    }\n\n    void addEdge(int v, int w) {\n        adj[v].add(w);\n    }\n\n    void BFS(int s) {\n        boolean visited[] = new boolean[V];\n        LinkedList<Integer> queue = new LinkedList<Integer>();\n        visited[s] = true;\n        queue.add(s);\n        while (queue.size() != 0) {\n            s = queue.poll();\n            System.out.print(s + \" \");\n            Iterator<Integer> i = adj[s].listIterator();\n            while (i.hasNext()) {\n                int n = i.next();\n                if (!visited[n]) {\n                    visited[n] = true;\n                    queue.add(n);\n                }\n            }\n        }\n    }\n\n    void DFSUtil(int v, boolean visited[]) {\n        visited[v] = true;\n        System.out.print(v + \" \");\n        Iterator<Integer> i = adj[v].listIterator();\n        while (i.hasNext()) {\n            int n = i.next();\n            if (!visited[n])\n                DFSUtil(n, visited);\n        }\n    }\n\n    void DFS(int v) {\n        boolean visited[] = new boolean[V];\n        for (int i = 0; i < V; ++i)\n            visited[i] = false;\n        DFSUtil(v, visited);\n    }\n}"
     },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/sf17xiYfLcM?list=PLFonK3OU1E4qVvtRGBSL0xtXOmzZkLy8x\" title=\"Adjacency List Animations | Graph Representation | Data Structure | Visual How\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
+    "video": "<iframe width='900' height='500' src='https://www.youtube.com/embed/JrbTkRuZlQ8' title='Graph Animations | Graph Traversal | Data Structure | Visual How' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>",
     "quiz": [
       {
         "question": "What is a Graph?",
-        "options": ["A data structure that consists of a finite set of vertices (or nodes) and a set of edges connecting them.", "A tree-based data structure.", "A linear data structure that follows the FIFO principle."],
-        "answer": "A data structure that consists of a finite set of vertices (or nodes) and a set of edges connecting them."
+        "options": ["A data structure that consists of vertices and edges.", "A data structure that implements an associative array abstract data type.", "A linear data structure where elements are stored in a sequential manner."],
+        "answer": "A data structure that consists of vertices and edges."
       },
       {
-        "question": "What are the two main types of Graph traversals?",
-        "options": ["In-order and Pre-order", "BFS and DFS", "Linear and Non-linear"],
-        "answer": "BFS and DFS"
-      }
-    ]
-  },
-  {
-    "name": "Kruskal's Algorithm",
-    "description": "Kruskal's Algorithm is a minimum spanning tree algorithm that finds an edge of the least possible weight that connects any two trees in the forest. It is a greedy algorithm in graph theory that finds a minimum spanning tree for a connected weighted graph. [Learn more](https://en.wikipedia.org/wiki/Kruskal's_algorithm)",
-    "code": {
-      "python": "class Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.graph = []\n\n    def addEdge(self, u, v, w):\n        self.graph.append([u, v, w])\n\n    def find(self, parent, i):\n        if parent[i] == i:\n            return i\n        return self.find(parent, parent[i])\n\n    def union(self, parent, rank, x, y):\n        xroot = self.find(parent, x)\n        yroot = self.find(parent, y)\n        if rank[xroot] < rank[yroot]:\n            parent[xroot] = yroot\n        elif rank[xroot] > rank[yroot]:\n            parent[yroot] = xroot\n        else:\n            parent[yroot] = xroot\n            rank[xroot] += 1\n\n    def KruskalMST(self):\n        result = []\n        i, e = 0, 0\n        self.graph = sorted(self.graph, key=lambda item: item[2])\n        parent = []\n        rank = []\n        for node in range(self.V):\n            parent.append(node)\n            rank.append(0)\n        while e < self.V - 1:\n            u, v, w = self.graph[i]\n            i = i + 1\n            x = self.find(parent, u)\n            y = self.find(parent, v)\n            if x != y:\n                e = e + 1\n                result.append([u, v, w])\n                self.union(parent, rank, x, y)\n        return result",
-      "c++": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\nstruct Edge {\n    int u, v, weight;\n    bool operator<(const Edge& other) const {\n        return weight < other.weight;\n    }\n};\n\nclass Graph {\n    int V;\n    std::vector<Edge> edges;\npublic:\n    Graph(int V) : V(V) {}\n    void addEdge(int u, int v, int w) {\n        edges.push_back({u, v, w});\n    }\n\n    int find(std::vector<int>& parent, int i) {\n        if (parent[i] == i)\n            return i;\n        return parent[i] = find(parent, parent[i]);\n    }\n\n    void unionSets(std::vector<int>& parent, std::vector<int>& rank, int x, int y) {\n        int xroot = find(parent, x);\n        int yroot = find(parent, y);\n        if (rank[xroot] < rank[yroot])\n            parent[xroot] = yroot;\n        else if (rank[xroot] > rank[yroot])\n            parent[yroot] = xroot;\n        else {\n            parent[yroot] = xroot;\n            rank[xroot]++;\n        }\n    }\n\n    void KruskalMST() {\n        std::sort(edges.begin(), edges.end());\n        std::vector<int> parent(V);\n        std::vector<int> rank(V, 0);\n        for (int i = 0; i < V; ++i)\n            parent[i] = i;\n        std::vector<Edge> result;\n        for (const auto& edge : edges) {\n            int x = find(parent, edge.u);\n            int y = find(parent, edge.v);\n            if (x != y) {\n                result.push_back(edge);\n                unionSets(parent, rank, x, y);\n            }\n        }\n        for (const auto& edge : result)\n            std::cout << edge.u << \" - \" << edge.v << \" : \" << edge.weight << std::endl;\n    }\n};",
-      "java": "import java.util.*;\n\nclass Edge implements Comparable<Edge> {\n    int src, dest, weight;\n    public int compareTo(Edge compareEdge) {\n        return this.weight - compareEdge.weight;\n    }\n}\n\nclass Subset {\n    int parent, rank;\n}\n\nclass Graph {\n    int V, E;\n    Edge edge[];\n\n    Graph(int v, int e) {\n        V = v;\n        E = e;\n        edge = new Edge[E];\n        for (int i = 0; i < e; ++i)\n            edge[i] = new Edge();\n    }\n\n    int find(Subset subsets[], int i) {\n        if (subsets[i].parent != i)\n            subsets[i].parent = find(subsets, subsets[i].parent);\n        return subsets[i].parent;\n    }\n\n    void union(Subset subsets[], int x, int y) {\n        int xroot = find(subsets, x);\n        int yroot = find(subsets, y);\n        if (subsets[xroot].rank < subsets[yroot].rank)\n            subsets[xroot].parent = yroot;\n        else if (subsets[xroot].rank > subsets[yroot].rank)\n            subsets[yroot].parent = xroot;\n        else {\n            subsets[yroot].parent = xroot;\n            subsets[xroot].rank++;\n        }\n    }\n\n    void KruskalMST() {\n        Edge result[] = new Edge[V];\n        int e = 0;\n        int i = 0;\n        for (i = 0; i < V; ++i)\n            result[i] = new Edge();\n        Arrays.sort(edge);\n        Subset subsets[] = new Subset[V];\n        for (i = 0; i < V; ++i)\n            subsets[i] = new Subset();\n        for (int v = 0; v < V; ++v) {\n            subsets[v].parent = v;\n            subsets[v].rank = 0;\n        }\n        i = 0;\n        while (e < V - 1) {\n            Edge next_edge = new Edge();\n            next_edge = edge[i++];\n            int x = find(subsets, next_edge.src);\n            int y = find(subsets, next_edge.dest);\n            if (x != y) {\n                result[e++] = next_edge;\n                union(subsets, x, y);\n            }\n        }\n        for (i = 0; i < e; ++i)\n            System.out.println(result[i].src + \" - \" + result[i].dest + \" : \" + result[i].weight);\n    }\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/C11i9JPRL14\" title=\"Kruskal&#39;s Algorithm Code Visualization\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What type of algorithm is Kruskal's Algorithm?",
-        "options": ["A minimum spanning tree algorithm.", "A shortest path algorithm.", "A sorting algorithm."],
-        "answer": "A minimum spanning tree algorithm."
+        "question": "What is an edge in a graph?",
+        "options": ["A connection between two vertices.", "A single node in a graph.", "A cycle in a graph."],
+        "answer": "A connection between two vertices."
       },
       {
-        "question": "What is the time complexity of Kruskal's Algorithm?",
-        "options": ["O(E log V)", "O(V^2)", "O(V log V)"],
-        "answer": "O(E log V)"
-      }
-    ]
-  },
-  {
-    "name": "Prim's Algorithm",
-    "description": "Prim's Algorithm is a minimum spanning tree algorithm that starts with a single vertex and adds the cheapest possible connection from the tree to another vertex, one at a time until all vertices are included. It is a greedy algorithm that finds a minimum spanning tree for a weighted undirected graph. [Learn more](https://en.wikipedia.org/wiki/Prim's_algorithm)",
-    "code": {
-      "python": "import heapq\n\ndef prim(graph, start):\n    mst = []\n    visited = set([start])\n    edges = [(cost, start, to) for to, cost in graph[start].items()]\n    heapq.heapify(edges)\n    while edges:\n        cost, frm, to = heapq.heappop(edges)\n        if to not in visited:\n            visited.add(to)\n            mst.append((frm, to, cost))\n            for to_next, cost in graph[to].items():\n                if to_next not in visited:\n                    heapq.heappush(edges, (cost, to, to_next))\n    return mst",
-      "c++": "#include <iostream>\n#include <vector>\n#include <queue>\n\ntypedef std::pair<int, int> iPair;\n\nvoid primMST(std::vector<std::vector<iPair>>& adj, int V) {\n    std::priority_queue<iPair, std::vector<iPair>, std::greater<iPair>> pq;\n    int src = 0;\n    std::vector<int> key(V, INT_MAX);\n    std::vector<int> parent(V, -1);\n    std::vector<bool> inMST(V, false);\n    pq.push({0, src});\n    key[src] = 0;\n    while (!pq.empty()) {\n        int u = pq.top().second;\n        pq.pop();\n        inMST[u] = true;\n        for (auto& x : adj[u]) {\n            int v = x.first;\n            int weight = x.second;\n            if (!inMST[v] && key[v] > weight) {\n                key[v] = weight;\n                pq.push({key[v], v});\n                parent[v] = u;\n            }\n        }\n    }\n    for (int i = 1; i < V; ++i)\n        std::cout << parent[i] << \" - \" << i << \" : \" << key[i] << std::endl;\n}",
-      "java": "import java.util.*;\n\nclass Graph {\n    private int V;\n    private LinkedList<Edge>[] adj;\n\n    static class Edge {\n        int node;\n        int weight;\n        Edge(int node, int weight) { this.node = node; this.weight = weight; }\n    }\n\n    Graph(int V) {\n        this.V = V;\n        adj = new LinkedList[V];\n        for (int i = 0; i < V; ++i)\n            adj[i] = new LinkedList<>();\n    }\n\n    void addEdge(int u, int v, int weight) {\n        adj[u].add(new Edge(v, weight));\n        adj[v].add(new Edge(u, weight));\n    }\n\n    void primMST() {\n        PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));\n        boolean[] inMST = new boolean[V];\n        Edge[] edgeTo = new Edge[V];\n        for (int i = 0; i < V; ++i)\n            edgeTo[i] = new Edge(-1, Integer.MAX_VALUE);\n        edgeTo[0].weight = 0;\n        pq.add(new Edge(0, 0));\n        while (!pq.isEmpty()) {\n            Edge edge = pq.poll();\n            int u = edge.node;\n            inMST[u] = true;\n            for (Edge neighbor : adj[u]) {\n                int v = neighbor.node;\n                int weight = neighbor.weight;\n                if (!inMST[v] && weight < edgeTo[v].weight) {\n                    edgeTo[v] = new Edge(u, weight);\n                    pq.add(new Edge(v, weight));\n                }\n            }\n        }\n        for (int i = 1; i < V; ++i)\n            System.out.println(edgeTo[i].node + \" - \" + i + \" : \" + edgeTo[i].weight);\n    }\n}"
-    },
-    "video": "<iframe width='900' height='500' src='https://www.youtube.com/embed/Ax-Kovi-BUk' title='Prim&#39;s Algorithm Code Visualization' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share' referrerpolicy='strict-origin-when-cross-origin' allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What type of algorithm is Prim's Algorithm?",
-        "options": ["A minimum spanning tree algorithm.", "A shortest path algorithm.", "A sorting algorithm."],
-        "answer": "A minimum spanning tree algorithm."
+        "question": "What is the time complexity of BFS for a graph with V vertices and E edges?",
+        "options": ["O(V + E)", "O(V^2)", "O(E log V)"],
+        "answer": "O(V + E)"
       },
       {
-        "question": "What is the time complexity of Prim's Algorithm?",
-        "options": ["O(E log V)", "O(V^2)", "O(V log V)"],
-        "answer": "O(E log V)"
-      }
-    ]
-  },
-  {
-    "name": "Fibonacci Sequence",
-    "description": "The Fibonacci Sequence is a series of numbers in which each number (Fibonacci number) is the sum of the two preceding ones, usually starting with 0 and 1. The sequence appears in many different areas of mathematics and nature. [Learn more](https://en.wikipedia.org/wiki/Fibonacci_number)",
-    "code": {
-      "python": "def fibonacci(n):\n    if n <= 0:\n        return 0\n    elif n == 1:\n        return 1\n    else:\n        return fibonacci(n-1) + fibonacci(n-2)",
-      "c++": "int fibonacci(int n) {\n    if (n <= 0)\n        return 0;\n    else if (n == 1)\n        return 1;\n    else\n        return fibonacci(n-1) + fibonacci(n-2);\n}",
-      "java": "int fibonacci(int n) {\n    if (n <= 0)\n        return 0;\n    else if (n == 1)\n        return 1;\n    else\n        return fibonacci(n-1) + fibonacci(n-2);\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/hbveibMDHfg?list=TLPQMjUwNTIwMjT-UBBFCzY2ew\" title=\"Memoized Recursive Fibonacci Calls (Diagrammed)\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What is the Fibonacci Sequence?",
-        "options": ["A sequence where each number is the sum of the two preceding ones.", "A sequence where each number is twice the previous one.", "A sequence of prime numbers."],
-        "answer": "A sequence where each number is the sum of the two preceding ones."
+        "question": "What is the time complexity of DFS for a graph with V vertices and E edges?",
+        "options": ["O(V + E)", "O(V^2)", "O(E log V)"],
+        "answer": "O(V + E)"
       },
       {
-        "question": "What is the time complexity of the naive recursive Fibonacci algorithm?",
-        "options": ["O(n)", "O(n^2)", "O(2^n)"],
-        "answer": "O(2^n)"
-      }
-    ]
-  },
-  {
-    "name": "Binary Search",
-    "description": "Binary Search is a search algorithm that finds the position of a target value within a sorted array. Binary search compares the target value to the middle element of the array. If they are not equal, the half in which the target cannot lie is eliminated and the search continues on the remaining half until it is successful or the remaining half is empty. [Learn more](https://en.wikipedia.org/wiki/Binary_search_algorithm)",
-    "code": {
-      "python": "def binarySearch(arr, l, r, x):\n    if r >= l:\n        mid = l + (r - l) // 2\n        if arr[mid] == x:\n            return mid\n        elif arr[mid] > x:\n            return binarySearch(arr, l, mid-1, x)\n        else:\n            return binarySearch(arr, mid + 1, r, x)\n    else:\n        return -1",
-      "c++": "int binarySearch(int arr[], int l, int r, int x) {\n    if (r >= l) {\n        int mid = l + (r - l) / 2;\n        if (arr[mid] == x)\n            return mid;\n        if (arr[mid] > x)\n            return binarySearch(arr, l, mid - 1, x);\n        return binarySearch(arr, mid + 1, r, x);\n    }\n    return -1;\n}",
-      "java": "int binarySearch(int arr[], int l, int r, int x) {\n    if (r >= l) {\n        int mid = l + (r - l) / 2;\n        if (arr[mid] == x)\n            return mid;\n        if (arr[mid] > x)\n            return binarySearch(arr, l, mid - 1, x);\n        return binarySearch(arr, mid + 1, r, x);\n    }\n    return -1;\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/DRsJ8sA9xzc\" title=\"Binary Search animated\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What is Binary Search?",
-        "options": ["A search algorithm that finds the position of a target value within a sorted array.", "A search algorithm that finds the position of a target value within an unsorted array.", "A search algorithm that uses hashing to find the position of a target value."],
-        "answer": "A search algorithm that finds the position of a target value within a sorted array."
-      },
-      {
-        "question": "What is the time complexity of Binary Search?",
-        "options": ["O(n)", "O(log n)", "O(n log n)"],
-        "answer": "O(log n)"
-      }
-    ]
-  },
-  {
-    "name": "KMP Algorithm (Knuth-Morris-Pratt)",
-    "description": "The Knuth-Morris-Pratt (KMP) Algorithm is an efficient string matching algorithm that searches for occurrences of a word within a main text string by employing the observation that when a mismatch occurs, the word itself embodies sufficient information to determine where the next match could begin. [Learn more](https://en.wikipedia.org/wiki/Knuth–Morris–Pratt_algorithm)",
-    "code": {
-      "python": "def KMPSearch(pat, txt):\n    M = len(pat)\n    N = len(txt)\n    lps = [0]*M\n    j = 0\n    computeLPSArray(pat, M, lps)\n    i = 0\n    while i < N:\n        if pat[j] == txt[i]:\n            i += 1\n            j += 1\n        if j == M:\n            print(\"Found pattern at index \" + str(i-j))\n            j = lps[j-1]\n        elif i < N and pat[j] != txt[i]:\n            if j != 0:\n                j = lps[j-1]\n            else:\n                i += 1\n\ndef computeLPSArray(pat, M, lps):\n    len = 0\n    lps[0] = 0\n    i = 1\n    while i < M:\n        if pat[i] == pat[len]:\n            len += 1\n            lps[i] = len\n            i += 1\n        else:\n            if len != 0:\n                len = lps[len-1]\n            else:\n                lps[i] = 0\n                i += 1",
-      "c++": "void KMPSearch(const std::string& pat, const std::string& txt) {\n    int M = pat.size();\n    int N = txt.size();\n    std::vector<int> lps(M);\n    int j = 0;\n    computeLPSArray(pat, M, lps);\n    int i = 0;\n    while (i < N) {\n        if (pat[j] == txt[i]) {\n            j++;\n            i++;\n        }\n        if (j == M) {\n            std::cout << \"Found pattern at index \" << i - j << std::endl;\n            j = lps[j - 1];\n        } else if (i < N && pat[j] != txt[i]) {\n            if (j != 0)\n                j = lps[j - 1];\n            else\n                i = i + 1;\n        }\n    }\n}\n\nvoid computeLPSArray(const std::string& pat, int M, std::vector<int>& lps) {\n    int len = 0;\n    lps[0] = 0;\n    int i = 1;\n    while (i < M) {\n        if (pat[i] == pat[len]) {\n            len++;\n            lps[i] = len;\n            i++;\n        } else {\n            if (len != 0)\n                len = lps[len - 1];\n            else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n}",
-      "java": "void KMPSearch(String pat, String txt) {\n    int M = pat.length();\n    int N = txt.length();\n    int lps[] = new int[M];\n    int j = 0;\n    computeLPSArray(pat, M, lps);\n    int i = 0;\n    while (i < N) {\n        if (pat.charAt(j) == txt.charAt(i)) {\n            j++;\n            i++;\n        }\n        if (j == M) {\n            System.out.println(\"Found pattern at index \" + (i - j));\n            j = lps[j - 1];\n        } else if (i < N && pat.charAt(j) != txt.charAt(i)) {\n            if (j != 0)\n                j = lps[j - 1];\n            else\n                i = i + 1;\n        }\n    }\n}\n\nvoid computeLPSArray(String pat, int M, int lps[]) {\n    int len = 0;\n    lps[0] = 0;\n    int i = 1;\n    while (i < M) {\n        if (pat.charAt(i) == pat.charAt(len)) {\n            len++;\n            lps[i] = len;\n            i++;\n        } else {\n            if (len != 0)\n                len = lps[len - 1];\n            else {\n                lps[i] = 0;\n                i++;\n            }\n        }\n    }\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/pu2aO_3R118\" title=\"Visualization of Knuth-Morris-Pratt Algorithm\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What is the KMP Algorithm used for?",
-        "options": ["Searching for occurrences of a substring within a main string.", "Sorting elements in an array.", "Finding the shortest path in a graph."],
-        "answer": "Searching for occurrences of a substring within a main string."
-      },
-      {
-        "question": "What is the time complexity of the KMP Algorithm?",
-        "options": ["O(n)", "O(m + n)", "O(n log n)"],
-        "answer": "O(m + n)"
-      }
-    ]
-  },
-  {
-    "name": "Ternary Search",
-    "description": "Ternary Search is a search algorithm that finds the position of a target value within a sorted array by dividing the array into three parts and determining which part to continue searching in. It is similar to binary search but instead of dividing the array into two parts, it divides it into three. [Learn more](https://en.wikipedia.org/wiki/Ternary_search)",
-    "code": {
-      "python": "def ternarySearch(l, r, key, ar):\n    if r >= l:\n        mid1 = l + (r - l) // 3\n        mid2 = r - (r - l) // 3\n        if ar[mid1] == key:\n            return mid1\n        if ar[mid2] == key:\n            return mid2\n        if key < ar[mid1]:\n            return ternarySearch(l, mid1 - 1, key, ar)\n        elif key > ar[mid2]:\n            return ternarySearch(mid2 + 1, r, key, ar)\n        else:\n            return ternarySearch(mid1 + 1, mid2 - 1, key, ar)\n    return -1",
-      "c++": "int ternarySearch(int l, int r, int key, int ar[]) {\n    if (r >= l) {\n        int mid1 = l + (r - l) / 3;\n        int mid2 = r - (r - l) / 3;\n        if (ar[mid1] == key)\n            return mid1;\n        if (ar[mid2] == key)\n            return mid2;\n        if (key < ar[mid1])\n            return ternarySearch(l, mid1 - 1, key, ar);\n        else if (key > ar[mid2])\n            return ternarySearch(mid2 + 1, r, key, ar);\n        else\n            return ternarySearch(mid1 + 1, mid2 - 1, key, ar);\n    }\n    return -1;\n}",
-      "java": "int ternarySearch(int l, int r, int key, int ar[]) {\n    if (r >= l) {\n        int mid1 = l + (r - l) / 3;\n        int mid2 = r - (r - l) / 3;\n        if (ar[mid1] == key)\n            return mid1;\n        if (ar[mid2] == key)\n            return mid2;\n        if (key < ar[mid1])\n            return ternarySearch(l, mid1 - 1, key, ar);\n        else if (key > ar[mid2])\n            return ternarySearch(mid2 + 1, r, key, ar);\n        else\n            return ternarySearch(mid1 + 1, mid2 - 1, key, ar);\n    }\n    return -1;\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/s1g_24NlinA\" title=\"Ternary Search Visualization\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What is Ternary Search?",
-        "options": ["A search algorithm that finds the position of a target value within a sorted array by dividing the array into three parts.", "A search algorithm that finds the position of a target value within an unsorted array.", "A search algorithm that uses hashing to find the position of a target value."],
-        "answer": "A search algorithm that finds the position of a target value within a sorted array by dividing the array into three parts."
-      },
-      {
-        "question": "What is the time complexity of Ternary Search?",
-        "options": ["O(n)", "O(log n)", "O(log3 n)"],
-        "answer": "O(log3 n)"
-      }
-    ]
-  },
-  {
-    "name": "Bellman-Ford Algorithm",
-    "description": "The Bellman-Ford Algorithm is a shortest path algorithm that computes the shortest paths from a single source vertex to all other vertices in a weighted digraph. It can handle graphs with negative weight edges, unlike Dijkstra's algorithm. [Learn more](https://en.wikipedia.org/wiki/Bellman–Ford_algorithm)",
-    "code": {
-      "python": "class Graph:\n    def __init__(self, vertices):\n        self.V = vertices\n        self.graph = []\n\n    def addEdge(self, u, v, w):\n        self.graph.append([u, v, w])\n\n    def BellmanFord(self, src):\n        dist = [float('inf')] * self.V\n        dist[src] = 0\n        for _ in range(self.V - 1):\n            for u, v, w in self.graph:\n                if dist[u] != float('inf') and dist[u] + w < dist[v]:\n                    dist[v] = dist[u] + w\n        for u, v, w in self.graph:\n            if dist[u] != float('inf') and dist[u] + w < dist[v]:\n                print(\"Graph contains negative weight cycle\")\n                return\n        return dist",
-      "c++": "class Graph {\n    int V;\n    std::vector<std::tuple<int, int, int>> edges;\npublic:\n    Graph(int V) : V(V) {}\n\n    void addEdge(int u, int v, int w) {\n        edges.push_back(std::make_tuple(u, v, w));\n    }\n\n    void BellmanFord(int src) {\n        std::vector<int> dist(V, INT_MAX);\n        dist[src] = 0;\n        for (int i = 1; i <= V - 1; i++) {\n            for (auto& edge : edges) {\n                int u, v, w;\n                std::tie(u, v, w) = edge;\n                if (dist[u] != INT_MAX && dist[u] + w < dist[v])\n                    dist[v] = dist[u] + w;\n            }\n        }\n        for (auto& edge : edges) {\n            int u, v, w;\n            std::tie(u, v, w) = edge;\n            if (dist[u] != INT_MAX && dist[u] + w < dist[v]) {\n                std::cout << \"Graph contains negative weight cycle\" << std::endl;\n                return;\n            }\n        }\n        for (int i = 0; i < V; ++i)\n            std::cout << \"Distance to node \" << i << \" is \" << dist[i] << std::endl;\n    }\n};",
-      "java": "import java.util.*;\n\nclass Graph {\n    private int V;\n    private LinkedList<Edge> edges;\n\n    class Edge {\n        int src, dest, weight;\n        Edge(int src, int dest, int weight) { this.src = src; this.dest = dest; this.weight = weight; }\n    }\n\n    Graph(int V) {\n        this.V = V;\n        edges = new LinkedList<>();\n    }\n\n    void addEdge(int src, int dest, int weight) {\n        edges.add(new Edge(src, dest, weight));\n    }\n\n    void BellmanFord(int src) {\n        int dist[] = new int[V];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[src] = 0;\n        for (int i = 1; i < V; ++i) {\n            for (Edge edge : edges) {\n                int u = edge.src;\n                int v = edge.dest;\n                int weight = edge.weight;\n                if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v])\n                    dist[v] = dist[u] + weight;\n            }\n        }\n        for (Edge edge : edges) {\n            int u = edge.src;\n            int v = edge.dest;\n            int weight = edge.weight;\n            if (dist[u] != Integer.MAX_VALUE && dist[u] + weight < dist[v]) {\n                System.out.println(\"Graph contains negative weight cycle\");\n                return;\n            }\n        }\n        for (int i = 0; i < V; ++i)\n            System.out.println(\"Distance to node \" + i + \" is \" + dist[i]);\n    }\n}"
-    },
-    "video": "<iframe width=\"900\" height=\"500\" src=\"https://www.youtube.com/embed/cpETrnfMkiY\" title=\"Bellman-Ford Algorithm: visualize and explain in one video\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>",
-    "quiz": [
-      {
-        "question": "What is the Bellman-Ford Algorithm used for?",
-        "options": ["Finding the shortest paths from a single source to all other vertices in a weighted graph.", "Finding the minimum spanning tree of a graph.", "Sorting elements in an array."],
-        "answer": "Finding the shortest paths from a single source to all other vertices in a weighted graph."
-      },
-      {
-        "question": "What is the time complexity of the Bellman-Ford Algorithm?",
-        "options": ["O(V + E)", "O(V^2)", "O(VE)"],
-        "answer": "O(VE)"
+        "question": "Which of the following algorithms is used to find the shortest path in an unweighted graph?",
+        "options": ["DFS", "BFS", "Dijkstra's Algorithm"],
+        "answer": "BFS"
       }
     ]
   }

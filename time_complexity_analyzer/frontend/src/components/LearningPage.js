@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Button, Tabs, Tab, Box, Select, MenuItem, Link } from "@mui/material";
 import algorithmsData from '../data_files/algorithmsData.json';
 
 const LearningPage = () => {
   const [selectedTab, setSelectedTab] = useState('Algorithms');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState(algorithmsData[0].name);
+  const [quizState, setQuizState] = useState({
+    currentQuestionIndex: 0,
+    selectedOption: null,
+    correctAnswers: 0,
+    showResults: false,
+  });
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
+  };
+
+  const handleAlgorithmSelect = (algorithmName) => {
+    setSelectedAlgorithm(algorithmName);
+    setQuizState({
+      currentQuestionIndex: 0,
+      selectedOption: null,
+      correctAnswers: 0,
+      showResults: false,
+    });
   };
 
   return (
@@ -18,7 +34,7 @@ const LearningPage = () => {
         </Typography>
         <Card>
           <CardContent>
-            <AlgorithmTopicsList onSelect={setSelectedAlgorithm} />
+            <AlgorithmTopicsList onSelect={handleAlgorithmSelect} />
           </CardContent>
         </Card>
       </Box>
@@ -31,7 +47,11 @@ const LearningPage = () => {
           {selectedTab === 'Algorithms' ? (
             <AlgorithmsContent algorithmName={selectedAlgorithm} />
           ) : (
-            <QuizzesContent algorithm={algorithmsData.find(algo => algo.name === selectedAlgorithm)} />
+            <QuizzesContent
+              algorithm={algorithmsData.find(algo => algo.name === selectedAlgorithm)}
+              quizState={quizState}
+              setQuizState={setQuizState}
+            />
           )}
         </Box>
       </Box>
@@ -115,38 +135,46 @@ const AlgorithmsContent = ({ algorithmName }) => {
   );
 };
 
-const QuizzesContent = ({ algorithm }) => {
+const QuizzesContent = ({ algorithm, quizState, setQuizState }) => {
   if (algorithm && algorithm.quiz && algorithm.quiz.length > 0) {
-    return <QuizComponent quizData={algorithm.quiz} />;
+    return <QuizComponent quizData={algorithm.quiz} quizState={quizState} setQuizState={setQuizState} />;
   } else {
     return <Typography>No quiz available for this algorithm.</Typography>;
   }
 };
 
-const QuizComponent = ({ quizData }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [showResults, setShowResults] = useState(false);
+const QuizComponent = ({ quizData, quizState, setQuizState }) => {
+  const { currentQuestionIndex, selectedOption, correctAnswers, showResults } = quizState;
 
   const handleAnswer = () => {
     if (selectedOption === quizData[currentQuestionIndex].answer) {
-      setCorrectAnswers(correctAnswers + 1);
+      setQuizState({
+        ...quizState,
+        correctAnswers: correctAnswers + 1,
+      });
     }
     const nextQuestionIndex = currentQuestionIndex + 1;
     if (nextQuestionIndex < quizData.length) {
-      setCurrentQuestionIndex(nextQuestionIndex);
-      setSelectedOption(null);
+      setQuizState({
+        ...quizState,
+        currentQuestionIndex: nextQuestionIndex,
+        selectedOption: null,
+      });
     } else {
-      setShowResults(true);
+      setQuizState({
+        ...quizState,
+        showResults: true,
+      });
     }
   };
 
   const handleRestart = () => {
-    setCurrentQuestionIndex(0);
-    setCorrectAnswers(0);
-    setSelectedOption(null);
-    setShowResults(false);
+    setQuizState({
+      currentQuestionIndex: 0,
+      selectedOption: null,
+      correctAnswers: 0,
+      showResults: false,
+    });
   };
 
   if (showResults) {
@@ -170,7 +198,7 @@ const QuizComponent = ({ quizData }) => {
         {quizData[currentQuestionIndex].options.map((option, index) => (
           <Button
             key={index}
-            onClick={() => setSelectedOption(option)}
+            onClick={() => setQuizState({ ...quizState, selectedOption: option })}
             variant={selectedOption === option ? 'contained' : 'outlined'}
             fullWidth
             sx={{ my: 1 }}
