@@ -13,8 +13,8 @@ from analyzer.analyzer import instrument_java_function, run_java_program, write_
 from analyzer.analyzer_python import run_instrumented_python_code
 from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 from analyzer.graph_fitting import parse_and_analyze
-def get_iteration_size(n):
-    return 10000000//n
+def get_iteration_size(n, defsize = 1000000):
+    return defsize//n
 
 def extract_call_template(user_code, language):
     patterns = {
@@ -99,7 +99,7 @@ def handle_cpp_code(user_code, call_template):
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
-            cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size), size)
+            cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size, 100000), size)
             write_and_compile_cpp(cpp_code)
             run_cpp_program()
 

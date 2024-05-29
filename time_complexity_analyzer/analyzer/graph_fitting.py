@@ -68,7 +68,6 @@ def exponential_poly(x, a, b):
 def error_function(params, x, y, model):
     return model(x, *params) - y
 
-
 models = {
     'constant': {'func': constant, 'initial_guess': [1]},
     'inverse_ackermann': {'func': inverse_ackermann, 'initial_guess': [1]},
@@ -119,7 +118,7 @@ time_complexity_notation = {
 
 def parse_output_file(file_path):
     line_exec_times = {}
-    function_exec_times = [] 
+    function_exec_times = []
 
     with open(file_path, 'r') as file:
         for line in file:
@@ -136,6 +135,41 @@ def parse_output_file(file_path):
                     line_exec_times[line_num].append(time)
     return line_exec_times, function_exec_times
 
+def simplify_model(name, params):
+    if name == 'cubic' and np.isclose(params[0], 0):
+        return simplify_model('quadratic', params[1:])
+    if name == 'quadratic' and np.isclose(params[0], 0):
+        return simplify_model('linear', params[1:])
+    if name == 'linear' and np.isclose(params[0], 0):
+        return simplify_model('constant', params[1:])
+    if name == 'exponential' and np.isclose(params[1], 0):
+        return simplify_model('constant', params[:1])
+    if name == 'polylogarithmic' and np.isclose(params[1], 0):
+        return simplify_model('logarithmic', params[:2])
+    if name == 'polynomial' and len(params) > 1 and np.isclose(params[0], 0):
+        return simplify_model('polynomial', params[1:])
+    if name == 'factorial' and np.isclose(params[0], 0):
+        return simplify_model('constant', params[:1])
+    if name == 'double_exponential' and np.isclose(params[1], 0):
+        return simplify_model('exponential', params[:1])
+    if name == 'exponential_poly' and np.isclose(params[1], 0):
+        return simplify_model('polynomial', params[:1])
+    if name == 'log_logarithmic' and np.isclose(params[0], 0):
+        return simplify_model('constant', params[1:])
+    if name == 'logarithmic' and np.isclose(params[0], 0):
+        return simplify_model('constant', params[1:])
+    if name == 'quasi_polynomial' and np.isclose(params[1], 0):
+        return simplify_model('constant', params[:1])
+    if name == 'subexponential' and np.isclose(params[1], 0):
+        return simplify_model('exponential', params[:1])
+    if name == 'subexponential_variant' and np.isclose(params[1], 0):
+        return simplify_model('exponential', params[:1])
+    if name == 'log_linear' and np.isclose(params[0], 0):
+        return simplify_model('constant', params[1:])
+    if name == 'quasilinear' and np.isclose(params[0], 0):
+        return simplify_model('logarithmic', params[1:])
+    return name, params
+
 def select_best_fitting_model(x_data, y_data):
     best_fit = {'model': None, 'params': None, 'rss': np.inf}
     for name, model in models.items():
@@ -143,9 +177,14 @@ def select_best_fitting_model(x_data, y_data):
             if name == 'logarithmic' and np.any(x_data <= 0):
                 continue
             result = least_squares(error_function, model['initial_guess'], args=(x_data, y_data, model['func']))
+            params = result.x
             rss = np.sum(result.fun ** 2)
+
+            # complexity faking check
+            simplified_name, simplified_params = simplify_model(name, params)
+
             if rss < best_fit['rss']:
-                best_fit = {'model': name, 'params': result.x, 'rss': rss}
+                best_fit = {'model': simplified_name, 'params': simplified_params, 'rss': rss}
         except ValueError as e:
             print(f"Error fitting model {name}: {e}")
     return best_fit
@@ -190,17 +229,16 @@ if __name__ == "__main__":
     best_fits = parse_and_analyze(file_path)
 
     for line_num, fit in best_fits['lines'].items():
-        model_name = fit['model']
-        params = fit['params']
-        rss = fit['rss']
+        model_name = fit['best_fit']['model']
+        params = fit['best_fit']['params']
+        rss = fit['best_fit']['rss']
         time_complexity = time_complexity_notation[model_name]  
         print(f"Line {line_num} Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
 
     if best_fits['function']:
-        fit = best_fits['function']
+        fit = best_fits['function']['best_fit']
         model_name = fit['model']
         params = fit['params']
         rss = fit['rss']
         time_complexity = time_complexity_notation[model_name]  
         print(f"Overall Function Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
-
