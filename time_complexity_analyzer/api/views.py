@@ -89,7 +89,7 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        sizes = [10, 50, 100, 200, 500, 1000, 5000]
+        sizes = [10, 50, 100, 200, 500, 1000]
         output_file_paths = []
 
         for size in sizes:
@@ -99,7 +99,7 @@ def handle_cpp_code(user_code, call_template):
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
-            cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size, 100000), size)
+            cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size, 10000), size)
             write_and_compile_cpp(cpp_code)
             run_cpp_program()
 
