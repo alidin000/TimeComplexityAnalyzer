@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Box, Accordion, AccordionSummary, AccordionDetails, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, CircularProgress } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ErrorIcon from '@mui/icons-material/Error';
 
@@ -27,7 +27,7 @@ const complexityColors = {
   exponential_poly: 'silver'
 };
 
-function Output({ outputText = '', results = [], error = '' }) {
+function Output({ outputText = '', results = [], error = '', loading = false }) {
   const getLineStyle = (complexity) => ({
     color: complexityColors[complexity] || 'black',
   });
@@ -45,7 +45,14 @@ function Output({ outputText = '', results = [], error = '' }) {
   return (
     <Card className="output-card" sx={{ marginTop: 2 }}>
       <CardContent>
-        {error ? (
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
+            <CircularProgress />
+            <Typography variant="h6" gutterBottom sx={{ marginTop: 2 }}>
+              Please wait...
+            </Typography>
+          </Box>
+        ) : error ? (
           <Box display="flex" alignItems="center" color="error.main">
             <ErrorIcon />
             <Typography variant="h6" color="error" gutterBottom sx={{ marginLeft: 1 }}>
@@ -66,7 +73,7 @@ function Output({ outputText = '', results = [], error = '' }) {
                         <TableCell>Line</TableCell>
                         <TableCell>Code</TableCell>
                         <TableCell>Complexity</TableCell>
-                        <TableCell>Average Execution Times(size : time)</TableCell>
+                        <TableCell>Average Execution Times (size : time)</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>

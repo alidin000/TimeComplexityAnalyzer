@@ -54,7 +54,7 @@ const Login = ({ handleLogin }) => {
             required
           />
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Submit
+            LOGIN
           </Button>
         </form>
         {error && <Typography color="error">{error}</Typography>}

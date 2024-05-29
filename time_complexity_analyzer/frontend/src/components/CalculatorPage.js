@@ -65,6 +65,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [userModifiedCode, setUserModifiedCode] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = isAuthenticated ? currentUser : "Unknown";
 
   const defaultCodes = {
@@ -120,6 +121,9 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       return;
     }
 
+    setLoading(true);
+    setOutputText("Please wait...");
+
     const payload = {
       username: user,
       code: code,
@@ -132,9 +136,11 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         setResults(formatResults(response.data, code));
         setOutputText(formatOutput(response.data, code));
         setError("");
+        setLoading(false);
       })
       .catch((error) => {
         setError("Can't calculate it. Please check your code and try again.");
+        setLoading(false);
       });
   };
 
@@ -220,7 +226,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         </Card>
         <Card className="flex-grow-2" sx={{ flex: 3 }}>
           <CardContent>
-            <Output outputText={outputText} results={results} error={error} />
+            <Output outputText={outputText} results={results} error={error} loading={loading} />
           </CardContent>
         </Card>
       </div>

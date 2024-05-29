@@ -61,7 +61,7 @@ const Signup = () => {
             required
           />
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Submit
+            CREATE AN ACCOUNT
           </Button>
         </form>
         {error && <Typography color="error">{error}</Typography>}
