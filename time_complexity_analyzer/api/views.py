@@ -13,6 +13,8 @@ from analyzer.analyzer import instrument_java_function, run_java_program, write_
 from analyzer.analyzer_python import run_instrumented_python_code
 from analyzer.analyzer_cpp import instrument_cpp_function, write_and_compile_cpp, run_cpp_program
 from analyzer.graph_fitting import parse_and_analyze
+def get_iteration_size(n):
+    return 10000000//n
 
 def extract_call_template(user_code, language):
     patterns = {
@@ -74,7 +76,7 @@ def handle_java_code(user_code, call_template):
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
-            java_code = instrument_java_function(user_code, call_template, 50, output_file_path, size)
+            java_code = instrument_java_function(user_code, call_template, get_iteration_size(size), output_file_path, size)
             write_and_compile_java(java_code)
             run_java_program()
 
@@ -97,7 +99,7 @@ def handle_cpp_code(user_code, call_template):
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
-            cpp_code = instrument_cpp_function(user_code, call_template, 50, size)
+            cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size), size)
             write_and_compile_cpp(cpp_code)
             run_cpp_program()
 
@@ -121,7 +123,7 @@ def handle_python_code(user_code, call_template):
             if os.path.exists(output_file_path):
                 os.remove(output_file_path)
 
-            run_instrumented_python_code(user_code, 50, size)
+            run_instrumented_python_code(user_code, get_iteration_size(size), size)
 
         best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
