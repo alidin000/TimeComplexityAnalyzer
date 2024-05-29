@@ -66,7 +66,7 @@ def analyse_code(request):
 
 def handle_java_code(user_code, call_template):
     try:
-        sizes = [10, 50, 100, 200, 500, 1000]
+        sizes = [10, 50, 100, 200, 500, 1000, 5000, 10000,50000, 100000]
         output_file_paths = []
 
         for size in sizes:
@@ -89,7 +89,7 @@ def handle_java_code(user_code, call_template):
 
 def handle_cpp_code(user_code, call_template):
     try:
-        sizes = [10, 50, 100, 200, 500, 1000]
+        sizes = [10, 50, 100, 200, 500, 1000, 5000]
         output_file_paths = []
 
         for size in sizes:
@@ -113,7 +113,7 @@ def handle_cpp_code(user_code, call_template):
 
 def handle_python_code(user_code, call_template):
     try:
-        sizes = [10, 50, 100, 200, 500, 1000]
+        sizes = [10, 50, 100, 200, 500, 1000, 5000, 10000,50000, 100000]
         output_file_paths = []
 
         for size in sizes:
