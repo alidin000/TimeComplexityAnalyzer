@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Container, Card, CardContent, Button, Select, MenuItem, Typography, FormControl, InputLabel, Box } from "@mui/material";
+import {
+  Container,
+  Card,
+  CardContent,
+  Button,
+  Select,
+  MenuItem,
+  Typography,
+  FormControl,
+  InputLabel,
+  Box,
+} from "@mui/material";
 import CodeEditorArea from "./CodeEditorArea";
 import Output from "./CodeOut";
 import AxiosInstance from "./Axios";
@@ -26,7 +37,7 @@ const time_complexity_notation = {
   subexponential_variant: "2^(o(n))",
   polynomial_linear_exponent: "O(2^(O(n)))",
   double_exponential: "O(2^(2^n))",
-  exponential_poly: "O(2^(poly(n)))"
+  exponential_poly: "O(2^(poly(n)))",
 };
 
 const limitations = {
@@ -37,7 +48,7 @@ const limitations = {
     "Only one function should be present",
     "No third-party libraries",
     "No empty lines or comments",
-    "Code will be run with the numbers between 0 and 10^3"
+    "Code will be run with the numbers between 0 and 10^5",
   ],
   Python: [
     "Function must accept a list as an argument",
@@ -46,7 +57,7 @@ const limitations = {
     "Only one function should be present",
     "No third-party libraries",
     "No empty lines or comments",
-    "Code will be run with the numbers between 0 and 10^3"
+    "Code will be run with the numbers between 0 and 10^5",
   ],
   Cpp: [
     "Function must be defined as: type functionName(std::vector<int>& arr)",
@@ -54,18 +65,24 @@ const limitations = {
     "Only one function should be present",
     "No third-party libraries",
     "No empty lines or comments",
-    "Code will be run with the numbers between 0 and 10^3"
-  ]
+    "Code will be run with the numbers between 0 and 10^5",
+  ],
 };
 
 function CalculatorPage({ isAuthenticated, currentUser }) {
   const [code, setCode] = useState(``);
   const [language, setLanguage] = useState("Python");
-  const [outputText, setOutputText] = useState("// Output will be displayed here");
+  const [outputText, setOutputText] = useState(
+    "// Output will be displayed here"
+  );
   const [results, setResults] = useState([]);
+  const [history, setHistory] = useState([]);
   const [error, setError] = useState("");
   const [userModifiedCode, setUserModifiedCode] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [expandedCode, setExpandedCode] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const user = isAuthenticated ? currentUser : "Unknown";
 
   const defaultCodes = {
@@ -115,6 +132,34 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
     setUserModifiedCode(true);
   };
 
+  const fetchHistory = () => {
+    if (isAuthenticated) {
+      setHistoryLoading(true);
+      AxiosInstance.get(`/code-history/${user}/`)
+        .then((response) => {
+          const nonEmptyResults = response.data.filter(
+            (entry) =>
+              entry.analysis_result &&
+              Object.keys(entry.analysis_result).length > 0
+          );
+          setHistory(nonEmptyResults);
+          setHistoryLoading(false);
+        })
+        .catch(() => {
+          setHistoryLoading(false);
+        });
+    }
+  };
+
+  const handleToggleHistory = () => {
+    setShowHistory((prev) => {
+      if (!prev) {
+        fetchHistory();
+      }
+      return !prev;
+    });
+  };
+
   const handleAnalyseClick = () => {
     if (!user || !code || !language) {
       setError("Can't calculate it. Please check your code and try again.");
@@ -128,7 +173,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       username: user,
       code: code,
       language: language,
-      time_complexity: "O(n)"
+      time_complexity: "O(n)",
     };
 
     AxiosInstance.post("/api/analyse-code/", payload)
@@ -138,7 +183,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         setError("");
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setError("Can't calculate it. Please check your code and try again.");
         setLoading(false);
       });
@@ -147,7 +192,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const formatResults = (data, code) => {
     const codeLines = code.split("\n");
     const results = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[language === 'Python' ? index : index + 1] : null;
+      const lineInfo = data.lines ? data.lines[index] : null;
       if (lineInfo) {
         const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "";
         const avgExecTimes = lineInfo.average_exec_times || {};
@@ -155,17 +200,28 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           line: line.trim(),
           complexity,
           notation: time_complexity_notation[complexity] || "",
-          avgExecTimes
+          avgExecTimes,
         };
       }
-      return { line: line.trim(), function: "", complexity: "", avgExecTimes: {} };
+      return {
+        line: line.trim(),
+        function: "",
+        complexity: "",
+        avgExecTimes: {},
+      };
     });
 
-    const functionComplexity = data.function && data.function.best_fit ? data.function.best_fit.model : "";
-    const functionAvgExecTimes = data.function ? data.function.average_exec_times : {};
+    const functionComplexity =
+      data.function && data.function.best_fit
+        ? data.function.best_fit.model
+        : "";
+    const functionAvgExecTimes = data.function
+      ? data.function.average_exec_times
+      : {};
     results.functionComplexity = functionComplexity;
     results.functionComplexityWord = functionComplexity;
-    results.functionNotation = time_complexity_notation[functionComplexity] || "";
+    results.functionNotation =
+      time_complexity_notation[functionComplexity] || "";
     results.functionAvgExecTimes = functionAvgExecTimes;
 
     return results;
@@ -174,31 +230,89 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   const formatOutput = (data, code) => {
     const codeLines = code.split("\n");
     const linesOutput = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[language === 'Python' ? index : index + 1] : null;
+      const lineInfo = data.lines ? data.lines[index] : null;
       if (lineInfo) {
-        const avgExecTimes = lineInfo.average_exec_times 
-          ? Object.entries(lineInfo.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ") 
+        const avgExecTimes = lineInfo.average_exec_times
+          ? Object.entries(lineInfo.average_exec_times)
+              .map(([size, time]) => `${size}: ${time.toFixed(2)} ns`)
+              .join(", ")
           : "";
-        return `${line} -> ${time_complexity_notation[lineInfo.best_fit ? lineInfo.best_fit.model : ""] || ""} {${lineInfo.best_fit ? lineInfo.best_fit.model : ""}} (Avg times: ${avgExecTimes})`;
+        return `${line} -> ${
+          time_complexity_notation[
+            lineInfo.best_fit ? lineInfo.best_fit.model : ""
+          ] || ""
+        } {${
+          lineInfo.best_fit ? lineInfo.best_fit.model : ""
+        }} (Avg times: ${avgExecTimes})`;
       }
       return line;
     });
 
-    const overallAvgExecTimes = data.function && data.function.average_exec_times 
-      ? Object.entries(data.function.average_exec_times).map(([size, time]) => `${size}: ${time.toFixed(2)} ns`).join(", ")
-      : "";
+    const overallAvgExecTimes =
+      data.function && data.function.average_exec_times
+        ? Object.entries(data.function.average_exec_times)
+            .map(([size, time]) => `${size}: ${time.toFixed(2)} ns`)
+            .join(", ")
+        : "";
     const overallComplexity = data.function
-      ? `\nOverall Function Time Complexity: ${time_complexity_notation[data.function.best_fit ? data.function.best_fit.model : ""] || ""} {${data.function.best_fit ? data.function.best_fit.model : ""}} (Avg times: ${overallAvgExecTimes})`
+      ? `\nOverall Function Time Complexity: ${
+          time_complexity_notation[
+            data.function.best_fit ? data.function.best_fit.model : ""
+          ] || ""
+        } {${
+          data.function.best_fit ? data.function.best_fit.model : ""
+        }} (Avg times: ${overallAvgExecTimes})`
       : "";
     linesOutput.push(overallComplexity);
     return linesOutput.join("\n");
+  };
+
+  const renderHistory = () => {
+    if (historyLoading) {
+      return <Typography>Loading history...</Typography>;
+    }
+
+    if (!history || history.length === 0) {
+      return <Typography>No history available.</Typography>;
+    }
+
+    return history.map((entry, index) => (
+      <Card key={index} className="mt-2">
+        <CardContent>
+          <Typography
+            variant="h6"
+            style={{
+              cursor: "pointer",
+              textDecoration: "underline",
+              color: "blue",
+            }}
+            onClick={() =>
+              setExpandedCode(expandedCode === index ? null : index)
+            }
+          >
+            {`Code (${entry.language}) - ${entry.code.slice(0, 50)}...`}
+          </Typography>
+          {expandedCode === index && (
+            <Output
+              outputText=""
+              results={formatResults(entry.analysis_result, entry.code)}
+              error=""
+              loading={false}
+            />
+          )}
+          <Typography variant="caption">{`Analyzed on: ${new Date(
+            entry.created_at
+          ).toLocaleString()}`}</Typography>
+        </CardContent>
+      </Card>
+    ));
   };
 
   return (
     <Container sx={{ maxWidth: "1800px" }}>
       <Card className="mt-4">
         <CardContent>
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="space-between">
             <FormControl variant="outlined" sx={{ width: 200 }}>
               <InputLabel id="language-select-label">Language</InputLabel>
               <Select
@@ -212,21 +326,50 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
                 <MenuItem value="Cpp">C++</MenuItem>
               </Select>
             </FormControl>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleToggleHistory}
+              disabled={!isAuthenticated}
+            >
+              {showHistory ? "Hide History" : "Show History"}
+            </Button>
           </Box>
         </CardContent>
       </Card>
-      <div className="flex flex-row mt-3" style={{ display: "flex", width: "100%" }}>
+      <div
+        className="flex flex-row mt-3"
+        style={{ display: "flex", width: "100%" }}
+      >
         <Card className="flex-grow-1" sx={{ flex: 1, marginRight: "1rem" }}>
           <CardContent>
-            <CodeEditorArea language={language} code={code} onCodeChange={handleCodeChange} />
-            <Button variant="contained" color="primary" className="mt-4" onClick={handleAnalyseClick}>
+            <CodeEditorArea
+              language={language}
+              code={code}
+              onCodeChange={handleCodeChange}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              className="mt-4"
+              onClick={handleAnalyseClick}
+            >
               Analyse
             </Button>
           </CardContent>
         </Card>
         <Card className="flex-grow-2" sx={{ flex: 3 }}>
           <CardContent>
-            <Output outputText={outputText} results={results} error={error} loading={loading} />
+            {showHistory ? (
+              renderHistory()
+            ) : (
+              <Output
+                outputText={outputText}
+                results={results}
+                error={error}
+                loading={loading}
+              />
+            )}
           </CardContent>
         </Card>
       </div>
