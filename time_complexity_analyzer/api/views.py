@@ -1,6 +1,7 @@
 import os
 import re
 from django.shortcuts import render
+import numpy as np
 from rest_framework import viewsets, permissions
 from api.models import Code
 from api.serializers import *
@@ -47,22 +48,59 @@ def analyse_code(request):
 
     print("Incoming data: ", code_serializer.initial_data)
     if code_serializer.is_valid():
-        code_serializer.save()
-        user_code = code_serializer.validated_data.get('code')
-        language = code_serializer.validated_data.get('language', 'java').lower()
+        validated_data = code_serializer.validated_data
+        saved_code = Code.objects.create(**validated_data)
+
+        user_code = validated_data.get('code')
+        language = validated_data.get('language', 'java').lower()
         call_template = extract_call_template(user_code, language)
+
         language_map = {
             'java': handle_java_code,
             'cpp': handle_cpp_code,
             'python': handle_python_code
         }
+
         if language in language_map:
-            return language_map[language](user_code, call_template)
+            try:
+                analysis_result = language_map[language](user_code, call_template)
+
+                if analysis_result.status_code == 200:
+                    result_data = analysis_result.data
+
+                    # Ensure result data is JSON-serializable
+                    def ensure_serializable(obj):
+                        if isinstance(obj, np.ndarray):
+                            return obj.tolist()  # Convert ndarray to list
+                        if isinstance(obj, dict):
+                            return {k: ensure_serializable(v) for k, v in obj.items()}
+                        if isinstance(obj, list):
+                            return [ensure_serializable(item) for item in obj]
+                        return obj
+
+                    serialized_result = ensure_serializable(result_data)
+
+                    saved_code.analysis_result = serialized_result
+                    saved_code.save()
+
+                return analysis_result
+            except Exception as e:
+                print("Error during analysis:", e)
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"error": f"Language '{language}' not supported for analysis."}, status=status.HTTP_400_BAD_REQUEST)
     else:
         print("Validation errors: ", code_serializer.errors)
         return Response(code_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['GET'])
+def get_code_history(request, username):
+    codes = Code.objects.filter(username=username).order_by('-created_at')
+    serializer = CodeSerializer(codes, many=True)
+    return Response(serializer.data)
 
 def handle_java_code(user_code, call_template):
     try:

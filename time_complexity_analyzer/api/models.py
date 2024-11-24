@@ -21,6 +21,7 @@ class Code(models.Model):
     language = models.CharField(max_length=100, choices=LANGUAGES)
     time_complexity = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
+    analysis_result = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return self.code[:50] + "..." if len(self.code) > 50 else self.code

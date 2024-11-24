@@ -5,7 +5,8 @@ from django.contrib.auth.hashers import make_password
 class CodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Code
-        fields = ('username', 'code', 'language', 'time_complexity')
+        fields = ('id', 'username', 'code', 'language', 'time_complexity', 'created_at', 'analysis_result')
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
