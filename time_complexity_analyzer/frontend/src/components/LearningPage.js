@@ -147,24 +147,23 @@ const QuizComponent = ({ quizData, quizState, setQuizState }) => {
   const { currentQuestionIndex, selectedOption, correctAnswers, showResults } = quizState;
 
   const handleAnswer = () => {
-    if (selectedOption === quizData[currentQuestionIndex].answer) {
-      setQuizState({
-        ...quizState,
-        correctAnswers: correctAnswers + 1,
-      });
-    }
-    const nextQuestionIndex = currentQuestionIndex + 1;
-    if (nextQuestionIndex < quizData.length) {
-      setQuizState({
-        ...quizState,
-        currentQuestionIndex: nextQuestionIndex,
+    const isCorrect = selectedOption === quizData[currentQuestionIndex].answer;
+
+    const updatedCorrectAnswers = isCorrect ? quizState.correctAnswers + 1 : quizState.correctAnswers;
+
+    if (quizState.currentQuestionIndex + 1 < quizData.length) {
+      setQuizState((prevState) => ({
+        ...prevState,
+        correctAnswers: updatedCorrectAnswers,
+        currentQuestionIndex: prevState.currentQuestionIndex + 1,
         selectedOption: null,
-      });
+      }));
     } else {
-      setQuizState({
-        ...quizState,
+      setQuizState((prevState) => ({
+        ...prevState,
+        correctAnswers: updatedCorrectAnswers,
         showResults: true,
-      });
+      }));
     }
   };
 
@@ -198,8 +197,8 @@ const QuizComponent = ({ quizData, quizState, setQuizState }) => {
         {quizData[currentQuestionIndex].options.map((option, index) => (
           <Button
             key={index}
-            onClick={() => setQuizState({ ...quizState, selectedOption: option })}
-            variant={selectedOption === option ? 'contained' : 'outlined'}
+            onClick={() => setQuizState((prevState) => ({ ...prevState, selectedOption: option }))}
+            variant={quizState.selectedOption === option ? 'contained' : 'outlined'}
             fullWidth
             sx={{ my: 1 }}
           >

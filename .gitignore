@@ -23,6 +23,7 @@ node_modules/
 .cache/
 .DS_Store
 *.env
+venv
 
 # Excluding the files that are generated for time complexity analysis
 *Prototype*

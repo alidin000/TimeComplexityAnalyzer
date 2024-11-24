@@ -90,23 +90,3 @@ def run_java_program():
     java_file_dir = os.path.dirname(__file__)
     command = ["java", "-cp", java_file_dir, "InstrumentedPrototype"]
     subprocess.run(command, check=True)
-
-# user_function = """
-# public boolean isPalindrome(int[] arr) {
-#     int length = arr.length;
-#     for (int i = 0; i < length / 2; i++) {
-#         if (arr[i] != arr[length - 1 - i]) {
-#             return false;
-#         }
-#     }
-#     return true;
-# }
-# """
-# call_template = "p.isPalindrome($$size$$);"
-# num_inputs = 50
-
-# output_file_path = os.path.join(os.path.dirname(__file__), "output_java.txt")
-
-# java_code = instrument_java_function(user_function, call_template, num_inputs, output_file_path)
-# write_and_compile_java(java_code)
-# run_java_program()

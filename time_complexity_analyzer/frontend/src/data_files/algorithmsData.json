@@ -17,7 +17,7 @@
       {
         "question": "What is the best case time complexity of Insertion Sort?",
         "options": ["O(n^2)", "O(n log n)", "O(n)"],
-        "answer": "O(n) when the array is already sorted."
+        "answer": "O(n)"
       },
       {
         "question": "What is the worst case time complexity of Insertion Sort?",
@@ -54,7 +54,7 @@
       {
         "question": "What is the time complexity of Selection Sort in all cases?",
         "options": ["O(n)", "O(n log n)", "O(n^2)"],
-        "answer": "O(n^2) in all cases, making it inefficient on large lists."
+        "answer": "O(n^2)"
       },
       {
         "question": "What is the main disadvantage of Selection Sort?",
@@ -91,7 +91,7 @@
       {
         "question": "What is the time complexity of Heap Sort?",
         "options": ["O(n)", "O(n log n)", "O(n^2)"],
-        "answer": "O(n log n) for all cases."
+        "answer": "O(n log n)"
       },
       {
         "question": "Is Heap Sort a stable sorting algorithm?",
@@ -424,12 +424,12 @@
       {
         "question": "What is the time complexity of searching for a word in a Trie?",
         "options": ["O(1)", "O(n)", "O(m)", "O(m * n)"],
-        "answer": "O(m) where m is the length of the word."
+        "answer": "O(m)"
       },
       {
         "question": "What is the time complexity of inserting a word in a Trie?",
         "options": ["O(1)", "O(n)", "O(m)", "O(m * n)"],
-        "answer": "O(m) where m is the length of the word."
+        "answer": "O(m)"
       },
       {
         "question": "What is a common application of Tries?",
