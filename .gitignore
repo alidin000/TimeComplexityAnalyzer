@@ -30,4 +30,4 @@ venv
 *output*
 
 # Visual Studio Code #
-.vscode/
+*.vscode/
