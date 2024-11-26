@@ -20,7 +20,11 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-
+    # Step 3: Install other required tools
+    - name: Install required tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ openjdk-11-jdk
     # Step 3: Install Python dependencies
     - name: Install Python dependencies
       run: |
