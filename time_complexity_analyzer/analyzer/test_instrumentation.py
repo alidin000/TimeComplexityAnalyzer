@@ -29,7 +29,7 @@ class TestInstrumentation(unittest.TestCase):
         if os.path.exists(self.output_python_path):
             os.remove(self.output_python_path)
 
-    @pytest.mark.file_creation
+    @pytest.mark.skipif("CI" in os.environ, reason="Skipping in CI environment")
     def test_java_instrumentation(self):
         user_function = """
         public int sumArray(int[] arr) {
@@ -55,7 +55,7 @@ class TestInstrumentation(unittest.TestCase):
 
         run_java_program()
 
-    @pytest.mark.file_creation
+    @pytest.mark.skipif("CI" in os.environ, reason="Skipping in CI environment")
     def test_cpp_instrumentation(self):
         user_function = """
         void sumArray(std::vector<int>& arr) {
@@ -74,7 +74,7 @@ class TestInstrumentation(unittest.TestCase):
 
         run_cpp_program()
 
-    @pytest.mark.file_creation
+    @pytest.mark.skipif("CI" in os.environ, reason="Skipping in CI environment")
     def test_python_instrumentation(self):
         user_code = """
         def sum_array(arr):
