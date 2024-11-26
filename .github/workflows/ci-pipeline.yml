@@ -11,48 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the repository
     - name: Check out the repository
       uses: actions/checkout@v4
 
-    # Step 2: Set up Python for Django and pytest tests
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-    # Step 3: Install other required tools
+
     - name: Install required tools
       run: |
         sudo apt-get update
         sudo apt-get install -y g++ openjdk-11-jdk
-    # Step 3: Install Python dependencies
+
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r time_complexity_analyzer/requirements.txt
 
-    # Step 4: Run pytest for `analyzer` folder tests
     - name: Run pytest for analyzer tests
       run: pytest time_complexity_analyzer/analyzer -v
 
-    # Step 5: Run Django migrations and tests
     - name: Run Django tests
       run: |
         python time_complexity_analyzer/manage.py migrate
         python time_complexity_analyzer/manage.py test
 
-    # Step 6: Set up Node.js for React frontend tests
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '16'
 
-    # Step 7: Install frontend dependencies
     - name: Install frontend dependencies
       working-directory: time_complexity_analyzer/frontend
-      run: npm install
+      run: npm install --legacy-peer-deps
 
-    # Step 8: Run React frontend tests
     - name: Run React frontend tests
       working-directory: time_complexity_analyzer/frontend
       run: npm test -- --watchAll=false
