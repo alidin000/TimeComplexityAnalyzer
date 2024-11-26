@@ -8,7 +8,3 @@
     <li><strong>Algorithm Learning</strong>: Engage with different types of algorithms and data structures.</li>
     <li><strong>Interactive Quizzes</strong>: Test your understanding and apply what you've learned through interactive quizzes tailored to each programming language.</li>
 </ul>
-
-<h1>WIREFRAME</h1>
-<img src="/WIRE_FRAME/CALCULATOR.png" style="width: 400px; height:350px;"></img>
-<img src="/WIRE_FRAME/LEARNING_PAGE.png" style="width: 400px; height:350px;"></img>
