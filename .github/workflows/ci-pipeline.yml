@@ -49,10 +49,10 @@ jobs:
 
     # Step 7: Install frontend dependencies
     - name: Install frontend dependencies
-      working-directory: frontend
+      working-directory: time_complexity_analyzer/frontend
       run: npm install
 
     # Step 8: Run React frontend tests
     - name: Run React frontend tests
-      working-directory: frontend
+      working-directory: time_complexity_analyzer/frontend
       run: npm test -- --watchAll=false
