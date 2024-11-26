@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 from django.test import TestCase
 from django.urls import reverse
@@ -183,6 +182,42 @@ class APITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('detail', response.data)
         self.assertEqual(response.data['detail'], 'Username and password are required.')
+
+    def test_code_history(self):
+        Code.objects.create(
+            username=self.user.username,
+            code='def example(arr):\n    return sum(arr)',
+            language='Python',
+            time_complexity='O(1)'
+        )
+
+        self.client.force_authenticate(user=self.user)
+
+        url = reverse('code_history', args=[self.user.username])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreater(len(response.data), 0)
+
+
+
+    def test_analysis_result_saved(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse('analyse-code')
+
+        data = {
+            'username': self.user.username,
+            'code': 'def example(arr):\n    return sum(arr)',
+            'language': 'Python',
+            'time_complexity': 'O(1)',
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        saved_code = Code.objects.get(username=self.user.username, code=data['code'])
+        self.assertIsNotNone(saved_code.analysis_result)
+
 
 
 class SerializerTests(TestCase):

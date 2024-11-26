@@ -70,13 +70,13 @@ def error_function(params, x, y, model):
 
 models = {
     'constant': {'func': constant, 'initial_guess': [1]},
-    'inverse_ackermann': {'func': inverse_ackermann, 'initial_guess': [1]},
+    'inverse_ackermann': {'func': inverse_ackermann, 'initial_guess': [0.1]},
     'iterated_logarithmic': {'func': iterated_logarithmic, 'initial_guess': [1, 1]},
     'log_logarithmic': {'func': log_logarithmic, 'initial_guess': [1, 1]},
     'logarithmic': {'func': logarithmic, 'initial_guess': [1, 1]},
     'polylogarithmic': {'func': polylogarithmic, 'initial_guess': [1, 1, 1]},
     'fractional_power': {'func': fractional_power, 'initial_guess': [1, 0.5]},
-    'linear': {'func': linear, 'initial_guess': [1, 1]},
+    'linear': {'func': linear, 'initial_guess': [10, 0]},
     'log_linear': {'func': log_linear, 'initial_guess': [1, 1]},
     'quasilinear': {'func': quasilinear, 'initial_guess': [1, 1, 1]},
     'quadratic': {'func': quadratic, 'initial_guess': [1, 1, 1]},
@@ -122,72 +122,113 @@ def parse_output_file(file_path):
 
     with open(file_path, 'r') as file:
         for line in file:
-            if line.startswith('test case = '):
+            stripped_line = line.strip()
+            
+            if not stripped_line:
                 continue
-            elif line.startswith('Function execution time: '):
-                exec_time = int(line.strip().split(': ')[1].split(' ')[0])
+
+            if stripped_line.startswith('Function execution time: '):
+                exec_time = int(stripped_line.split(': ')[1].split(' ')[0])
                 function_exec_times.append(exec_time)
-            elif line.startswith('{'):
-                exec_times = eval(line.strip().replace('=', ':'))
+
+            elif stripped_line.startswith('{'):
+                exec_times = eval(stripped_line.replace('=', ':'))
                 for line_num, time in exec_times.items():
                     if line_num not in line_exec_times:
                         line_exec_times[line_num] = []
                     line_exec_times[line_num].append(time)
     return line_exec_times, function_exec_times
 
-def simplify_model(name, params):
-    if name == 'cubic' and np.isclose(params[0], 0):
-        return simplify_model('quadratic', params[1:])
-    if name == 'quadratic' and np.isclose(params[0], 0):
-        return simplify_model('linear', params[1:])
-    if name == 'linear' and np.isclose(params[0], 0):
-        return simplify_model('constant', params[1:])
-    if name == 'exponential' and np.isclose(params[1], 0):
-        return simplify_model('constant', params[:1])
-    if name == 'polylogarithmic' and np.isclose(params[1], 0):
-        return simplify_model('logarithmic', params[:2])
-    if name == 'polynomial' and len(params) > 1 and np.isclose(params[0], 0):
-        return simplify_model('polynomial', params[1:])
-    if name == 'factorial' and np.isclose(params[0], 0):
-        return simplify_model('constant', params[:1])
-    if name == 'double_exponential' and np.isclose(params[1], 0):
-        return simplify_model('exponential', params[:1])
-    if name == 'exponential_poly' and np.isclose(params[1], 0):
-        return simplify_model('polynomial', params[:1])
-    if name == 'log_logarithmic' and np.isclose(params[0], 0):
-        return simplify_model('constant', params[1:])
-    if name == 'logarithmic' and np.isclose(params[0], 0):
-        return simplify_model('constant', params[1:])
-    if name == 'quasi_polynomial' and np.isclose(params[1], 0):
-        return simplify_model('constant', params[:1])
-    if name == 'subexponential' and np.isclose(params[1], 0):
-        return simplify_model('exponential', params[:1])
-    if name == 'subexponential_variant' and np.isclose(params[1], 0):
-        return simplify_model('exponential', params[:1])
-    if name == 'log_linear' and np.isclose(params[0], 0):
-        return simplify_model('constant', params[1:])
-    if name == 'quasilinear' and np.isclose(params[0], 0):
-        return simplify_model('logarithmic', params[1:])
+def simplify_model(name, params, tol=1e-6):
+    """
+    Simplifies a model by reducing its complexity if leading coefficients are negligible.
+
+    :param name: Name of the model (e.g., 'cubic', 'quadratic').
+    :param params: Parameters of the model (list of coefficients).
+    :param tol: Tolerance for considering a parameter negligible.
+    :return: Simplified model name and its parameters.
+    """
+    # Ensure params has valid length
+    if not params or len(params) == 0:
+        return name, params
+
+    # Model simplifications
+    if name == 'cubic' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('quadratic', params[1:], tol)
+    if name == 'quadratic' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('linear', params[1:], tol)
+    if name == 'linear' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('constant', params[1:], tol)
+    if name == 'exponential' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('constant', params[:1], tol)
+    if name == 'polylogarithmic' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('logarithmic', params[:2], tol)
+    if name == 'polynomial' and len(params) > 1 and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('polynomial', params[1:], tol)
+    if name == 'factorial' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('constant', params[:1], tol)
+    if name == 'double_exponential' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('exponential', params[:1], tol)
+    if name == 'exponential_poly' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('polynomial', params[:1], tol)
+    if name == 'log_logarithmic' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('constant', params[1:], tol)
+    if name == 'logarithmic' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('constant', params[1:], tol)
+    if name == 'quasi_polynomial' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('constant', params[:1], tol)
+    if name == 'subexponential' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('exponential', params[:1], tol)
+    if name == 'subexponential_variant' and len(params) > 1 and np.isclose(params[1], 0, atol=tol):
+        return simplify_model('exponential', params[:1], tol)
+    if name == 'log_linear' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('constant', params[1:], tol)
+    if name == 'quasilinear' and np.isclose(params[0], 0, atol=tol):
+        return simplify_model('logarithmic', params[1:], tol)
+
     return name, params
+
 
 def select_best_fitting_model(x_data, y_data):
     best_fit = {'model': None, 'params': None, 'rss': np.inf}
+    y_scale = np.std(y_data)
+
     for name, model in models.items():
         try:
-            if name == 'logarithmic' and np.any(x_data <= 0):
+            # Skip models requiring positive x_data if x_data contains non-positive values
+            if name in ['logarithmic', 'log_logarithmic', 'log_linear', 'quasilinear'] and np.any(x_data <= 0):
                 continue
-            result = least_squares(error_function, model['initial_guess'], args=(x_data, y_data, model['func']))
-            params = result.x
-            rss = np.sum(result.fun ** 2)
 
-            # complexity faking check
-            simplified_name, simplified_params = simplify_model(name, params)
+
+            # Skip factorial model for large inputs
+            if name == 'factorial' and np.any(x_data > 20):
+                continue
+
+            result = least_squares(
+                error_function,
+                model['initial_guess'],
+                bounds=([-1e6] * len(model['initial_guess']), [1e6] * len(model['initial_guess'])),
+                args=(x_data, y_data, model['func']),
+                method='trf',  # Trust Region Reflective
+            )
+            params = result.x
+            rss = np.sum((result.fun / y_scale) ** 2)
+
+            complexity_penalty = len(params) * 1e-3
+            rss += complexity_penalty
+
+            # Skip if parameters are nonsensical
+            if np.any(np.abs(params) > 1e6):
+                continue
 
             if rss < best_fit['rss']:
+                simplified_name, simplified_params = simplify_model(name, params)
                 best_fit = {'model': simplified_name, 'params': simplified_params, 'rss': rss}
-        except ValueError as e:
+        except Exception as e:
             print(f"Error fitting model {name}: {e}")
+
     return best_fit
+
 
 def parse_and_analyze(file_paths):
     sizes = [int(path.split('_')[-1].split('.')[0]) for path in file_paths]
@@ -225,7 +266,9 @@ def parse_and_analyze(file_paths):
     return best_fits
 
 if __name__ == "__main__":
-    file_path = r'C:\Users\user\Desktop\THESIS\TimeComplexityAnalyzer\time_complexity_analyzer\output_java.txt' 
+    import os
+    current_dir = os.getcwd()
+    file_path = os.path.join(current_dir, 'output_java.txt')
     best_fits = parse_and_analyze(file_path)
 
     for line_num, fit in best_fits['lines'].items():
