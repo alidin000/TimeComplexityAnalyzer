@@ -33,7 +33,7 @@ jobs:
 
     # Step 4: Run pytest for `analyzer` folder tests
     - name: Run pytest for analyzer tests
-      run: pytest --ignore-markers=file_creation time_complexity_analyzer/analyzer -v
+      run: pytest time_complexity_analyzer/analyzer -v
 
     # Step 5: Run Django migrations and tests
     - name: Run Django tests
