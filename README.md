@@ -1,4 +1,3 @@
-#Code profiler and time complexity analyzer
 <h1>Code Complexity Analyzer</h1>
 <p>Welcome to the Code Complexity Analyzer, a comprehensive web tool designed to help developers understand and optimize the time complexity of their code. This tool utilizes the least squares method to accurately fit the best match graph, drawing from detailed nano time measurements across Java, C++, and Python.</p>
 
