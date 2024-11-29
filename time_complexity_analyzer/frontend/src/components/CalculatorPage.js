@@ -189,15 +189,17 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       });
   };
 
-  const formatResults = (data, code) => {
+  const formatResults = (data, code, language) => {
     const codeLines = code.split("\n");
     const results = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[index] : null;
+      const lineNumber = language === "Python" ? index : index + 1;
+      const lineInfo = data.lines ? data.lines[lineNumber] : null;
       if (lineInfo) {
         const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "";
         const avgExecTimes = lineInfo.average_exec_times || {};
         return {
           line: line.trim(),
+          lineNumber,
           complexity,
           notation: time_complexity_notation[complexity] || "",
           avgExecTimes,
@@ -205,12 +207,13 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       }
       return {
         line: line.trim(),
+        lineNumber,
         function: "",
         complexity: "",
         avgExecTimes: {},
       };
     });
-
+  
     const functionComplexity =
       data.function && data.function.best_fit
         ? data.function.best_fit.model
@@ -220,24 +223,24 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       : {};
     results.functionComplexity = functionComplexity;
     results.functionComplexityWord = functionComplexity;
-    results.functionNotation =
-      time_complexity_notation[functionComplexity] || "";
+    results.functionNotation = time_complexity_notation[functionComplexity] || "";
     results.functionAvgExecTimes = functionAvgExecTimes;
-
+  
     return results;
   };
-
-  const formatOutput = (data, code) => {
+  
+  const formatOutput = (data, code, language) => {
     const codeLines = code.split("\n");
     const linesOutput = codeLines.map((line, index) => {
-      const lineInfo = data.lines ? data.lines[index] : null;
+      const lineNumber = language === "Python" ? index : index + 1;
+      const lineInfo = data.lines ? data.lines[lineNumber] : null;
       if (lineInfo) {
         const avgExecTimes = lineInfo.average_exec_times
           ? Object.entries(lineInfo.average_exec_times)
               .map(([size, time]) => `${size}: ${time.toFixed(2)} ns`)
               .join(", ")
           : "";
-        return `${line} -> ${
+        return `Line ${lineNumber}: ${line} -> ${
           time_complexity_notation[
             lineInfo.best_fit ? lineInfo.best_fit.model : ""
           ] || ""
@@ -245,9 +248,9 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           lineInfo.best_fit ? lineInfo.best_fit.model : ""
         }} (Avg times: ${avgExecTimes})`;
       }
-      return line;
+      return `Line ${lineNumber}: ${line}`;
     });
-
+  
     const overallAvgExecTimes =
       data.function && data.function.average_exec_times
         ? Object.entries(data.function.average_exec_times)
@@ -295,7 +298,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
           {expandedCode === index && (
             <Output
               outputText=""
-              results={formatResults(entry.analysis_result, entry.code)}
+              results={formatResults(entry.analysis_result, entry.code, entry.language)}
               error=""
               loading={false}
             />
