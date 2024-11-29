@@ -50,7 +50,6 @@ class TestInstrumentation(unittest.TestCase):
         )
 
         write_and_compile_java(java_code)
-        print(self.output_java_path)
         self.assertTrue(os.path.exists(self.output_java_path))
 
         run_java_program()
@@ -69,7 +68,6 @@ class TestInstrumentation(unittest.TestCase):
         cpp_code = instrument_cpp_function(user_function, call_template, num_inputs=50, size_array=50)
 
         write_and_compile_cpp(cpp_code)
-        print(self.output_cpp_path)
         self.assertTrue(os.path.exists(self.output_cpp_path))
 
         run_cpp_program()
@@ -86,4 +84,3 @@ class TestInstrumentation(unittest.TestCase):
         run_instrumented_python_code(user_code, number_of_inputs=50, size_array=50)
 
         self.assertTrue(os.path.exists(self.output_python_path))
-        print(self.output_python_path)

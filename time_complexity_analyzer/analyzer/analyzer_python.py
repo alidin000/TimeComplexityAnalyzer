@@ -72,28 +72,3 @@ class Prototype:
     with open(python_file, "w") as f:
         f.write(instrumented_code)
     subprocess.run(['python', python_file], capture_output=True, text=True)
-
-# # Example usage
-# user_code = """
-# def mergeSort(x):
-#     if len(x) < 2:
-#         return x
-#     result = []
-#     mid = int(len(x) / 2)
-#     y = mergeSort(x[:mid])
-#     z = mergeSort(x[mid:])
-#     i = 0
-#     j = 0
-#     while i < len(y) and j < len(z):
-#         if y[i] > z[j]:
-#             result.append(z[j])
-#             j += 1
-#         else:
-#             result.append(y[i])
-#             i += 1
-#     result += y[i:]
-#     result += z[j:]
-#     return result
-# """
-
-# run_instrumented_python_code(user_code, number_of_inputs=50)

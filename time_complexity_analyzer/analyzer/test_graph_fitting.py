@@ -67,17 +67,6 @@ class TestGraphFitting(unittest.TestCase):
         simplified_name, simplified_params = simplify_model('linear', [0.0001, 3], tol=1e-3)
         self.assertEqual(simplified_name, 'constant')
 
-    # def test_select_best_fitting_model(self):
-    #     """Test selection of the best-fitting model."""
-    #     x_data = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
-    #     y_data = np.array([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])
-
-    #     best_fit = select_best_fitting_model(x_data, y_data)
-
-    #     self.assertEqual(best_fit['model'], 'linear', f"Unexpected best model: {best_fit['model']}")
-    #     self.assertAlmostEqual(best_fit['params'][0], 10, delta=1e-1)
-    #     self.assertAlmostEqual(best_fit['params'][1], 0, delta=1e-1)
-
     def test_parse_and_analyze(self):
         """Test parsing and analyzing multiple output files."""
         results = parse_and_analyze(self.mock_file_paths)
@@ -116,6 +105,5 @@ class TestGraphFitting(unittest.TestCase):
 
         best_fit = select_best_fitting_model(x_data, y_data)
 
-        print("Best Fit Model:", best_fit)
         assert best_fit['model'] == 'inverse_ackermann', f"Expected 'inverse_ackermann', but got {best_fit['model']}."
 

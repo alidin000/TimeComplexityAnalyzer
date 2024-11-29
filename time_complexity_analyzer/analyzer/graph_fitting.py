@@ -209,7 +209,7 @@ def select_best_fitting_model(x_data, y_data):
                 model['initial_guess'],
                 bounds=([-1e6] * len(model['initial_guess']), [1e6] * len(model['initial_guess'])),
                 args=(x_data, y_data, model['func']),
-                method='trf',  # Trust Region Reflective
+                method='trf',
             )
             params = result.x
             rss = np.sum((result.fun / y_scale) ** 2)
@@ -264,24 +264,3 @@ def parse_and_analyze(file_paths):
         best_fits['function'] = {'best_fit': overall_best_fit, 'average_exec_times': avg_exec_time}
 
     return best_fits
-
-if __name__ == "__main__":
-    import os
-    current_dir = os.getcwd()
-    file_path = os.path.join(current_dir, 'output_java.txt')
-    best_fits = parse_and_analyze(file_path)
-
-    for line_num, fit in best_fits['lines'].items():
-        model_name = fit['best_fit']['model']
-        params = fit['best_fit']['params']
-        rss = fit['best_fit']['rss']
-        time_complexity = time_complexity_notation[model_name]  
-        print(f"Line {line_num} Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
-
-    if best_fits['function']:
-        fit = best_fits['function']['best_fit']
-        model_name = fit['model']
-        params = fit['params']
-        rss = fit['rss']
-        time_complexity = time_complexity_notation[model_name]  
-        print(f"Overall Function Best Fit: {model_name} with params {params}, RSS {rss}. Time Complexity: {time_complexity}")
