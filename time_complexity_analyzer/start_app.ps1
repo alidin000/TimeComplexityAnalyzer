@@ -2,8 +2,9 @@
 $frontendDir = "./frontend"
 $backendDir = "."
 
-# Backend Command (Django)
-$backendCmd = "python manage.py runserver"
+# Backend Commands (Django)
+$backendMigrateCmd = "python manage.py migrate"
+$backendRunserverCmd = "python manage.py runserver"
 
 # Frontend Command (React or Angular)
 $frontendCmd = "npm start"
@@ -28,10 +29,24 @@ function Kill-ProcessByPort {
     }
 }
 
-# Start Backend
+# Run Django Migrations
 try {
     Set-Location -Path $backendDir
-    $backendProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/c $backendCmd" -NoNewWindow -PassThru
+    Write-Host "Running Django migrations..." -ForegroundColor Cyan
+    & cmd.exe /c $backendMigrateCmd
+    if ($LASTEXITCODE -ne 0) {
+        throw "Migration failed."
+    }
+    Write-Host "Django migrations completed successfully." -ForegroundColor Green
+} catch {
+    Write-Host "Error: Failed to run Django migrations." -ForegroundColor Red
+    exit 1
+}
+
+# Start Backend
+try {
+    Write-Host "Starting backend server..." -ForegroundColor Cyan
+    $backendProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/c $backendRunserverCmd" -NoNewWindow -PassThru
     Write-Host "Backend started (PID: $($backendProcess.Id))." -ForegroundColor Green
 } catch {
     Write-Host "Error: Failed to start backend." -ForegroundColor Red
@@ -41,6 +56,7 @@ try {
 # Start Frontend
 try {
     Set-Location -Path $frontendDir
+    Write-Host "Starting frontend server..." -ForegroundColor Cyan
     $frontendProcess = Start-Process -FilePath "cmd.exe" -ArgumentList "/c $frontendCmd" -NoNewWindow -PassThru
     Write-Host "Frontend started (PID: $($frontendProcess.Id))." -ForegroundColor Green
 } catch {
