@@ -1,8 +1,0 @@
-user username
-user@gmail.com email
-user password
-
-NOTES for later
-in the documentation update the requirements
-you will need g++ compiler
-you will need javac for java compiling
