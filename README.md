@@ -70,7 +70,7 @@ The tool applies the "least squares method" to fit runtime data to known mathema
 ![Main Page](./images/main_page.png)
 
 ### Code Output
-![Code Output](./images/code_output.png)
+![Code Output](./images/code_out.png)
 
 ### History
 ![History](./images/history.png)
