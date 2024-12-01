@@ -1,0 +1,42 @@
+# Django files and directories to ignore
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+**/db.sqlite3
+/media/
+staticfiles/
+static/
+
+# React files and directories to ignore
+/build
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Webpack & Babel directories
+/dist
+.node
+node_modules/
+.cache/
+.DS_Store
+*.env
+
+# Python virtual environment
+venv/
+**/venv/
+
+# Time complexity analysis generated files
+**/*Prototype*
+**/*output*
+
+# Visual Studio Code settings and cache
+.vscode/
+
+# Exclude temporary files and directories
+*.tmp
+*.swp
+*.bak
