@@ -138,13 +138,22 @@ def handle_cpp_code(user_code, call_template):
                 os.remove(output_file_path)
 
             cpp_code = instrument_cpp_function(user_code, call_template, get_iteration_size(size, 10000), size)
-            write_and_compile_cpp(cpp_code)
-            run_cpp_program()
+
+            try:
+                write_and_compile_cpp(cpp_code)
+                run_cpp_program()
+            except Exception as e:
+                print(f"Error during C++ compilation/execution for size {size}: {e}")
+                continue
+
+            if not os.path.exists(output_file_path):
+                print(f"Output file not found for size {size}: {output_file_path}")
+                continue
 
         best_fits = parse_and_analyze(output_file_paths)
         return Response(best_fits)
     except Exception as e:
-        print("Running didn't work, or reading output file didn't work:", e.args)
+        print("Error in handle_cpp_code:", e)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 

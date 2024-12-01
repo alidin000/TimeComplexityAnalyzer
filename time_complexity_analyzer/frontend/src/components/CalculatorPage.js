@@ -178,8 +178,8 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
     AxiosInstance.post("/api/analyse-code/", payload)
       .then((response) => {
-        setResults(formatResults(response.data, code));
-        setOutputText(formatOutput(response.data, code));
+        setResults(formatResults(response.data, code, language));
+        setOutputText(formatOutput(response.data, code, language));
         setError("");
         setLoading(false);
       })
@@ -191,9 +191,14 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
 
   const formatResults = (data, code, language) => {
     const codeLines = code.split("\n");
+    console.log(codeLines);
     const results = codeLines.map((line, index) => {
       const lineNumber = language === "Python" ? index : index + 1;
       const lineInfo = data.lines ? data.lines[lineNumber] : null;
+      console.log(lineNumber, index);
+      console.log(data, language);
+      console.log(lineInfo);
+      
       if (lineInfo) {
         const complexity = lineInfo.best_fit ? lineInfo.best_fit.model : "";
         const avgExecTimes = lineInfo.average_exec_times || {};
@@ -213,7 +218,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
         avgExecTimes: {},
       };
     });
-  
+    console.log(results.join("\n") );
     const functionComplexity =
       data.function && data.function.best_fit
         ? data.function.best_fit.model
@@ -230,9 +235,9 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
   };
   
   const formatOutput = (data, code, language) => {
-    const codeLines = code.split("\n");
+    const codeLines = code.split("\n");    
     const linesOutput = codeLines.map((line, index) => {
-      const lineNumber = language === "Python" ? index : index + 1;
+      const lineNumber = language === "Python" ? index : index + 1;     
       const lineInfo = data.lines ? data.lines[lineNumber] : null;
       if (lineInfo) {
         const avgExecTimes = lineInfo.average_exec_times
@@ -250,7 +255,7 @@ function CalculatorPage({ isAuthenticated, currentUser }) {
       }
       return `Line ${lineNumber}: ${line}`;
     });
-  
+
     const overallAvgExecTimes =
       data.function && data.function.average_exec_times
         ? Object.entries(data.function.average_exec_times)

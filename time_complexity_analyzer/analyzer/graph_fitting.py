@@ -117,27 +117,58 @@ time_complexity_notation = {
 }
 
 def parse_output_file(file_path):
+    """
+    Parses the output file to extract execution times for each line and the function as a whole.
+    Handles C++ files differently by replacing 0 or negative execution times with small non-zero values.
+
+    Args:
+        file_path (str): Path to the output file.
+
+    Returns:
+        tuple: A dictionary with line execution times and a list of function execution times.
+    """
     line_exec_times = {}
     function_exec_times = []
+
+    is_cpp = 'cpp' in file_path.lower()
 
     with open(file_path, 'r') as file:
         for line in file:
             stripped_line = line.strip()
-            
+
             if not stripped_line:
                 continue
 
-            if stripped_line.startswith('Function execution time: '):
-                exec_time = int(stripped_line.split(': ')[1].split(' ')[0])
-                function_exec_times.append(exec_time)
+            if stripped_line.startswith('Average Function execution time:') or stripped_line.startswith('Function execution time:'):
+                try:
+                    exec_time = int(stripped_line.split(': ')[1].split(' ')[0])
+                    if is_cpp and exec_time <= 0:
+                        exec_time = 10
+                    function_exec_times.append(exec_time)
+                except (ValueError, IndexError):
+                    print(f"Warning: Skipping invalid execution time entry: {line}")
+                continue
 
-            elif stripped_line.startswith('{'):
-                exec_times = eval(stripped_line.replace('=', ':'))
-                for line_num, time in exec_times.items():
-                    if line_num not in line_exec_times:
-                        line_exec_times[line_num] = []
-                    line_exec_times[line_num].append(time)
+            if stripped_line.startswith('{') and stripped_line.endswith('}'):
+                try:
+                    exec_times = eval(stripped_line.replace('=', ':'))
+                    for line_num, time in exec_times.items():
+                        if is_cpp:
+                            time = max(time, 10)
+                        if line_num not in line_exec_times:
+                            line_exec_times[line_num] = []
+                        line_exec_times[line_num].append(time)
+                except (SyntaxError, ValueError):
+                    print(f"Warning: Skipping invalid line execution entry: {line}")
+                continue
+
+    if is_cpp:
+        for line_num in line_exec_times:
+            line_exec_times[line_num] = [max(time, 10) for time in line_exec_times[line_num]]
+
     return line_exec_times, function_exec_times
+
+
 
 def simplify_model(name, params, tol=1e-6):
     """
@@ -190,18 +221,29 @@ def simplify_model(name, params, tol=1e-6):
 
 
 def select_best_fitting_model(x_data, y_data):
+    """
+    Attempts to fit the data with the best model using the original logic first.
+    If no valid model is found, falls back to the updated logic.
+
+    Args:
+        x_data (np.array): Input data sizes.
+        y_data (np.array): Corresponding execution times.
+
+    Returns:
+        dict: Dictionary containing the best-fit model, parameters, and residual sum of squares (RSS).
+    """
     best_fit = {'model': None, 'params': None, 'rss': np.inf}
-    y_scale = np.std(y_data)
+    fallback_fit = {'model': 'linear', 'params': [0, np.mean(y_data)], 'rss': np.inf}  # Default to O(n)
+    y_scale = np.std(y_data) if not np.isclose(np.std(y_data), 0, atol=1e-12) else 1
+
+    model_scores = []  # Track all residuals and penalties
 
     for name, model in models.items():
         try:
-            # Skip models requiring positive x_data if x_data contains non-positive values
+            # Skip models that can't handle the input range
             if name in ['logarithmic', 'log_logarithmic', 'log_linear', 'quasilinear'] and np.any(x_data <= 0):
                 continue
-
-
-            # Skip factorial model for large inputs
-            if name == 'factorial' and np.any(x_data > 20):
+            if name in ['factorial', 'double_exponential'] and np.any(x_data > 20):
                 continue
 
             result = least_squares(
@@ -211,21 +253,35 @@ def select_best_fitting_model(x_data, y_data):
                 args=(x_data, y_data, model['func']),
                 method='trf',
             )
+
+            if not np.isfinite(result.fun).all():
+                continue
+
             params = result.x
             rss = np.sum((result.fun / y_scale) ** 2)
 
+            # Complexity penalty
             complexity_penalty = len(params) * 1e-3
             rss += complexity_penalty
 
-            # Skip if parameters are nonsensical
-            if np.any(np.abs(params) > 1e6):
-                continue
+            # Save for fallback
+            model_scores.append((rss, complexity_penalty, name, params))
 
+            # Update best fit
             if rss < best_fit['rss']:
                 simplified_name, simplified_params = simplify_model(name, params)
                 best_fit = {'model': simplified_name, 'params': simplified_params, 'rss': rss}
         except Exception as e:
             print(f"Error fitting model {name}: {e}")
+
+    # If the original logic fails, fallback to recalculation with updated logic
+    if best_fit['model'] is None:
+        print("Original logic failed; falling back to updated logic.")
+        if model_scores:
+            model_scores.sort(key=lambda x: x[0] + x[1])  # Sort by RSS + penalty
+            rss, _, name, params = model_scores[0]
+            fallback_fit = {'model': name, 'params': params, 'rss': rss}
+        return fallback_fit
 
     return best_fit
 

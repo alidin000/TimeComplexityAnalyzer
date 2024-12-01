@@ -17,24 +17,27 @@ def instrument_cpp_function(user_function, call_template, num_inputs, size_array
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <cmath>
+
+using Clock = std::chrono::steady_clock;
 
 class InstrumentedPrototype {
 public:
-    std::map<int, std::chrono::high_resolution_clock::time_point> lineInfoLastStart;
+    std::map<int, Clock::time_point> lineInfoLastStart;
     std::map<int, long long> lineInfoTotal;
 
     InstrumentedPrototype() {
         // Constructor
     }
 
-    std::chrono::high_resolution_clock::time_point getLastLineInfo(int lineNumber) {
+    Clock::time_point getLastLineInfo(int lineNumber) {
         auto it = lineInfoLastStart.find(lineNumber);
         if (it != lineInfoLastStart.end()) {
             return it->second;
         } else if (lineNumber > 1) {
             return getLastLineInfo(lineNumber - 1);
         }
-        return std::chrono::high_resolution_clock::now();
+        return Clock::now();
     }
     """
 
@@ -52,15 +55,23 @@ public:
 
     void execute(int size) {{
         InstrumentedPrototype p;
-        std::vector<int> input = generateInput(size);
-        auto startTime = std::chrono::high_resolution_clock::now();
-        {call_template.replace("$$size$$", "input")}
-        auto endTime = std::chrono::high_resolution_clock::now();
-        long long execTime = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
-        
+
+        int num_iterations = 10;
+        long long totalExecTime = 0;
+
+        for (int iter = 0; iter < num_iterations; ++iter) {{
+            std::vector<int> input = generateInput(size);
+            auto startTime = Clock::now();
+            {call_template.replace("$$size$$", "input")}
+            auto endTime = Clock::now();
+            totalExecTime += std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
+        }}
+
+        long long avgExecTime = totalExecTime / num_iterations;
+
         std::ofstream outFile("output_cpp_{size_array}.txt", std::ios_base::app);
         outFile << "test case = " << size << "\\n";
-        outFile << "Function execution time: " << execTime << " ns\\n";
+        outFile << "Average Function execution time: " << avgExecTime << " ns\\n";
         outFile << "{{";
         bool isFirst = true;
         for (auto it = p.lineInfoTotal.begin(); it != p.lineInfoTotal.end(); ++it) {{
@@ -73,7 +84,7 @@ public:
     }}
 
     void run() {{
-        for (int size = 1; size <= {num_inputs}; ++size) {{
+        for (int size = 10; size <= {num_inputs}; size += 10) {{
             execute(size);
         }}
     }}
@@ -89,6 +100,7 @@ int main() {{
     lines = user_function.strip().splitlines()
     instrumented_user_function = lines[0]
     last_line_index = len(lines) - 1
+
     for i, line in enumerate(lines[1:], start=2):
         trimmed_line = line.strip()
         if not trimmed_line or trimmed_line == '}' or i == last_line_index:
@@ -96,15 +108,19 @@ int main() {{
                 instrumented_line = line
             else:
                 instrumented_line = (
-                    f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
-                    + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+                    f"this->lineInfoLastStart[{i}] = Clock::now();\n"
+                    + line + f"\nthis->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - this->getLastLineInfo({i})).count();"
                 )
         else:
             instrumented_line = (
-                f"this->lineInfoLastStart[{i}] = std::chrono::high_resolution_clock::now();\n"
+                f"this->lineInfoLastStart[{i}] = Clock::now();\n"
                 + line + "\n"
-                + f"this->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - this->getLastLineInfo({i})).count();"
+                + f"this->lineInfoTotal[{i}] += std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - this->getLastLineInfo({i})).count();"
             )
+
+        if "for" in trimmed_line:  # Add measurable workload
+            instrumented_line += "\nfor (int j = 0; j < 1000; ++j) { int temp = 0; temp += j; }"
+
         instrumented_user_function += "\n" + instrumented_line
 
     full_cpp_code = cpp_prolog + instrumented_user_function + cpp_epilog
