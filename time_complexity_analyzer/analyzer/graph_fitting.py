@@ -222,8 +222,9 @@ def simplify_model(name, params, tol=1e-6):
 
 def select_best_fitting_model(x_data, y_data):
     """
-    Attempts to fit the data with the best model using the original logic first.
-    If no valid model is found, falls back to the updated logic.
+    Attempts to fit the data with the best model with just rss comparing approach.
+    If no valid model is found during the fitting process,
+    the fallback approach ensures that a model is still selected
 
     Args:
         x_data (np.array): Input data sizes.
@@ -233,7 +234,7 @@ def select_best_fitting_model(x_data, y_data):
         dict: Dictionary containing the best-fit model, parameters, and residual sum of squares (RSS).
     """
     best_fit = {'model': None, 'params': None, 'rss': np.inf}
-    fallback_fit = {'model': 'linear', 'params': [0, np.mean(y_data)], 'rss': np.inf}  # Default to O(n)
+    fallback_fit = {'model': 'linear', 'params': [0, np.mean(y_data)], 'rss': np.inf}
     y_scale = np.std(y_data) if not np.isclose(np.std(y_data), 0, atol=1e-12) else 1
 
     model_scores = []  # Track all residuals and penalties
@@ -264,10 +265,8 @@ def select_best_fitting_model(x_data, y_data):
             complexity_penalty = len(params) * 1e-3
             rss += complexity_penalty
 
-            # Save for fallback
             model_scores.append((rss, complexity_penalty, name, params))
 
-            # Update best fit
             if rss < best_fit['rss']:
                 simplified_name, simplified_params = simplify_model(name, params)
                 best_fit = {'model': simplified_name, 'params': simplified_params, 'rss': rss}
